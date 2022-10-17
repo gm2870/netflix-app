@@ -1,0 +1,10 @@
+.animation-card {
+  display: flex;
+  background-color: black;
+  color: white;
+  border-bottom: 8px solid #222;
+  &__container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+}

@@ -1,0 +1,161 @@
+@use '../styles/abstracts' as *;
+
+.login {
+  // border-bottom: 8px solid #222;
+  display: grid;
+  background-color: black;
+  &__imageContainer {
+    display: none;
+    @include respond(phone) {
+      display: block;
+      grid-area: 1 / 1 / span 3 / span 3;
+      width: 100%;
+      background-size: cover;
+    }
+  }
+  &__image {
+    width: 100%;
+    height: 99.7%;
+    opacity: 0.5;
+  }
+
+  &__container {
+    background-color: rgba(0, 0, 0, 0.75);
+    min-height: 550px;
+    display: flex;
+    padding: 0 5%;
+    flex-direction: column;
+    grid-area: 2 / 1 / span 1 / span 3;
+    margin: 0 auto;
+    max-width: 450px;
+    z-index: 2;
+    @include respond(tablet) {
+      margin-bottom: 5.5rem;
+      min-height: 660px;
+      padding: 60px 68px 40px;
+    }
+  }
+  &__signup-now {
+    span {
+      color: #b3b3b3;
+    }
+    a {
+      color: white;
+    }
+  }
+}
+.css-ahj2mt-MuiTypography-root {
+  color: white !important;
+}
+.header {
+  grid-area: 1 / 1 / span 1 / span 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1920px;
+  padding: 0 20px;
+  padding-bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  height: 90px;
+  z-index: 2;
+  &__link {
+    width: 100px;
+    @include respond(tablet) {
+      width: 170px;
+    }
+  }
+  &__logo {
+    margin-right: auto;
+  }
+  @include respond(tablet) {
+    padding: 0;
+    margin-left: 3%;
+  }
+}
+.form {
+  flex-grow: 1;
+  &__header {
+    color: #fff;
+    font-size: 32px;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 28px;
+  }
+  &__body {
+    display: flex;
+    flex-direction: column;
+  }
+  &__input-container {
+    margin-bottom: 16px;
+  }
+  &__input {
+    background-color: #333;
+    border: 0;
+    border-radius: 4px;
+    width: 100%;
+  }
+  &__btn {
+    margin: 24px 0 12px;
+    font-weight: 700;
+  }
+
+  &__error {
+    margin-top: 0;
+    text-align: initial;
+    color: #ffa00a;
+  }
+}
+.rememberme {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #b3b3b3;
+}
+.captcha {
+  color: #8c8c8c;
+  margin-top: 11px;
+  font-size: 13px;
+  &__learnMore {
+    opacity: 0;
+    transition: height 0.5s ease, opacity 0.5s ease;
+    visibility: hidden;
+  }
+}
+
+.footer {
+  grid-area: 3 / 1 / span 1 / span 3;
+  z-index: 2;
+  color: #757575;
+  padding: 0 5%;
+  background: rgba(0, 0, 0, 0.75);
+  &__top {
+    margin-bottom: 30px;
+    margin-top: 0;
+  }
+  &__links {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 13px;
+    justify-content: center;
+  }
+
+  &__linkItem {
+    box-sizing: border-box;
+    padding: 0;
+    margin-bottom: 16px;
+    display: inline-block;
+    min-width: 100px;
+    width: 25%;
+    padding-right: 12px;
+    vertical-align: top;
+  }
+  &__body {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 30px 0;
+  }
+}
