@@ -55,10 +55,10 @@ export const checkAndUpdateSrc = async () => {
   const items = await Media.find();
   for (const media of items) {
     if (
-      !media.video_src['1080p'] ||
-      !media.video_src['480p'] ||
-      needsSrcUpdate(media.video_src['480p']) ||
-      needsSrcUpdate(media.video_src['1080p'])
+      !media.video_src.HD ||
+      !media.video_src.SD ||
+      needsSrcUpdate(media.video_src.SD) ||
+      needsSrcUpdate(media.video_src.HD)
     ) {
       updateSrc(media);
     }
@@ -81,25 +81,25 @@ export const forceSrcUpdate = catchAsync(async () => {
 
 export const updateSrc = async (media) => {
   let HDSrc, SDSrc, videoData;
-  if (media.video_movie_id) {
-    SDSrc = await getSrcWithVideoId(media.video_movie_id, 480);
-    HDSrc = await getSrcWithVideoId(media.video_movie_id, 1080);
+  if (media.title_video_id) {
+    SDSrc = await getSrcWithVideoId(media.title_video_id, 480);
+    HDSrc = await getSrcWithVideoId(media.title_video_id, 1080);
     videoData = {
-      '480p': SDSrc,
-      '1080p': HDSrc,
+      SD: SDSrc,
+      HD: HDSrc,
     };
   } else {
-    videoData = await getVideoSrc(media.video_title_id, 1080);
+    videoData = await getVideoSrc(media.title_id, 1080);
   }
-  if (!videoData || !videoData['480p']) return;
+  if (!videoData || !videoData.SD) return;
   return await Media.findOneAndUpdate(
     { id: media.id },
     {
       video_src: {
-        '480p': videoData['480p'],
-        '1080p': videoData['1080p'],
+        SD: videoData.SD,
+        HD: videoData.HD,
       },
-      video_movie_id: videoData.videoId,
+      title_video_id: videoData.videoId,
     }
   );
 };

@@ -104,7 +104,7 @@ export const searchMediaByName = async (name) => {
       firstResult: {
         ...mediaData.data.results[0],
         title: normalizeText(title),
-        video_title_id: mediaTitleId.data.d[0].id,
+        title_video_id: mediaTitleId.data.d[0].id,
       },
       allResults: mediaData.data.results.slice(0, 4),
     };
@@ -116,27 +116,27 @@ export const searchMediaByName = async (name) => {
 export const updateVideoSrc = catchAsync(async (movie) => {
   if (
     !movie.video_src ||
-    !movie.video_src['480p'] ||
-    needsSrcUpdate(movie.video_src['480p']) ||
-    needsSrcUpdate(movie.video_src['1080p'])
+    !movie.video_src.SD ||
+    needsSrcUpdate(movie.video_src.SD) ||
+    needsSrcUpdate(movie.video_src.HD)
   ) {
     let videoData;
     // if video_movie_id is already saved then should use a lighter function
     // otherwise should use the main one
-    if (movie.video_movie_id) {
-      videoData = await getSrcWithVideoId(movie.video_movie_id, 1080);
+    if (movie.title_video_id) {
+      videoData = await getSrcWithVideoId(movie.title_video_id, 1080);
     } else {
-      videoData = await getVideoSrc(movie.video_title_id, 1080);
+      videoData = await getVideoSrc(movie.title_id, 1080);
     }
     if (videoData) {
       await Media.findOneAndUpdate(
         { id: movie.id },
         {
           video_src: {
-            '480p': videoData['480p'],
-            '1080p': videoData['1080p'],
+            SD: videoData.SD,
+            HD: videoData.HD,
           },
-          video_movie_id: videoData.videoId,
+          title_video_id: videoData.videoId,
         }
       );
       console.log(`${movie.title} src updated.`);
@@ -163,9 +163,9 @@ export const emptyAssets = (req, res, next) => {
 };
 
 export const mediaStream = catchAsync(async (req, res) => {
-  const movie = await Media.findOne({ id: req.params.mediaId });
-  const src = movie.video_src['1080p'];
-  const fileName = `${movie.title.split(' ').join('-').replace(':', '')}.mp4`;
+  const media = await Media.findOne({ id: req.params.mediaId });
+  const src = media.video_src.HD;
+  const fileName = `${media.title.split(' ').join('-').replace(':', '')}.mp4`;
   const requestRangeHeader = req.headers.range;
   if (!requestRangeHeader) {
     res.status(400).send('Requires Range header');
