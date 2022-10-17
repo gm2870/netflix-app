@@ -45,9 +45,9 @@ const browse = () => {
   const videoSrc = useSelector(
     (state) => state.movie.billboardMovie?.video_src
   );
-  console.log(videoSrc);
   const dispatch = useDispatch();
   useEffect(() => {
+    console.log('useEffect22')
     // axios({
     //   method: 'GET',
     //   url: 'https://www.youtube.com/embed/M7lc1UVf-VE',
