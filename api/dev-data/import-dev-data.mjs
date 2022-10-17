@@ -1,11 +1,10 @@
-import Movie from '../models/movieModel.mjs';
-import axios from 'axios';
+import Media from '../models/mediaModel.mjs';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { getSrcWithVideoId, getVideoSrc } from '../utils/urlGrabber.mjs';
 import {
   needsSrcUpdate,
-  searchMovieByName,
+  searchMediaByName,
 } from '../controllers/movieController.mjs';
 import catchAsync from '../utils/catchAsync.mjs';
 import AppError from '../utils/appError.mjs';
@@ -18,7 +17,7 @@ const DB = process.env.DATABASE.replace(
 
 mongoose.connect(DB);
 
-const movies = [
+const mediaNames = [
   'red-notice',
   'avengers-endgame',
   'spiderman-no-way-home',
@@ -30,19 +29,22 @@ const movies = [
   'hustle',
   'bullet-train',
   'joker',
+  'breaking-bad',
+  'money-heist',
+  'the-black-list',
 ];
 
-const importMovies = async () => {
-  for (const name of movies) {
-    const movie = await searchMovieByName(name);
-    await Movie.create(movie);
+const importMedia = async () => {
+  for (const name of mediaNames) {
+    const media = await searchMediaByName(name);
+    await Media.create(media);
   }
   process.exit();
 };
-const deleteMovies = async () => {
-  await Movie.deleteMany();
+const deleteAllMedia = async () => {
+  await Media.deleteMany();
   try {
-    await Movie.deleteMany();
+    await Media.deleteMany();
   } catch (error) {
     return new AppError(error.message || 'Something went wrong.', 500);
   }
@@ -50,47 +52,48 @@ const deleteMovies = async () => {
 };
 
 export const checkAndUpdateSrc = async () => {
-  const movies = await Movie.find();
-  for (const movie of movies) {
+  const items = await Media.find();
+  for (const media of items) {
     if (
-      !movie.video_src['1080p'] ||
-      !movie.video_src['480p'] ||
-      needsSrcUpdate(movie.video_src['480p']) ||
-      needsSrcUpdate(movie.video_src['1080p'])
+      !media.video_src['1080p'] ||
+      !media.video_src['480p'] ||
+      needsSrcUpdate(media.video_src['480p']) ||
+      needsSrcUpdate(media.video_src['1080p'])
     ) {
-      updateSrc(movie);
+      updateSrc(media);
     }
   }
   process.exit();
 };
+
 export const forceSrcUpdate = catchAsync(async () => {
-  const movies = await Movie.find();
+  const items = await Media.find();
   let i = 0;
-  for (const movie of movies) {
-    console.log(movie.title);
-    await updateSrc(movie);
-    console.log(movie.video_src);
+  for (const media of items) {
+    console.log(media.title);
+    await updateSrc(media);
+    console.log(media.video_src);
 
     i++;
   }
-  if (i === movies.length) process.exit();
+  if (i === items.length) process.exit();
 });
 
-export const updateSrc = async (movie) => {
+export const updateSrc = async (media) => {
   let HDSrc, SDSrc, videoData;
-  if (movie.video_movie_id) {
-    SDSrc = await getSrcWithVideoId(movie.video_movie_id, 480);
-    HDSrc = await getSrcWithVideoId(movie.video_movie_id, 1080);
+  if (media.video_movie_id) {
+    SDSrc = await getSrcWithVideoId(media.video_movie_id, 480);
+    HDSrc = await getSrcWithVideoId(media.video_movie_id, 1080);
     videoData = {
       '480p': SDSrc,
       '1080p': HDSrc,
     };
   } else {
-    videoData = await getVideoSrc(movie.video_title_id, 1080);
+    videoData = await getVideoSrc(media.video_title_id, 1080);
   }
   if (!videoData || !videoData['480p']) return;
-  return await Movie.findOneAndUpdate(
-    { id: movie.id },
+  return await Media.findOneAndUpdate(
+    { id: media.id },
     {
       video_src: {
         '480p': videoData['480p'],
@@ -100,18 +103,18 @@ export const updateSrc = async (movie) => {
     }
   );
 };
-const updateMovie = async (id) => {
-  const movie = await Movie.findOne({ id });
+const updateMedia = async (id) => {
+  const movie = await Media.findOne({ id });
   console.log(movie.title);
   await updateSrc(movie);
   process.exit();
 };
 if (process.argv[2] === '--import') {
-  importMovies();
+  importMedia();
 } else if (process.argv[2] === '--delete') {
-  deleteMovies();
+  deleteAllMedia();
 } else if (process.argv[2] === '--update-src') {
   forceSrcUpdate();
 } else if (process.argv[2] === '--update') {
-  updateMovie(1396);
+  updateMedia(1396);
 }

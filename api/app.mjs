@@ -1,11 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import userRoutes from './routes/userRoutes.mjs';
-import movieRoutes from './routes/movieRoutes.mjs';
+import mediaRoutes from './routes/mediaRoutes.mjs';
 import globalErrorHandler from './controllers/errorController.mjs';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-import { emptyAssets } from './controllers/movieController.mjs';
+import { emptyAssets } from './controllers/mediaController.mjs';
 
 const app = express();
 
@@ -26,7 +26,7 @@ if (process.env.NODE_ENV === 'production') app.use('/', emptyAssets);
 
 app.use('/api/v1/users', userRoutes);
 
-app.use('/api/v1/movies', movieRoutes);
+app.use('/api/v1/media', mediaRoutes);
 // app.use(express.static(join(__dirname, 'public')));
 
 app.use(globalErrorHandler);

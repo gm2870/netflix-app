@@ -7,11 +7,6 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
-import {
-  getBillboardMovie,
-  getMovies,
-} from '../../src/store/redux/movie/movie-actions.mjs';
 const browse = () => {
   const [showNavigationLinks, setNavigationLinks] = useState(false);
   const navigationToggleHandler = () =>
@@ -47,12 +42,6 @@ const browse = () => {
   );
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log('useEffect22')
-    // axios({
-    //   method: 'GET',
-    //   url: 'https://www.youtube.com/embed/M7lc1UVf-VE',
-    //   responseType: 'stream',
-    // }).then((res) => console.log(res));
     // dispatch(getBillboardMovie(414906));
   }, []);
   return (
@@ -125,7 +114,7 @@ const browse = () => {
           {/* <iframe className={classes.video__src} src="" autoPlay></iframe> */}
           <video
             className={classes.video__src}
-            src={'http://localhost:8000/api/v1/movies/video/672'}
+            src={'http://localhost:8001/api/v1/media/video/672'}
             autoPlay
             muted
             controls="controls"
@@ -133,7 +122,7 @@ const browse = () => {
         </div>
         <img
           src={
-            'http://localhost:8000/api/v1/movies/image/gFZriCkpJYsApPZEF3jhxL4yLzG.jpg'
+            'http://localhost:8001/api/v1/media/image/gFZriCkpJYsApPZEF3jhxL4yLzG.jpg'
           }
           width="435px"
           height="245px"

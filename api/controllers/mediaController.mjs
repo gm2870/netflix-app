@@ -4,7 +4,7 @@ import got from 'got';
 import path from 'path';
 import { paramsWithUrl, scrapingbeeUrl } from '../utils/moviedbConfig.mjs';
 import catchAsync from '../utils/catchAsync.mjs';
-import Movie from '../models/movieModel.mjs';
+import Media from '../models/mediaModel.mjs';
 import { getSrcWithVideoId, getVideoSrc } from '../utils/urlGrabber.mjs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -16,48 +16,47 @@ import {
 import AppError from '../utils/appError.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-//  https://image.tmdb.org/t/p/w1280 image base path
 
-export const getMovies = catchAsync(async (req, res) => {
-  const { data } = await axios({
-    url: scrapingbeeUrl,
-    method: 'GET',
-    params: paramsWithUrl('/discover/movie'),
-  });
+// export const getMovies = catchAsync(async (req, res) => {
+//   const { data } = await axios({
+//     url: scrapingbeeUrl,
+//     method: 'GET',
+//     params: paramsWithUrl('/discover/movie'),
+//   });
 
-  res.status(200).json({
-    status: 'success',
-    data: data.results,
-  });
-});
+//   res.status(200).json({
+//     status: 'success',
+//     data: data.results,
+//   });
+// });
 
-export const getMovie = catchAsync(async (req, res, next) => {
-  const movie = await Movie.findOne({ id: req.params.id });
-  if (!movie) {
+export const getMedia = catchAsync(async (req, res, next) => {
+  const media = await Media.findOne({ id: req.params.id });
+  if (!media) {
     return next(new Error('No document found with that ID'), 404);
   }
-  updateVideoSrc(movie);
+  updateVideoSrc(media);
 
   res.status(200).json({
     status: 'success',
-    data: movie,
+    data: media,
   });
 });
 
-export const searchMovie = catchAsync(async (req, res) => {
+export const searchMedia = catchAsync(async (req, res) => {
   const name = req.params.name
     .toLowerCase()
     .split(' ')
     .join('-')
     .replace(':', '');
 
-  const items = await Movie.find({
+  const items = await Media.find({
     title: { $regex: `${name}`, $options: 'i' },
   });
 
   if (!items.length) {
-    const { firstResult, allResults } = await searchMovieByName(name);
-    await Movie.create(firstResult);
+    const { firstResult, allResults } = await searchMediaByName(name);
+    await Media.create(firstResult);
     updateVideoSrc(firstResult);
     res.status(200).json({
       status: 'success',
@@ -71,9 +70,9 @@ export const searchMovie = catchAsync(async (req, res) => {
   }
 });
 
-export const searchMovieByName = async (name) => {
+export const searchMediaByName = async (name) => {
   try {
-    const [movieData, movieTitleId] = await Promise.all([
+    const [mediaData, mediaTitleId] = await Promise.all([
       axios({
         url: 'https://api.themoviedb.org/3/search/multi',
         method: 'GET',
@@ -93,21 +92,21 @@ export const searchMovieByName = async (name) => {
       }),
     ]);
     if (
-      !movieTitleId.data.d ||
-      !movieTitleId.data.d[0] ||
-      !movieData.data.results
+      !mediaTitleId.data.d ||
+      !mediaTitleId.data.d[0] ||
+      !mediaData.data.results
     )
       return;
-    if (!movieTitleId.data.d[0].id.startsWith('tt')) return;
-    const result = movieData.data.results[0];
+    if (!mediaTitleId.data.d[0].id.startsWith('tt')) return;
+    const result = mediaData.data.results[0];
     const title = result.title || result.name;
     return {
       firstResult: {
-        ...movieData.data.results[0],
+        ...mediaData.data.results[0],
         title: normalizeText(title),
-        video_title_id: movieTitleId.data.d[0].id,
+        video_title_id: mediaTitleId.data.d[0].id,
       },
-      allResults: movieData.data.results.slice(0, 4),
+      allResults: mediaData.data.results.slice(0, 4),
     };
   } catch (error) {
     console.log(error);
@@ -130,7 +129,7 @@ export const updateVideoSrc = catchAsync(async (movie) => {
       videoData = await getVideoSrc(movie.video_title_id, 1080);
     }
     if (videoData) {
-      await Movie.findOneAndUpdate(
+      await Media.findOneAndUpdate(
         { id: movie.id },
         {
           video_src: {
@@ -163,8 +162,8 @@ export const emptyAssets = (req, res, next) => {
   next();
 };
 
-export const httpStream = catchAsync(async (req, res) => {
-  const movie = await Movie.findOne({ id: req.params.movieId });
+export const mediaStream = catchAsync(async (req, res) => {
+  const movie = await Media.findOne({ id: req.params.mediaId });
   const src = movie.video_src['1080p'];
   const fileName = `${movie.title.split(' ').join('-').replace(':', '')}.mp4`;
   const requestRangeHeader = req.headers.range;

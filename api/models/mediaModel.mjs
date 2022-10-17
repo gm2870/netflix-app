@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const MovieSchema = new mongoose.Schema({
+const MediaSchema = new mongoose.Schema({
   id: Number,
   imdb_id: String,
   title: String,
@@ -84,6 +84,6 @@ const MovieSchema = new mongoose.Schema({
   runtime: Number,
 });
 
-const Movie = mongoose.model('Movie', MovieSchema);
+const Media = mongoose.model('Media', MediaSchema);
 
-export default Movie;
+export default Media;
