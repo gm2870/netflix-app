@@ -2,7 +2,6 @@ import fs from 'fs';
 import axios from 'axios';
 import got from 'got';
 import path from 'path';
-import { paramsWithUrl, scrapingbeeUrl } from '../utils/moviedbConfig.mjs';
 import catchAsync from '../utils/catchAsync.mjs';
 import Media from '../models/mediaModel.mjs';
 import { getSrcWithVideoId, getVideoSrc } from '../utils/urlGrabber.mjs';
@@ -16,19 +15,6 @@ import {
 import AppError from '../utils/appError.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-// export const getMovies = catchAsync(async (req, res) => {
-//   const { data } = await axios({
-//     url: scrapingbeeUrl,
-//     method: 'GET',
-//     params: paramsWithUrl('/discover/movie'),
-//   });
-
-//   res.status(200).json({
-//     status: 'success',
-//     data: data.results,
-//   });
-// });
 
 export const getMedia = catchAsync(async (req, res, next) => {
   const media = await Media.findOne({ id: req.params.id });
@@ -44,11 +30,7 @@ export const getMedia = catchAsync(async (req, res, next) => {
 });
 
 export const searchMedia = catchAsync(async (req, res) => {
-  const name = req.params.name
-    .toLowerCase()
-    .split(' ')
-    .join('-')
-    .replace(':', '');
+  const name = normalizeText(req.params.name);
 
   const items = await Media.find({
     title: { $regex: `${name}`, $options: 'i' },
@@ -104,7 +86,7 @@ export const searchMediaByName = async (name) => {
       firstResult: {
         ...mediaData.data.results[0],
         title: normalizeText(title),
-        title_video_id: mediaTitleId.data.d[0].id,
+        title_id: mediaTitleId.data.d[0].id,
       },
       allResults: mediaData.data.results.slice(0, 4),
     };
@@ -121,7 +103,7 @@ export const updateVideoSrc = catchAsync(async (movie) => {
     needsSrcUpdate(movie.video_src.HD)
   ) {
     let videoData;
-    // if video_movie_id is already saved then should use a lighter function
+    // if title_video_id is already saved then should use a lighter function
     // otherwise should use the main one
     if (movie.title_video_id) {
       videoData = await getSrcWithVideoId(movie.title_video_id, 1080);
@@ -165,7 +147,7 @@ export const emptyAssets = (req, res, next) => {
 export const mediaStream = catchAsync(async (req, res) => {
   const media = await Media.findOne({ id: req.params.mediaId });
   const src = media.video_src.HD;
-  const fileName = `${media.title.split(' ').join('-').replace(':', '')}.mp4`;
+  const fileName = `${normalizeText(media.title)}.mp4`;
   const requestRangeHeader = req.headers.range;
   if (!requestRangeHeader) {
     res.status(400).send('Requires Range header');
@@ -200,7 +182,6 @@ export const mediaStream = catchAsync(async (req, res) => {
     downloadStream.pipe(fileWriterStream);
   } else {
     const videoSize = fs.statSync(resolvedPath).size;
-    console.log(videoSize);
     const { start, end, chunkSize } = getChunkProps(
       requestRangeHeader,
       videoSize
@@ -237,9 +218,6 @@ export const imageStream = async (req, res) => {
   imageStream.on('response', (response) => {
     response.pipe(res);
   });
-  // .on('end', () => {
-  //   const videoStream = fs.createReadStream(resolvedPath);
-  //   imageStream.pipe(videoStream);
-  // });
+
   imageStream.pipe(fileWriterStream);
 };
