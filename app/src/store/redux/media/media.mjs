@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const movieSlice = createSlice({
-  name: 'movie',
+const mediaSlice = createSlice({
+  name: 'media',
   initialState: {
     error: null,
     loading: false,
@@ -19,5 +19,5 @@ const movieSlice = createSlice({
     },
   },
 });
-export const movieActions = movieSlice.actions;
-export default movieSlice;
+export const mediaActions = mediaSlice.actions;
+export default mediaSlice;

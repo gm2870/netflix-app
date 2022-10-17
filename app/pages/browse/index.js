@@ -37,10 +37,10 @@ const browse = () => {
       link: '/',
     },
   ];
-  const videoSrc = useSelector(
-    (state) => state.movie.billboardMovie?.video_src
-  );
-  const dispatch = useDispatch();
+  // const videoSrc = useSelector(
+  //   (state) => state.movie.billboardMovie?.video_src
+  // );
+  // const dispatch = useDispatch();
   useEffect(() => {
     // dispatch(getBillboardMovie(414906));
   }, []);
