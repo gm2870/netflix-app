@@ -31,7 +31,13 @@ const mediaNames = [
   'joker',
   'breaking-bad',
   'money-heist',
-  'the-black-list',
+  'better-call-saul',
+  'into-the-bad-lands',
+  'dark',
+  'house-of-dragons',
+  'blindspot',
+  'ted-lasso',
+  'see',
 ];
 
 const importMedia = async () => {
@@ -41,8 +47,8 @@ const importMedia = async () => {
   }
   process.exit();
 };
+
 const deleteAllMedia = async () => {
-  await Media.deleteMany();
   try {
     await Media.deleteMany();
   } catch (error) {
@@ -70,9 +76,7 @@ export const forceSrcUpdate = catchAsync(async () => {
   const items = await Media.find();
   let i = 0;
   for (const media of items) {
-    console.log(media.title);
     await updateSrc(media);
-    console.log(media.video_src);
 
     i++;
   }
@@ -85,6 +89,7 @@ export const updateSrc = async (media) => {
     SDSrc = await getSrcWithVideoId(media.title_video_id, 480);
     HDSrc = await getSrcWithVideoId(media.title_video_id, 1080);
     videoData = {
+      videoId: media.title_video_id,
       SD: SDSrc,
       HD: HDSrc,
     };
@@ -103,11 +108,13 @@ export const updateSrc = async (media) => {
     }
   );
 };
+
 const updateMedia = async (id) => {
   const item = await Media.findOne({ id });
   await updateSrc(item);
   process.exit();
 };
+
 if (process.argv[2] === '--import') {
   importMedia();
 } else if (process.argv[2] === '--delete') {
@@ -115,5 +122,5 @@ if (process.argv[2] === '--import') {
 } else if (process.argv[2] === '--update-src') {
   forceSrcUpdate();
 } else if (process.argv[2] === '--update') {
-  updateMedia(1396);
+  updateMedia(512195);
 }

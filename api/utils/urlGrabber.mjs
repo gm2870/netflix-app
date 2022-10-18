@@ -8,46 +8,63 @@ export const getVideoSrc = async (id, quality = 480) => {
     const page = await browser.newPage();
     const titleUrl = `https://www.imdb.com/title/${id}?ref_=nv_sr_srsg_0`;
     await page.goto(titleUrl, { waitUntil: 'load' });
-    await page.waitForSelector('.hero-media__slate-overlay', {
-      visible: true,
-    });
-    const videoId = await page.evaluate(() => {
-      let href;
-      // eslint-disable-next-line no-undef
-      href = document
-        .querySelector('.hero-media__slate-overlay')
-        .getAttribute('href');
-      // if (!href) {
-      //   // eslint-disable-next-line no-undef
-      //   href = document
-      //     .querySelector('a[data-testid="videos-slate-overlay-1"]')
-      //     .getAttribute('href');
-      // }
-      const vid = href
-        ? href.split('/').find((x) => x.startsWith('vi') && x !== 'video')
-        : null;
-      return vid;
-    });
-    await browser.close();
+    let videoId;
+    try {
+      await page.waitForSelector(
+        'a[data-testid="video-player-slate-overlay"]',
+        {
+          visible: true,
+          timeout: 30000,
+        }
+      );
+      videoId = await page.evaluate(() => {
+        // eslint-disable-next-line no-undef
+        const href = document
+          .querySelector('a[data-testid="video-player-slate-overlay"]')
+          .getAttribute('href');
+        const vid = href
+          .split('/')
+          .find((x) => x.startsWith('vi') && x !== 'video');
+        return vid;
+      });
+    } catch (e) {
+      console.log(e);
+      videoId = await page.evaluate(() => {
+        // eslint-disable-next-line no-undef
+        const href = document
+          .querySelector('a[data-testid="videos-slate-overlay-1"]')
+          .getAttribute('href');
 
-    if (!videoId) return null;
+        const vid = href
+          ? href.split('/').find((x) => x.startsWith('vi') && x !== 'video')
+          : null;
+        return vid;
+      });
+    }
+
+    console.log('videoId', videoId);
+    if (!videoId) {
+      await browser.close();
+      return null;
+    }
 
     const sdSrc = await getSrcWithVideoId(videoId, 480);
 
     let hdSrc;
     if (quality === 1080) {
       hdSrc = await getSrcWithVideoId(videoId, 1080);
+      return {
+        videoId,
+        SD: sdSrc,
+        HD: hdSrc,
+      };
     }
-
     return {
       videoId,
       SD: sdSrc,
-      HD: hdSrc,
     };
   } catch (error) {
     console.log(error);
-  } finally {
-    await browser.close();
   }
 };
 const getSrc = async (link) => {

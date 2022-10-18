@@ -15,6 +15,10 @@ import {
 import AppError from '../utils/appError.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+// import ffmpeg from 'fluent-ffmpeg';
+// import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
+// ffmpeg.setFfmpegPath(ffmpegInstaller.path);
+// import { spawn } from 'node:child_process';
 
 export const getMedia = catchAsync(async (req, res, next) => {
   const media = await Media.findOne({ id: req.params.id });
@@ -95,24 +99,30 @@ export const searchMediaByName = async (name) => {
     return new AppError(error.message || 'Something went wrong.', 500);
   }
 };
-export const updateVideoSrc = catchAsync(async (movie) => {
+export const updateVideoSrc = catchAsync(async (media) => {
   if (
-    !movie.video_src ||
-    !movie.video_src.SD ||
-    needsSrcUpdate(movie.video_src.SD) ||
-    needsSrcUpdate(movie.video_src.HD)
+    !media.video_src ||
+    !media.video_src.SD ||
+    needsSrcUpdate(media.video_src.SD) ||
+    needsSrcUpdate(media.video_src.HD)
   ) {
     let videoData;
     // if title_video_id is already saved then should use a lighter function
     // otherwise should use the main one
-    if (movie.title_video_id) {
-      videoData = await getSrcWithVideoId(movie.title_video_id, 1080);
+    if (media.title_video_id) {
+      const SDSrc = await getSrcWithVideoId(media.title_video_id, 480);
+      const HDSrc = await getSrcWithVideoId(media.title_video_id, 1080);
+      videoData = {
+        videoId: media.title_video_id,
+        SD: SDSrc,
+        HD: HDSrc,
+      };
     } else {
-      videoData = await getVideoSrc(movie.title_id, 1080);
+      videoData = await getVideoSrc(media.title_id, 1080);
     }
     if (videoData) {
       await Media.findOneAndUpdate(
-        { id: movie.id },
+        { id: media.id },
         {
           video_src: {
             SD: videoData.SD,
@@ -121,7 +131,7 @@ export const updateVideoSrc = catchAsync(async (movie) => {
           title_video_id: videoData.videoId,
         }
       );
-      console.log(`${movie.title} src updated.`);
+      console.log(`${media.title} src updated.`);
     }
   } else console.log('no need to update');
 });
@@ -140,7 +150,7 @@ export const needsSrcUpdate = (src) => {
 };
 
 export const emptyAssets = (req, res, next) => {
-  emptyFolder(path.join(__dirname, '..', 'assets', 'segments'));
+  emptyFolder(path.join(__dirname, '..', 'media-files'));
   next();
 };
 
@@ -152,15 +162,10 @@ export const mediaStream = catchAsync(async (req, res) => {
   if (!requestRangeHeader) {
     res.status(400).send('Requires Range header');
   }
-  const resolvedPath = path.join(
-    __dirname,
-    '..',
-    'assets',
-    'segments',
-    fileName
-  );
+  const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);
   const axiosResponseHead = await axios.head(src);
   const fileSize = axiosResponseHead['headers']['content-length'];
+
   if (!fs.existsSync(resolvedPath)) {
     const downloadStream = got.stream(src);
     const fileWriterStream = fs.createWriteStream(resolvedPath);
@@ -194,7 +199,8 @@ export const mediaStream = catchAsync(async (req, res) => {
       'Content-Type': 'video/mp4',
     };
     res.writeHead(206, headers);
-    // create video read stream for this particular chunk
+    // create video read stream for this particular chunk;
+
     const videoStream = fs.createReadStream(resolvedPath, { start, end });
 
     // Stream the video chunk to the client
@@ -209,8 +215,7 @@ export const imageStream = async (req, res) => {
   const resolvedPath = path.join(
     __dirname,
     '..',
-    'assets',
-    'segments',
+    'media-files',
     `${req.params.path}`
   );
   const fileWriterStream = fs.createWriteStream(resolvedPath);
