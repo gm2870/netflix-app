@@ -5,8 +5,8 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import MediaCard from '../../src/components/MediaCard/MediaCard';
 const browse = () => {
   const [showNavigationLinks, setNavigationLinks] = useState(false);
   const navigationToggleHandler = () =>
@@ -37,13 +37,7 @@ const browse = () => {
       link: '/',
     },
   ];
-  // const videoSrc = useSelector(
-  //   (state) => state.movie.billboardMovie?.video_src
-  // );
-  // const dispatch = useDispatch();
-  useEffect(() => {
-    // dispatch(getBillboardMovie(414906));
-  }, []);
+
   return (
     <section className={classes.browse}>
       <header className={classes.header}>
@@ -104,32 +98,9 @@ const browse = () => {
         </div>
       </header>
 
-      {/* {videoSrc && ( */}
       <section className={classes.billboard}>
-        {/* {videoSrc && ( */}
-        <div className={classes.video}>
-          <div className={classes.video__blackbarHider}></div>
-          {/* <div className={classes.video__border}></div> */}
-
-          {/* <iframe className={classes.video__src} src="" autoPlay></iframe> */}
-          <video
-            className={classes.video__src}
-            src={'http://localhost:8001/api/v1/media/video/512195'}
-            autoPlay
-            muted
-            controls="controls"
-          />
-        </div>
-        <img
-          src={
-            'http://localhost:8001/api/v1/media/image/gFZriCkpJYsApPZEF3jhxL4yLzG.jpg'
-          }
-          width="435px"
-          height="245px"
-        />
-        {/* )} */}
+        <MediaCard />
       </section>
-      {/* )} */}
     </section>
   );
 };
