@@ -5,7 +5,7 @@ import { getSrcWithVideoId, getVideoSrc } from '../utils/urlGrabber.mjs';
 import {
   needsSrcUpdate,
   searchMediaByName,
-} from '../controllers/movieController.mjs';
+} from '../controllers/mediaController.mjs';
 import catchAsync from '../utils/catchAsync.mjs';
 import AppError from '../utils/appError.mjs';
 dotenv.config({ path: '../config.env' });
@@ -36,8 +36,8 @@ const mediaNames = [
 
 const importMedia = async () => {
   for (const name of mediaNames) {
-    const media = await searchMediaByName(name);
-    await Media.create(media);
+    const { firstResult } = await searchMediaByName(name);
+    await Media.create(firstResult);
   }
   process.exit();
 };
@@ -104,9 +104,8 @@ export const updateSrc = async (media) => {
   );
 };
 const updateMedia = async (id) => {
-  const movie = await Media.findOne({ id });
-  console.log(movie.title);
-  await updateSrc(movie);
+  const item = await Media.findOne({ id });
+  await updateSrc(item);
   process.exit();
 };
 if (process.argv[2] === '--import') {
