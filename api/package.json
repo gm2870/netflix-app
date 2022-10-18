@@ -15,7 +15,6 @@
   "author": "Ali Farzanegan",
   "license": "ISC",
   "dependencies": {
-    "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "axios": "^0.27.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.0",
@@ -23,7 +22,6 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.2",
     "express": "^4.17.1",
-    "fluent-ffmpeg": "^2.1.2",
     "got": "^12.5.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.6.1",

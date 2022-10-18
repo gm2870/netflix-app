@@ -15,9 +15,7 @@ import {
 import AppError from '../utils/appError.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-// import ffmpeg from 'fluent-ffmpeg';
-// import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
-// ffmpeg.setFfmpegPath(ffmpegInstaller.path);
+
 // import { spawn } from 'node:child_process';
 
 export const getMedia = catchAsync(async (req, res, next) => {
@@ -156,7 +154,7 @@ export const emptyAssets = (req, res, next) => {
 
 export const mediaStream = catchAsync(async (req, res) => {
   const media = await Media.findOne({ id: req.params.mediaId });
-  const src = media.video_src.HD;
+  const src = media.video_src.SD;
   const fileName = `${normalizeText(media.title)}.mp4`;
   const requestRangeHeader = req.headers.range;
   if (!requestRangeHeader) {
@@ -173,15 +171,15 @@ export const mediaStream = catchAsync(async (req, res) => {
       requestRangeHeader,
       fileSize
     );
+    let headers = {
+      'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+      range: `bytes=${start}-${end}`,
+      'Accept-Ranges': 'bytes',
+      'Content-Length': chunkSize,
+      'Content-Type': 'video/mp4',
+    };
+    res.writeHead(206, headers);
     downloadStream.on('response', (response) => {
-      let headers = {
-        'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-        range: `bytes=${start}-${end}`,
-        'Accept-Ranges': 'bytes',
-        'Content-Length': chunkSize,
-        'Content-Type': 'video/mp4',
-      };
-      res.writeHead(206, headers);
       response.pipe(res);
     });
     downloadStream.pipe(fileWriterStream);
