@@ -28,18 +28,21 @@ export const getVideoSrc = async (id, quality = 480) => {
         : null;
       return vid;
     });
+    await browser.close();
 
     if (!videoId) return null;
+
     const sdSrc = await getSrcWithVideoId(videoId, 480);
 
     let hdSrc;
     if (quality === 1080) {
       hdSrc = await getSrcWithVideoId(videoId, 1080);
     }
+
     return {
       videoId,
-      '480p': sdSrc,
-      '1080p': hdSrc,
+      SD: sdSrc,
+      HD: hdSrc,
     };
   } catch (error) {
     console.log(error);

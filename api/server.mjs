@@ -2,7 +2,7 @@ import app from './app.mjs';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 // import schedule from 'node-schedule';
-// import Movie from './models/movieModel.mjs';
+// import Media from './models/mediaModel.mjs';
 // import { getVideoSrc } from './utils/urlGrabber.mjs';
 // import catchAsync from './utils/catchAsync.mjs';
 
@@ -20,9 +20,9 @@ mongoose.connect(DB);
 //   catchAsync(async () => {
 //     // eslint-disable-next-line
 //     console.log('src update running');
-//     const movies = await Movie.find();
+//     const movies = await Media.find();
 //     for (const movie of movies) {
-//       const videoSrc = await getVideoUrl(movie.video_title_id, 1080);
+//       const videoSrc = await getVideoUrl(movie.title_id, 1080);
 //       if (!videoSrc) return;
 //       await Movie.findOneAndUpdate(
 //         { id: movie.id },
