@@ -1,5 +1,5 @@
 import { sendRequest } from '../../../utils/api.mjs';
-import { mediaActions } from './media.mjs';
+import { mediaActions } from './media.js';
 
 // export const getMovies = () => {
 //   return (dispatch) => {
@@ -30,7 +30,7 @@ export const getBillboardMovie = (id) => {
     };
     const handleError = (err) => console.log(err);
     const setBillboardMovie = (data) => {
-      dispatch(movieActions.setBillboardMovie(data));
+      dispatch(mediaActions.setBillboardMovie(data));
     };
     sendRequest(config, dispatch, setBillboardMovie, handleError);
   };

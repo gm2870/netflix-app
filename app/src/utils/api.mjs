@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8000/api/v1';
+const API_URL = 'http://localhost:8001/api/v1';
 import axios from 'axios';
 import { uiActions } from '../store/redux/ui/ui.mjs';
 
