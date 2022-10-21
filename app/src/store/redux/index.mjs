@@ -1,14 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
-import signupSlice from './signup/signup.mjs';
 import uiSlice from './ui/ui.mjs';
-import loginSlice from './login/login.mjs';
-import mediaSlice from './media/media.mjs';
+import mediaSlice from './media/media.js';
+import authSlice from './auth/auth-slice.js';
 
 const store = configureStore({
   reducer: {
-    signup: signupSlice.reducer,
+    auth: authSlice.reducer,
     ui: uiSlice.reducer,
-    login: loginSlice.reducer,
     media: mediaSlice.reducer,
   },
 });

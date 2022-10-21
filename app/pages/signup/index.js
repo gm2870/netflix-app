@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { signupUser } from '../../src/store/redux/signup/signup-actions.mjs';
+import { signupUser } from '../../src/store/redux/auth/auth-actions.js';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
