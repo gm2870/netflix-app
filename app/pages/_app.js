@@ -1,7 +1,5 @@
 import '../styles/styles.scss';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { red } from '@mui/material/colors';
-import { AuthContextProvider } from '../src/store/context/auth/auth.mjs';
 import store from '../src/store/redux/index.mjs';
 import { Provider } from 'react-redux';
 const theme = createTheme({
@@ -18,13 +16,12 @@ const theme = createTheme({
 
 function MyApp({ Component, pageProps }) {
   return (
-    <AuthContextProvider>
-      <ThemeProvider theme={theme}>
-        <Provider store={store}>
-          <Component {...pageProps} />
-        </Provider>
-      </ThemeProvider>
-    </AuthContextProvider>
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <Component {...pageProps} />
+        {/* <AuthVerify logOut={logOut}/> */}
+      </Provider>
+    </ThemeProvider>
   );
 }
 
