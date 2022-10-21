@@ -85,5 +85,8 @@ const MediaSchema = new mongoose.Schema({
 });
 
 const Media = mongoose.model('Media', MediaSchema);
-
+MediaSchema.pre(/^find/, function (next) {
+  this.find().select('-__v');
+  next();
+});
 export default Media;

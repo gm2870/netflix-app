@@ -16,8 +16,6 @@ import AppError from '../utils/appError.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// import { spawn } from 'node:child_process';
-
 export const getMedia = catchAsync(async (req, res, next) => {
   const media = await Media.findOne({ id: req.params.id });
   if (!media) {
