@@ -7,6 +7,7 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
 import { useState } from 'react';
 import MediaCard from '../../src/components/MediaCard/MediaCard';
+import Slider from '../../src/components/Slider/Slider';
 const browse = () => {
   const [showNavigationLinks, setNavigationLinks] = useState(false);
   const navigationToggleHandler = () =>
@@ -98,9 +99,10 @@ const browse = () => {
         </div>
       </header>
 
-      <section className={classes.billboard}>
-        <MediaCard />
-      </section>
+      <section className={classes.billboard}></section>
+      <Slider>
+        <MediaCard></MediaCard>
+      </Slider>
     </section>
   );
 };
