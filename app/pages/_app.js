@@ -19,7 +19,6 @@ function MyApp({ Component, pageProps }) {
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <Component {...pageProps} />
-        {/* <AuthVerify logOut={logOut}/> */}
       </Provider>
     </ThemeProvider>
   );

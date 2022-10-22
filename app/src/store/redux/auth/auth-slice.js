@@ -1,5 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-const user = JSON.parse(localStorage.getItem('user'));
+let user;
+if (typeof window !== 'undefined') {
+  user = JSON.parse(localStorage.getItem('user'));
+}
 
 const initialState = {
   user: user || null,
@@ -25,6 +28,10 @@ const authSlice = createSlice({
     },
     setMessage: (state, action) => {
       state.invalidMessage = action.payload;
+    },
+
+    logoutUser: (state, action) => {
+      state.isLoggedIn = false;
     },
   },
 });

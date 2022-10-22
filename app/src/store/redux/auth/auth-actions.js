@@ -2,10 +2,25 @@ import Router from 'next/router';
 import { sendRequest } from '../../../utils/api.mjs';
 import { authActions } from './auth-slice.js';
 
+export const getCurrentUser = () => {
+  return (dispatch) => {
+    const handleSuccess = (data) => {
+      console.log(data);
+    };
+    const handleErr = (errMsg) => console.log(errMsg);
+    const config = {
+      url: '/users/currentUser',
+      method: 'GET',
+    };
+    sendRequest(config, dispatch, handleSuccess, handleErr);
+  };
+};
+
 export const loginUser = (data) => {
   return (dispatch) => {
-    const handleSuccess = ({ user }) => {
-      authenticateAndRedirect(user, '/browse');
+    const handleSuccess = (data) => {
+      console.log(data);
+      authenticateAndRedirect(data.user, '/browse');
     };
     const handleErr = (errMsg) => dispatch(authActions.setMessage(errMsg));
 
@@ -55,4 +70,8 @@ const authenticateAndRedirect = (user, path) => {
   localStorage.setItem('user', JSON.stringify(user));
   authActions.authenticate(user);
   Router.push(path);
+};
+
+export const logout = () => {
+  localStorage.removeItem('user');
 };

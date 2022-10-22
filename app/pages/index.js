@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import classes from './index.module.scss';
-import * as signupActions from '../src/store/redux/signup/signup-actions.mjs';
+import * as authActions from '../src/store/redux/auth/auth-actions.js';
 import { Button, TextField } from '@mui/material';
 import AnimationCardComponent from '../src/components/animation-card/animation-card';
-import { Fragment } from 'react';
+import { Fragment, useCallback, useEffect } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useDispatch, useSelector } from 'react-redux';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -29,10 +29,16 @@ export default function Home() {
     resolver: yupResolver(validationSchema),
   });
   const sendEmail = ({ email }) => {
-    dispatch(signupActions.checkEmail(email));
+    dispatch(authActions.checkEmail(email));
 
     // router.push('/signup');
   };
+  // useEffect(() => {
+  //   dispatch(authActions.getCurrentUser());
+  // }, []);
+  // const logOut = useCallback(() => {
+  //   dispatch(authActions.logout());
+  // }, [dispatch]);
 
   return (
     <Fragment>

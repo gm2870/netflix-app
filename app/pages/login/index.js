@@ -10,7 +10,7 @@ import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import loginUser from '../../src/store/redux/auth/auth-actions.js';
+import { loginUser } from '../../src/store/redux/auth/auth-actions.js';
 
 const CustomInput = styled(TextField)({
   '& label': {
@@ -44,7 +44,7 @@ const validationSchema = Yup.object().shape({
 const login = () => {
   const ref = useRef();
   const dispatch = useDispatch();
-  const invalidMessage = useSelector((state) => state.login.invalidMessage);
+  const invalidMessage = useSelector((state) => state.auth.invalidMessage);
   const [showLearnMore, setShowLearnMore] = useState({});
   const handleLearnMore = () => {
     setShowLearnMore({
@@ -64,6 +64,7 @@ const login = () => {
   const loginHandler = (data) => {
     dispatch(loginUser(data));
   };
+
   return (
     <div className={classes.login}>
       <header className={classes.header}>
