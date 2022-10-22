@@ -10,7 +10,7 @@ export const getOne = (Model, populateOptions) =>
     const doc = await query;
 
     if (!doc) {
-      return next(new Error('No user found with that ID'), 404);
+      return next(new Error('No document found with that ID'), 404);
     }
     res.status(200).json({
       status: 'success',

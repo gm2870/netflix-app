@@ -6,6 +6,7 @@ import globalErrorHandler from './controllers/errorController.mjs';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { emptyAssets } from './controllers/mediaController.mjs';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
 const app = express();
 
@@ -19,9 +20,19 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: '*',
+    origin: 'http://localhost:3000',
+    credentials: true,
   })
 );
+// if you don't want to use cors package
+
+// app.use(
+//   '/api',
+//   createProxyMiddleware({
+//     target: 'http://localhost:3000',
+//     changeOrigin: true,
+//   })
+// );
 if (process.env.NODE_ENV === 'production') app.use('/', emptyAssets);
 
 app.use('/api/v1/users', userRoutes);
