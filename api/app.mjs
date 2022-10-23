@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import userRoutes from './routes/userRoutes.mjs';
 import mediaRoutes from './routes/mediaRoutes.mjs';
+import authRoutes from './routes/authRoutes.mjs';
 import globalErrorHandler from './controllers/errorController.mjs';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
@@ -34,6 +35,8 @@ app.use(
 //   })
 // );
 if (process.env.NODE_ENV === 'production') app.use('/', emptyAssets);
+
+app.use('/api/v1/auth', authRoutes);
 
 app.use('/api/v1/users', userRoutes);
 
