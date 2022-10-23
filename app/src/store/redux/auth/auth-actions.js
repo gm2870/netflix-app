@@ -25,7 +25,7 @@ export const loginUser = (data) => {
     const handleErr = (errMsg) => dispatch(authActions.setMessage(errMsg));
 
     const config = {
-      url: '/users/login',
+      url: '/auth/login',
       method: 'POST',
       data,
     };
@@ -36,7 +36,7 @@ export const loginUser = (data) => {
 export const checkEmail = (email) => {
   return async (dispatch) => {
     const config = {
-      url: '/users/check-email',
+      url: '/auth/check-email',
       method: 'POST',
       data: { email },
     };
@@ -54,7 +54,7 @@ export const checkEmail = (email) => {
 export const signupUser = (data) => {
   return (dispatch) => {
     const config = {
-      url: '/user/signup',
+      url: '/auth/signup',
       method: 'POST',
       data,
     };
