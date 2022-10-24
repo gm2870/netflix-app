@@ -41,6 +41,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: 'default.jpg',
   },
+  blocked_at: Date,
 });
 UserSchema.pre('save', async function (next) {
   // if (!this.isModified('password')) return next();

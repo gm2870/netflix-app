@@ -3,13 +3,14 @@ import { promisify } from 'util';
 import catchAsync from '../utils/catchAsync.mjs';
 import jwt from 'jsonwebtoken';
 import AppError from '../utils/appError.mjs';
-
+import Token from '../models/tokenModel.mjs';
+import dayjs from 'dayjs';
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = catchAsync(async (user, statusCode, res) => {
   const token = signToken(user._id);
   const cookieOptions = {
     expires: new Date(
@@ -19,6 +20,7 @@ const createSendToken = (user, statusCode, res) => {
   };
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
   res.cookie('jwt', token, cookieOptions);
+
   user.password = undefined;
   res.status(statusCode).json({
     status: 'success',
@@ -27,7 +29,8 @@ const createSendToken = (user, statusCode, res) => {
       user,
     },
   });
-};
+});
+
 export const checkEmail = async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (user) {
@@ -98,3 +101,55 @@ export const isLoggedIn = async (req, res, next) => {
     }
   }
 };
+
+export const refreshToken = catchAsync(async (req, res, next) => {
+  const refreshToken = req.cookies.jwt;
+  const dbToken = await Token.findOne({
+    token: refreshToken,
+    type: 'REFRESH',
+  });
+  if (!dbToken) {
+    return next(
+      new AppError('Invalid credentials, Please log in to get access', 401)
+    );
+  }
+
+  const decoded = await promisify(jwt.verify)(dbToken, process.env.JWT_SECRET);
+  const currentUser = await User.findById(decoded.user_id);
+
+  if (!currentUser) {
+    return next(
+      new AppError('Invalid credentials, Please log in to get access', 401)
+    );
+  }
+
+  if (dbToken.last_used_at) {
+    await dbToken.update({
+      compromised_at: dayjs().format(),
+    });
+    currentUser.update({
+      blocked_at: dayjs().format(),
+    });
+    // TODO
+    // email support about compromised user
+    return next(new AppError('Your account is temporarily disabled.', 401));
+  }
+  await dbToken.update({
+    user_id: currentUser.id,
+    expires_at: dayjs().subtract(1, 'second').format(),
+    last_used_at: dayjs().subtract(1, 'second').format(),
+  });
+  const newRefreshToken = signToken(currentUser._id);
+  await Token.create({
+    token: newRefreshToken,
+    user_id: currentUser._id,
+    expires_at: dayjs().add(365 * 24 * 60 * 1000),
+    type: 'REFRESH',
+  });
+  res.status(200).json({
+    status: 'success',
+    refreshToken: newRefreshToken,
+    data: 'Refresh token updated',
+  });
+  // createSendToken(currentUser, 200, res);
+});
