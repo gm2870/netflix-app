@@ -23,9 +23,13 @@ const RouterGaurd = ({ children }) => {
     if (user && publicPaths.includes(url)) {
       setAuthorized(false);
       router.push('/browse');
-    } else if (user && url === '/') {
-      setAuthorized(false);
-      router.push('/browse');
+    } else if (!user && !publicPaths.includes(url)) {
+      if (url === '/') {
+        setAuthorized(true);
+      } else {
+        setAuthorized(false);
+        router.push('/login');
+      }
     } else setAuthorized(true);
     dispatch(getCurrentUser());
   };
