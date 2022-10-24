@@ -4,10 +4,10 @@ import { authActions } from './auth-slice.js';
 
 export const getCurrentUser = () => {
   return (dispatch) => {
-    const handleSuccess = (data) => {
-      console.log(data);
+    const handleSuccess = (user) => {
+      dispatch(authActions.authenticate(user));
     };
-    const handleErr = (errMsg) => console.log(errMsg);
+    const handleErr = (errMsg) => dispatch(authActions.logoutUser());
     const config = {
       url: '/users/currentUser',
       method: 'GET',
@@ -19,7 +19,6 @@ export const getCurrentUser = () => {
 export const loginUser = (data) => {
   return (dispatch) => {
     const handleSuccess = (data) => {
-      console.log(data);
       authenticateAndRedirect(data.user, '/browse');
     };
     const handleErr = (errMsg) => dispatch(authActions.setMessage(errMsg));
@@ -73,5 +72,5 @@ const authenticateAndRedirect = (user, path) => {
 };
 
 export const logout = () => {
-  localStorage.removeItem('user');
+  authActions.logoutUser();
 };

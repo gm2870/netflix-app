@@ -9,25 +9,25 @@ const instance = axios.create({
   },
   withCredentials: true,
 });
+
 instance.interceptors.response.use(
   (res) => {
     return res;
   },
   async (err) => {
     const originalConfig = err.config;
-    if (!originalConfig.url.includes('/login') && !originalConfig.retry) {
-      originalConfig.retry = true;
-      try {
-        // const rs = await instance.post('/users/refreshtoken', {
-        //   refreshToken: TokenService.getLocalRefreshToken(),
-        // });
-
-        // const { accessToken } = rs.data;
-        // TokenService.updateLocalAccessToken(accessToken);
-
-        return instance(originalConfig);
-      } catch (_error) {
-        return Promise.reject(_error);
+    if (!originalConfig.url.includes('/currentUser') && !originalConfig.retry) {
+      if (err.response.status === 401 && !originalConfig.retry) {
+        originalConfig.retry = true;
+        try {
+          await instance({
+            url: API_URL + '/auth/refreshtoken',
+            method: 'GET',
+          });
+          return instance(originalConfig);
+        } catch (_error) {
+          return Promise.reject(_error);
+        }
       }
     }
     return Promise.reject(err);

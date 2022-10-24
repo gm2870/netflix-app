@@ -1,11 +1,11 @@
 import classes from './signup.module.scss';
 import Link from 'next/link';
 import { Button, TextField, styled } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { signupUser } from '../../src/store/redux/auth/auth-actions.js';
+import { signupUser } from '../../src/store/redux/auth/auth-actions';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -15,7 +15,9 @@ const validationSchema = Yup.object().shape({
 });
 
 const signup = () => {
-  const email = useSelector((state) => state.signup.email);
+  const email = useSelector((state) => state.auth.email);
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -27,7 +29,7 @@ const signup = () => {
     },
   });
   const registerUser = (data) => {
-    signupUser(data);
+    dispatch(signupUser(data));
   };
   const CustomInput = styled(TextField)({
     '& .MuiFilledInput-root': {
