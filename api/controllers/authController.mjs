@@ -153,3 +153,23 @@ export const refreshToken = catchAsync(async (req, res, next) => {
   });
   // createSendToken(currentUser, 200, res);
 });
+
+export const handleRedirect = catchAsync(async (req, res, next) => {
+  console.log(req.headers);
+  let token;
+  const authHeaders = req.headers.authorization;
+  if (authHeaders && authHeaders.startsWith('Bearer')) {
+    token = authHeaders.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
+  }
+  if (token) {
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    const currentUser = await User.findById(decoded.id);
+    if (currentUser) {
+      res.redirect('/browse');
+    }
+  }
+
+  next();
+});
