@@ -6,7 +6,7 @@ if (typeof window !== 'undefined') {
 
 const initialState = {
   user: user || null,
-  isLoggedIn: user || false,
+  isLoggedIn: false,
   email: null,
   error: null,
   invalidMessage: '',
