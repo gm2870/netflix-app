@@ -155,7 +155,6 @@ export const refreshToken = catchAsync(async (req, res, next) => {
 });
 
 export const handleRedirect = catchAsync(async (req, res, next) => {
-  console.log(req.headers);
   let token;
   const authHeaders = req.headers.authorization;
   if (authHeaders && authHeaders.startsWith('Bearer')) {

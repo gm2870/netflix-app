@@ -2,7 +2,6 @@ import '../styles/styles.scss';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import store from '../src/store/redux/index.mjs';
 import { Provider } from 'react-redux';
-import RouterGaurd from '../src/components/RouterGaurd/RouterGaurd';
 
 const theme = createTheme({
   palette: {
@@ -20,9 +19,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <RouterGaurd>
-          <Component {...pageProps} />
-        </RouterGaurd>
+        <Component {...pageProps} />
       </Provider>
     </ThemeProvider>
   );
