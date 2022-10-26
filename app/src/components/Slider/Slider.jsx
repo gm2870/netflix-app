@@ -10,12 +10,13 @@ const Slider = (props) => {
   const min1400 = useMediaQuery('(min-width:1400px)');
 
   const sliderItemsCount = () => {
-    if (min1400) return 1;
+    if (min1400) return 7;
     if (min1200) return 5;
     if (min900) return 4;
     if (min600) return 3;
     return 2;
   };
+
   const visibleItems = () =>
     new Array(sliderItemsCount()).fill(0).map((item, i) => (
       <div key={i} className={`${classes.slider__item} slider__item--${i}`}>
@@ -24,17 +25,32 @@ const Slider = (props) => {
     ));
 
   const hiddenItems = () =>
-    new Array(sliderItemsCount())
-      .fill(0)
-      .map((item, i) => (
-        <div className={`${classes.slider__item} slider__item--`}>
-          {props.children}
-        </div>
-      ));
+    new Array(sliderItemsCount()).fill(0).map((item, i) => (
+      <div
+        style={{ display: 'none' }}
+        className={`${classes.slider__item} slider__item--`}
+      >
+        {props.children}
+      </div>
+    ));
   return (
     <div className={classes.slider}>
-      {visibleItems()}
-      {/* {hiddenItems()} */}
+      <span></span>
+      <ul>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+      <div className={classes.slider__mask}>
+        <div className={classes.slider__content}>
+          {visibleItems()}
+          {hiddenItems()}
+        </div>
+      </div>
     </div>
   );
 };
