@@ -1,6 +1,5 @@
 import next from 'next';
 import server from '../api/app.mjs';
-console.log(process.env.PORT);
 const port = process.env.PORT || 3000;
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });

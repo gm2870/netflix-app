@@ -61,13 +61,7 @@ export const signup = catchAsync(async (req, res) => {
 });
 
 export const protect = catchAsync(async (req, res, next) => {
-  let token;
-  const authHeaders = req.headers.authorization;
-  if (authHeaders && authHeaders.startsWith('Bearer')) {
-    token = authHeaders.split(' ')[1];
-  } else if (req.cookies.jwt) {
-    token = req.cookies.jwt;
-  }
+  const token = getToken(req);
   if (!token) {
     return next(
       new AppError('Your not logged in, Please log in to get access', 401)
@@ -151,17 +145,10 @@ export const refreshToken = catchAsync(async (req, res, next) => {
     refreshToken: newRefreshToken,
     data: 'Refresh token updated',
   });
-  // createSendToken(currentUser, 200, res);
 });
 
-export const handleRedirect = catchAsync(async (req, res, next) => {
-  let token;
-  const authHeaders = req.headers.authorization;
-  if (authHeaders && authHeaders.startsWith('Bearer')) {
-    token = authHeaders.split(' ')[1];
-  } else if (req.cookies.jwt) {
-    token = req.cookies.jwt;
-  }
+export const authorizedRedirect = catchAsync(async (req, res, next) => {
+  const token = getToken(req);
   if (token) {
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
     const currentUser = await User.findById(decoded.id);
@@ -169,6 +156,24 @@ export const handleRedirect = catchAsync(async (req, res, next) => {
       res.redirect('/browse');
     }
   }
-
   next();
 });
+
+export const unauthorizedRedirect = catchAsync(async (req, res, next) => {
+  const token = getToken(req);
+  if (!token) {
+    res.redirect('/login');
+  }
+  next();
+});
+
+const getToken = (req) => {
+  let token;
+  const authHeaders = req.headers.authorization;
+  if (authHeaders && authHeaders.startsWith('Bearer')) {
+    token = authHeaders.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
+  }
+  return token;
+};

@@ -16,6 +16,10 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 dotenv.config({ path: `${__dirname}/config.env` });
+// import schedule from 'node-schedule';
+// import Media from './models/mediaModel.mjs';
+// import { getVideoSrc } from './utils/urlGrabber.mjs';
+// import catchAsync from './utils/catchAsync.mjs';
 
 const app = express();
 const DB = process.env.DATABASE.replace(
@@ -49,6 +53,7 @@ app.use(
 //   })
 // );
 if (process.env.NODE_ENV === 'production') app.use('/', emptyAssets);
+
 app.use('/', viewRoutes);
 
 app.use('/api/v1/auth', authRoutes);
@@ -59,5 +64,24 @@ app.use('/api/v1/media', mediaRoutes);
 // app.use(express.static(join(__dirname, 'public')));
 
 app.use(globalErrorHandler);
-
+// schedule.scheduleJob(
+//   '35 8,14,20 * * *',
+//   catchAsync(async () => {
+//     // eslint-disable-next-line
+//     console.log('src update running');
+//     const movies = await Media.find();
+//     for (const movie of movies) {
+//       const videoSrc = await getVideoUrl(movie.title_id, 1080);
+//       if (!videoSrc) return;
+//       await Movie.findOneAndUpdate(
+//         { id: movie.id },
+//         {
+//           video_src: videoSrc,
+//         }
+//       );
+//       // eslint-disable-next-line
+//       console.log(movie.title, ' src updated');
+//     }
+//   })
+// );
 export default app;

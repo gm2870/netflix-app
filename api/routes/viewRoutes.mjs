@@ -1,7 +1,14 @@
 import { Router } from 'express';
-import { handleRedirect, protect } from '../controllers/authController.mjs';
+import {
+  authorizedRedirect,
+  unauthorizedRedirect,
+} from '../controllers/authController.mjs';
+
 const router = Router();
-router.get('/', handleRedirect);
-router.get('/login', handleRedirect);
-router.get('/browse', protect);
+
+router.get('/', authorizedRedirect);
+router.get('/login', authorizedRedirect);
+router.get('/signup', authorizedRedirect);
+router.get('/browse', unauthorizedRedirect);
+
 export default router;
