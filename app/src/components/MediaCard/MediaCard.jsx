@@ -1,19 +1,35 @@
 import CircleButton from '../CircleButton/CircleButton';
 import classes from './MediaCard.module.scss';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import CheckIcon from '@mui/icons-material/Check';
-import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
-import AddIcon from '@mui/icons-material/Add';
-import ThumbUpOffAltOutlinedIcon from '@mui/icons-material/ThumbUpOffAltOutlined';
-const MediaCard = (props) => {
-  const onCardHover = (val) => console.log(val);
+import { useState } from 'react';
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
+import { styled } from '@mui/material/styles';
+
+const MediaCard = () => {
+  const LightTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.arrow}`]: {
+      color: theme.palette.common.white,
+    },
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: theme.palette.common.white,
+      color: 'rgba(0, 0, 0, 0.87)',
+      boxShadow: theme.shadows[1],
+      fontSize: 21,
+      padding: '0.5rem 1.5rem',
+    },
+  }));
+  const [showMiniModel, setShowMiniModal] = useState(false);
+  const onLikeHover = () =>
+    setTimeout(() => {
+      setShowMiniModal(true);
+    }, 500);
+
+  const onMiniModalMouseLeave = () => setShowMiniModal(false);
   return (
     <div className={classes.card}>
-      <div
-        className={classes.imageContainer}
-        onMouseEnter={() => onCardHover(true)}
-      >
+      <div className={classes.imageContainer}>
         <img
           className={classes.card__image}
           width="165px"
@@ -35,15 +51,36 @@ const MediaCard = (props) => {
         </div>
         <div className={classes.preview__info}>
           <div className={classes['preview__controls']}>
-            <div className={classes['preview__popover']}>
-              <div className={classes['double-thumbs-up']}>
-                <div className={classes['double-thumbs-up--outer']}>
-                  <ThumbUpOffAltOutlinedIcon />
-                  <div className={classes['double-thumbs-up--inner']}>
-                    <ThumbUpOffAltOutlinedIcon />
-                  </div>
-                </div>
-              </div>
+            <div
+              onMouseLeave={onMiniModalMouseLeave}
+              className={`${classes['preview__mini-modal']} ${
+                showMiniModel ? classes.visible : classes.hidden
+              }`}
+            >
+              <LightTooltip placement="top" title="Not for me" arrow>
+                <button className={classes['preview__mini-modal-btn']}>
+                  <img
+                    className={classes['preview__mini-modal-img']}
+                    src="/images/dislike.png"
+                  />
+                </button>
+              </LightTooltip>
+              <LightTooltip placement="top" title="I like this" arrow>
+                <button className={classes['preview__mini-modal-btn']}>
+                  <img
+                    className={classes['preview__mini-modal-img']}
+                    src="/images/like.png"
+                  />
+                </button>
+              </LightTooltip>
+              <LightTooltip placement="top" title="Love this!" arrow>
+                <button className={classes['preview__mini-modal-btn']}>
+                  <img
+                    className={classes['preview__mini-modal-img']}
+                    src="/images/love.png"
+                  />
+                </button>
+              </LightTooltip>
             </div>
             <div className={classes['preview__buttons--left']}>
               <CircleButton white>
@@ -52,15 +89,20 @@ const MediaCard = (props) => {
                 />
               </CircleButton>
               <CircleButton>
-                <CheckIcon className={classes.preview__icon} />
+                <img className={classes.preview__img} src="/images/add.png" />
               </CircleButton>
-              <CircleButton>
-                <ThumbUpOffAltOutlinedIcon />
+
+              <CircleButton onMouseEnter={onLikeHover}>
+                <img className={classes.preview__img} src="/images/like.png" />
               </CircleButton>
+              <div></div>
             </div>
             <div className={classes['preview__buttons--right']}>
               <CircleButton>
-                <KeyboardArrowDownIcon className={classes.preview__icon} />
+                <img
+                  className={classes.preview__img}
+                  src="/images/arrow-down.png"
+                />
               </CircleButton>
             </div>
           </div>
