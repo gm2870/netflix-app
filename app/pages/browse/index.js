@@ -6,14 +6,13 @@ import ListItem from '@mui/material/ListItem';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
 import { useState } from 'react';
-import MediaCard from '../../src/components/MediaCard/MediaCard';
 import Slider from '../../src/components/Slider/Slider';
-import { Modal } from '@mui/material';
-import Box from '@mui/material/Box';
+
+import MediaItem from '../../src/components/MediaItem/MediaItem';
 
 const browse = () => {
   const [showNavigationLinks, setNavigationLinks] = useState(false);
-  const [open, setOpen] = useState(false);
+
   const navigationToggleHandler = () =>
     setNavigationLinks(!showNavigationLinks);
   const navigations = [
@@ -42,17 +41,7 @@ const browse = () => {
       link: '/',
     },
   ];
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 440,
-  };
 
-  const handleOpen = () => setOpen(true);
-
-  const handleClose = () => setOpen(false);
   return (
     <section className={classes.browse}>
       <header className={classes.header}>
@@ -115,21 +104,7 @@ const browse = () => {
 
       <section className={classes.billboard}></section>
       <Slider>
-        <div onMouseEnter={handleOpen} className={classes.imageContainer}>
-          <img
-            className={classes.card__image}
-            src={
-              'http://localhost:8001/api/v1/media/image/gFZriCkpJYsApPZEF3jhxL4yLzG.jpg'
-            }
-          />
-        </div>
-        <Modal hideBackdrop open={open}>
-          <div style={{ outline: 'none' }}>
-            <Box sx={style} onMouseLeave={handleClose}>
-              <MediaCard></MediaCard>
-            </Box>
-          </div>
-        </Modal>
+        <MediaItem />
       </Slider>
     </section>
   );

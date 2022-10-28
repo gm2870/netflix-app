@@ -1,11 +1,14 @@
 import CircleButton from '../CircleButton/CircleButton';
-import classes from './MediaCard.module.scss';
+import classes from './PreviewModal.module.scss';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
+import { useRef } from 'react';
 
-const MediaCard = () => {
+const MediaCard = (props) => {
+  const { innerWidth, innerHeight } = window;
+  console.log(innerWidth);
   const LightTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
   ))(({ theme }) => ({
@@ -24,19 +27,23 @@ const MediaCard = () => {
   const onLikeHover = () =>
     setTimeout(() => {
       setShowMiniModal(true);
-    }, 500);
-
+    }, 300);
+  const cardRef = useRef();
+  useEffect(() => {
+    if (props.show) {
+      cardRef.current.style.opacity = 1;
+      cardRef.current.style['transform-origin'] = 'center center';
+      cardRef.current.style['transform'] = 'none';
+      cardRef.current.style['width'] = '440px';
+      cardRef.current.style.transition =
+        'transform .54s cubic-bezier(.5,0,.1,1) 0s';
+    }
+  }, []);
   const onMiniModalMouseLeave = () => setShowMiniModal(false);
   return (
-    <div className={classes.card}>
+    <div ref={cardRef} className={classes.card}>
       <div className={classes.imageContainer}>
-        <img
-          className={classes.card__image}
-          width="165px"
-          src={
-            'http://localhost:8001/api/v1/media/image/gFZriCkpJYsApPZEF3jhxL4yLzG.jpg'
-          }
-        />
+        <img className={classes.card__image} src={'/images/tiger.jpg'} />
       </div>
       <div className={classes.preview}>
         <div className={classes.preview__trailer}>

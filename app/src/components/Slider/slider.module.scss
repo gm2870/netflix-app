@@ -1,21 +1,32 @@
 @use '../../../styles/abstracts' as *;
-
+.rowContent {
+  padding: 0;
+  grid-area: 2/1 / span 1 / span 3;
+  overflow-x: hidden;
+}
 .slider {
   padding: 0 1rem;
-  grid-area: 2/1 / span 3 / span 3;
+  // grid-area: 2/1 / span 3 / span 3;
   overflow-x: visible;
+  margin: 0;
+  z-index: 2;
   @include respond(big-desktop) {
     padding: 0 60px;
   }
+  &__mask {
+    overflow-x: visible;
+    padding-bottom: 1px;
+  }
   &__content {
-    display: flex;
     white-space: nowrap;
   }
+
   &__item {
     width: 50%;
-    padding: 0 0.2vw;
+    display: inline-block;
     position: relative;
     vertical-align: top;
+
     @include respond(phone) {
       width: 33.333333%;
     }
@@ -28,5 +39,8 @@
     @include respond(big-desktop) {
       width: 16.66666666666667%;
     }
+  }
+  &__item:first-child {
+    padding-left: 0;
   }
 }

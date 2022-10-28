@@ -1,0 +1,16 @@
+.boxArt {
+  border-radius: 0.2vw;
+  height: 0;
+  position: relative;
+  width: 100%;
+  padding: 28.125% 0;
+  overflow: hidden;
+
+  &__image {
+    position: absolute;
+    top: 0;
+  }
+}
+.mediaItem {
+  padding: 0 0.2vw;
+}
