@@ -1,10 +1,11 @@
 import CircleButton from '../CircleButton/CircleButton';
 import classes from './PreviewModal.module.scss';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
 import { useRef } from 'react';
+import { Fade, Grow, Slide, Zoom } from '@mui/material';
 
 const MediaCard = (props) => {
   const LightTooltip = styled(({ className, ...props }) => (
@@ -22,6 +23,7 @@ const MediaCard = (props) => {
     },
   }));
   const [showMiniModel, setShowMiniModal] = useState(false);
+  const previewRef = useRef();
   const onLikeHover = () =>
     setTimeout(() => {
       setShowMiniModal(true);
@@ -31,114 +33,114 @@ const MediaCard = (props) => {
   const imageRef = useRef();
   useEffect(() => {
     if (props.show) {
-      cardRef.current.style.opacity = 1;
-      cardRef.current.style.width = `${props.offsetWidth}px`;
-      cardRef.current.style.top = `${props.top}px`;
-      cardRef.current.style.left = `${props.left}px`;
-      cardRef.current.style['transform-origin'] = 'center center';
-      cardRef.current.style['transform'] = 'scale(1.5)';
-      // cardRef.current.style.width = `${props.offsetWidth }px`;
-      cardRef.current.style['transition'] = 'width 0.5s';
+      cardRef.current.style['opacity'] = 1;
+      cardRef.current.style.width = `${props.offsetWidth * 1.5}px`;
+      cardRef.current.style.top = `${props.top - props.offsetWidth * 0.4}px`;
+      cardRef.current.style.left = `${props.left - props.offsetWidth * 0.25}px`;
       infoRef.current.style['opacity'] = 1;
-
-      // infoRef.current.style['transition'] = '0.5s';
-      // setTimeout(() => {
-      // }, 500);
     }
   }, []);
   const onMiniModalMouseLeave = () => setShowMiniModal(false);
   return (
-    <div ref={cardRef} className={classes.card}>
-      <div ref={imageRef} className={classes.imageContainer}>
-        <img className={classes.card__image} src={'/images/tiger.jpg'} />
-      </div>
-      <div className={classes.preview}>
-        <div className={classes.preview__trailer}>
-          {/* <div className={classes.video}>
-        <video
-          className={classes.video__src}
-          src={'http://localhost:8001/api/v1/media/video/512195'}
-          autoPlay
-          muted
-        />
-      </div> */}
+    // <Grow in={props.show} {...(props.show ? { timeout: 500 } : {})}>
+    // <Zoom
+    //   in={props.show}
+    //   style={{ transitionDelay: props.show ? '500ms' : '0ms' }}
+    // >
+    // <Slide in={props.show} direction="up" container={imageRef.current}>
+    <Zoom in={props.show}>
+      <div ref={cardRef} className={classes.card}>
+        <div className={classes.imageContainer}>
+          <img
+            ref={imageRef}
+            className={classes.card__image}
+            src={'/images/tiger.jpg'}
+          />
         </div>
-        <div ref={infoRef} className={classes.preview__info}>
-          <div className={classes['preview__controls']}>
-            <div
-              onMouseLeave={onMiniModalMouseLeave}
-              className={`${classes['preview__mini-modal']} ${
-                showMiniModel ? classes.visible : classes.hidden
-              }`}
-            >
-              <LightTooltip placement="top" title="Not for me" arrow>
-                <button className={classes['preview__mini-modal-btn']}>
-                  <img
-                    className={classes['preview__mini-modal-img']}
-                    src="/images/dislike.png"
+        <div ref={previewRef} className={classes.preview}>
+          <div ref={infoRef} className={classes.preview__info}>
+            <div className={classes['preview__controls']}>
+              <div
+                onMouseLeave={onMiniModalMouseLeave}
+                className={`${classes['preview__mini-modal']} ${
+                  showMiniModel ? classes.visible : classes.hidden
+                }`}
+              >
+                <LightTooltip placement="top" title="Not for me" arrow>
+                  <button className={classes['preview__mini-modal-btn']}>
+                    <img
+                      className={classes['preview__mini-modal-img']}
+                      src="/images/dislike.png"
+                    />
+                  </button>
+                </LightTooltip>
+                <LightTooltip placement="top" title="I like this" arrow>
+                  <button className={classes['preview__mini-modal-btn']}>
+                    <img
+                      className={classes['preview__mini-modal-img']}
+                      src="/images/like.png"
+                    />
+                  </button>
+                </LightTooltip>
+                <LightTooltip placement="top" title="Love this!" arrow>
+                  <button className={classes['preview__mini-modal-btn']}>
+                    <img
+                      className={classes['preview__mini-modal-img']}
+                      src="/images/love.png"
+                    />
+                  </button>
+                </LightTooltip>
+              </div>
+              <div className={classes['preview__buttons--left']}>
+                <CircleButton white>
+                  <PlayArrowIcon
+                    className={`${classes.preview__icon} ${classes['preview__icon--black']}`}
                   />
-                </button>
-              </LightTooltip>
-              <LightTooltip placement="top" title="I like this" arrow>
-                <button className={classes['preview__mini-modal-btn']}>
+                </CircleButton>
+                <CircleButton>
+                  <img className={classes.preview__img} src="/images/add.png" />
+                </CircleButton>
+
+                <CircleButton onMouseEnter={onLikeHover}>
                   <img
-                    className={classes['preview__mini-modal-img']}
+                    className={classes.preview__img}
                     src="/images/like.png"
                   />
-                </button>
-              </LightTooltip>
-              <LightTooltip placement="top" title="Love this!" arrow>
-                <button className={classes['preview__mini-modal-btn']}>
+                </CircleButton>
+                <div></div>
+              </div>
+              <div className={classes['preview__buttons--right']}>
+                <CircleButton>
                   <img
-                    className={classes['preview__mini-modal-img']}
-                    src="/images/love.png"
+                    className={classes.preview__img}
+                    src="/images/arrow-down.png"
                   />
-                </button>
-              </LightTooltip>
+                </CircleButton>
+              </div>
             </div>
-            <div className={classes['preview__buttons--left']}>
-              <CircleButton white>
-                <PlayArrowIcon
-                  className={`${classes.preview__icon} ${classes['preview__icon--black']}`}
-                />
-              </CircleButton>
-              <CircleButton>
-                <img className={classes.preview__img} src="/images/add.png" />
-              </CircleButton>
-
-              <CircleButton onMouseEnter={onLikeHover}>
-                <img className={classes.preview__img} src="/images/like.png" />
-              </CircleButton>
-              <div></div>
+            <div className={classes['preview__video-metadata']}>
+              <span
+                className={classes['preview__video-metadata-match-percentage']}
+              >
+                98% Match
+              </span>
+              <span className={classes['duration-text']}>2h 57m</span>
+              <span className={classes['hd-text']}>HD</span>
             </div>
-            <div className={classes['preview__buttons--right']}>
-              <CircleButton>
-                <img
-                  className={classes.preview__img}
-                  src="/images/arrow-down.png"
-                />
-              </CircleButton>
+            <div className={classes['preview__evidence']}>
+              <span className={classes['preview__evidence-item']}>
+                Stand-Up
+              </span>
+              <span className={classes['preview__evidence-item']}>
+                Social Commentary
+              </span>
+              <span className={classes['preview__evidence-item']}>Thai</span>
             </div>
-          </div>
-          <div className={classes['preview__video-metadata']}>
-            <span
-              className={classes['preview__video-metadata-match-percentage']}
-            >
-              98% Match
-            </span>
-            <span className={classes['duration-text']}>2h 57m</span>
-            <span className={classes['hd-text']}>HD</span>
-          </div>
-          <div className={classes['preview__evidence']}>
-            <span className={classes['preview__evidence-item']}>Stand-Up</span>
-            <span className={classes['preview__evidence-item']}>
-              Social Commentary
-            </span>
-            <span className={classes['preview__evidence-item']}>Thai</span>
           </div>
         </div>
       </div>
-    </div>
+    </Zoom>
+    // </Grow>
   );
 };
 export default MediaCard;

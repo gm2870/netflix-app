@@ -36,7 +36,6 @@ const MediaItem = () => {
       </div>
       <Modal hideBackdrop open={open}>
         <div style={{ outline: 'none' }}>
-          {/* <Fade in={open}> */}
           <Box onMouseLeave={handleClose}>
             <PreviewModal
               left={left}
@@ -45,7 +44,6 @@ const MediaItem = () => {
               show={open}
             ></PreviewModal>
           </Box>
-          {/* </Fade> */}
         </div>
       </Modal>
     </div>
