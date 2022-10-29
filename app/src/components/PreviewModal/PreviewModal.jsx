@@ -7,8 +7,6 @@ import { styled } from '@mui/material/styles';
 import { useRef } from 'react';
 
 const MediaCard = (props) => {
-  const { innerWidth, innerHeight } = window;
-  console.log(innerWidth);
   const LightTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
   ))(({ theme }) => ({
@@ -29,20 +27,29 @@ const MediaCard = (props) => {
       setShowMiniModal(true);
     }, 300);
   const cardRef = useRef();
+  const infoRef = useRef();
+  const imageRef = useRef();
   useEffect(() => {
     if (props.show) {
       cardRef.current.style.opacity = 1;
+      cardRef.current.style.width = `${props.offsetWidth}px`;
+      cardRef.current.style.top = `${props.top}px`;
+      cardRef.current.style.left = `${props.left}px`;
       cardRef.current.style['transform-origin'] = 'center center';
-      cardRef.current.style['transform'] = 'none';
-      cardRef.current.style['width'] = '440px';
-      cardRef.current.style.transition =
-        'transform .54s cubic-bezier(.5,0,.1,1) 0s';
+      cardRef.current.style['transform'] = 'scale(1.5)';
+      // cardRef.current.style.width = `${props.offsetWidth }px`;
+      cardRef.current.style['transition'] = 'width 0.5s';
+      infoRef.current.style['opacity'] = 1;
+
+      // infoRef.current.style['transition'] = '0.5s';
+      // setTimeout(() => {
+      // }, 500);
     }
   }, []);
   const onMiniModalMouseLeave = () => setShowMiniModal(false);
   return (
     <div ref={cardRef} className={classes.card}>
-      <div className={classes.imageContainer}>
+      <div ref={imageRef} className={classes.imageContainer}>
         <img className={classes.card__image} src={'/images/tiger.jpg'} />
       </div>
       <div className={classes.preview}>
@@ -56,7 +63,7 @@ const MediaCard = (props) => {
         />
       </div> */}
         </div>
-        <div className={classes.preview__info}>
+        <div ref={infoRef} className={classes.preview__info}>
           <div className={classes['preview__controls']}>
             <div
               onMouseLeave={onMiniModalMouseLeave}
