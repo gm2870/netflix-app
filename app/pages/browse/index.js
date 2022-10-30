@@ -103,9 +103,9 @@ const browse = () => {
       </header>
 
       <section className={classes.billboard}></section>
-      <Slider>
-        <MediaItem />
-      </Slider>
+      <section className={classes.sliderContainer}>
+        <Slider></Slider>
+      </section>
     </section>
   );
 };

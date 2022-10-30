@@ -1,12 +1,11 @@
 import CircleButton from '../CircleButton/CircleButton';
 import classes from './PreviewModal.module.scss';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
 import { useRef } from 'react';
-import { Fade, Grow, Slide, Zoom } from '@mui/material';
-
+import { Fade } from '@mui/material';
 const MediaCard = (props) => {
   const LightTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -23,74 +22,64 @@ const MediaCard = (props) => {
     },
   }));
   const [showMiniModel, setShowMiniModal] = useState(false);
-  const previewRef = useRef();
-  const onLikeHover = () =>
-    setTimeout(() => {
-      setShowMiniModal(true);
-    }, 300);
+  const onLikeHover = () => setShowMiniModal(true);
+
   const cardRef = useRef();
-  const infoRef = useRef();
-  const imageRef = useRef();
+
   useEffect(() => {
     if (props.show) {
-      cardRef.current.style['opacity'] = 1;
       cardRef.current.style.width = `${props.offsetWidth * 1.5}px`;
       cardRef.current.style.top = `${props.top - props.offsetWidth * 0.4}px`;
       cardRef.current.style.left = `${props.left - props.offsetWidth * 0.25}px`;
-      infoRef.current.style['opacity'] = 1;
     }
   }, []);
   const onMiniModalMouseLeave = () => setShowMiniModal(false);
   return (
-    // <Grow in={props.show} {...(props.show ? { timeout: 500 } : {})}>
-    // <Zoom
-    //   in={props.show}
-    //   style={{ transitionDelay: props.show ? '500ms' : '0ms' }}
-    // >
-    // <Slide in={props.show} direction="up" container={imageRef.current}>
-    <Zoom in={props.show}>
+    <Fade
+      in={props.show}
+      style={{ transitionDelay: props.show ? '500ms' : '0ms' }}
+    >
       <div ref={cardRef} className={classes.card}>
         <div className={classes.imageContainer}>
-          <img
-            ref={imageRef}
-            className={classes.card__image}
-            src={'/images/tiger.jpg'}
-          />
+          <img className={classes.card__image} src={'/images/tiger.jpg'} />
         </div>
-        <div ref={previewRef} className={classes.preview}>
-          <div ref={infoRef} className={classes.preview__info}>
+        <div className={classes.preview}>
+          <div className={classes.preview__info}>
             <div className={classes['preview__controls']}>
-              <div
-                onMouseLeave={onMiniModalMouseLeave}
-                className={`${classes['preview__mini-modal']} ${
-                  showMiniModel ? classes.visible : classes.hidden
-                }`}
+              <Fade
+                in={showMiniModel}
+                style={{ transitionDelay: props.show ? '300ms' : '0ms' }}
               >
-                <LightTooltip placement="top" title="Not for me" arrow>
-                  <button className={classes['preview__mini-modal-btn']}>
-                    <img
-                      className={classes['preview__mini-modal-img']}
-                      src="/images/dislike.png"
-                    />
-                  </button>
-                </LightTooltip>
-                <LightTooltip placement="top" title="I like this" arrow>
-                  <button className={classes['preview__mini-modal-btn']}>
-                    <img
-                      className={classes['preview__mini-modal-img']}
-                      src="/images/like.png"
-                    />
-                  </button>
-                </LightTooltip>
-                <LightTooltip placement="top" title="Love this!" arrow>
-                  <button className={classes['preview__mini-modal-btn']}>
-                    <img
-                      className={classes['preview__mini-modal-img']}
-                      src="/images/love.png"
-                    />
-                  </button>
-                </LightTooltip>
-              </div>
+                <div
+                  onMouseLeave={onMiniModalMouseLeave}
+                  className={`${classes['preview__mini-modal']}`}
+                >
+                  <LightTooltip placement="top" title="Not for me" arrow>
+                    <button className={classes['preview__mini-modal-btn']}>
+                      <img
+                        className={classes['preview__mini-modal-img']}
+                        src="/images/dislike.png"
+                      />
+                    </button>
+                  </LightTooltip>
+                  <LightTooltip placement="top" title="I like this" arrow>
+                    <button className={classes['preview__mini-modal-btn']}>
+                      <img
+                        className={classes['preview__mini-modal-img']}
+                        src="/images/like.png"
+                      />
+                    </button>
+                  </LightTooltip>
+                  <LightTooltip placement="top" title="Love this!" arrow>
+                    <button className={classes['preview__mini-modal-btn']}>
+                      <img
+                        className={classes['preview__mini-modal-img']}
+                        src="/images/love.png"
+                      />
+                    </button>
+                  </LightTooltip>
+                </div>
+              </Fade>
               <div className={classes['preview__buttons--left']}>
                 <CircleButton white>
                   <PlayArrowIcon
@@ -139,8 +128,7 @@ const MediaCard = (props) => {
           </div>
         </div>
       </div>
-    </Zoom>
-    // </Grow>
+    </Fade>
   );
 };
 export default MediaCard;

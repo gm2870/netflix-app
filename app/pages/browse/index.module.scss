@@ -30,9 +30,16 @@
     height: 68px;
     padding: 0 2%;
   }
+  @include respond(big-desktop) {
+    padding: 0 60px;
+  }
 }
 .billboard {
   grid-area: 1 / 1 / span 3 / span 3;
+}
+
+.sliderContainer {
+  grid-area: 3/1 / span 1 / span 3;
 }
 .navigation {
   color: #fff;

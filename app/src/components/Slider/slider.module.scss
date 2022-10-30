@@ -1,16 +1,23 @@
 @use '../../../styles/abstracts' as *;
 .rowContent {
   padding: 0;
-  grid-area: 3/1 / span 1 / span 3;
   margin-top: 10rem;
   overflow-x: hidden;
 }
+.rowContent:hover .slider .slider__next .slider__indicatorIcon {
+  display: block;
+  &::before {
+    content: '<';
+  }
+}
+
 .slider {
   padding: 0 1rem;
-  // grid-area: 2/1 / span 3 / span 3;
   overflow-x: visible;
   margin: 0;
   z-index: 2;
+  position: relative;
+
   @include respond(big-desktop) {
     padding: 0 60px;
   }
@@ -21,7 +28,36 @@
   &__content {
     white-space: nowrap;
   }
+  &__next {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 60px;
+    height: 100%;
+    color: #fff;
+    background: hsla(0, 0%, 8%, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    cursor: pointer;
+    svg {
+      width: 30px;
+      height: 30px;
+    }
 
+    // padding: 1px;
+    // // width: 50px;
+    // // height: 50px;
+    // &::before {
+    //   content: url('/images/arrow-right.png');
+
+    // }
+  }
+  &__indicatorIcon {
+    display: none;
+    align-self: center;
+  }
   &__item {
     width: 33.333333%;
     display: inline-block;
