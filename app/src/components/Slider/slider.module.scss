@@ -6,9 +6,6 @@
 }
 .rowContent:hover .slider .slider__next .slider__indicatorIcon {
   display: block;
-  &::before {
-    content: '<';
-  }
 }
 
 .slider {

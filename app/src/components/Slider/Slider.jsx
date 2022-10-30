@@ -32,21 +32,21 @@ const Slider = (props) => {
   const visibleItems = () =>
     new Array(sliderItemsCount()).fill(0).map((item, i) => (
       <div key={i} className={`${classes.slider__item} slider__item--${i}`}>
-        <MediaItem />
+        <MediaItem index={i} />
       </div>
     ));
 
   const hiddenItems = () =>
     new Array(sliderHiddenItemsCount()).fill(0).map((item, i) => (
       <div key={i} className={`${classes.slider__item} slider__item--`}>
-        <MediaItem />
+        <MediaItem index={i} />
       </div>
     ));
   return (
     <div className={classes.rowContent}>
       <div className={classes.slider}>
         <span className={classes.slider__next}>
-          <b className={classes.slider__indicatorIcon}></b>
+          <ArrowForwardIosIcon className={classes.slider__indicatorIcon} />
         </span>
         <ul className={classes.slider__pagination}>
           <li></li>
