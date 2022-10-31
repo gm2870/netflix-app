@@ -6,7 +6,13 @@ import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
 import { useRef } from 'react';
 import { Fade } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { uiActions } from '../../store/redux/ui/ui.mjs';
+import debounce from 'debounce';
+
 const MediaCard = (props) => {
+  const dispatch = useDispatch();
+
   const LightTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
   ))(({ theme }) => ({
@@ -28,9 +34,20 @@ const MediaCard = (props) => {
 
   useEffect(() => {
     if (props.show) {
+      dispatch(uiActions.setShowNext(true));
       cardRef.current.style.width = `${props.offsetWidth * 1.5}px`;
       cardRef.current.style.top = `${props.top - props.offsetWidth * 0.4}px`;
-      cardRef.current.style.left = `${props.left - props.offsetWidth * 0.25}px`;
+      if (props.isFirst) {
+        cardRef.current.style.left = `${props.left}px`;
+      } else if (props.isLast) {
+        cardRef.current.style.left = `${
+          props.left - props.offsetWidth * 0.5
+        }px`;
+      } else {
+        cardRef.current.style.left = `${
+          props.left - props.offsetWidth * 0.25
+        }px`;
+      }
     }
   }, []);
   const onMiniModalMouseLeave = () => setShowMiniModal(false);

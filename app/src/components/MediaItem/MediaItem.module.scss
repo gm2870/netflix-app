@@ -13,4 +13,7 @@
 }
 .mediaItem {
   padding: 0 0.2vw;
+  &:first-child {
+    padding-left: 0;
+  }
 }

@@ -104,7 +104,7 @@ const browse = () => {
 
       <section className={classes.billboard}></section>
       <section className={classes.sliderContainer}>
-        <Slider></Slider>
+        <Slider />
       </section>
     </section>
   );
