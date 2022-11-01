@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import classes from './MediaItem.module.scss';
 import PreviewModal from '../PreviewModal/PreviewModal';
 import { useDispatch } from 'react-redux';
-import { uiActions } from '../../store/redux/ui/ui.mjs';
+import { sliderActions } from '../../store/redux/slider/slider';
 
 const MediaItem = ({ isFirst, isLast, index, underIndicator }) => {
   const dispatch = useDispatch();
@@ -25,12 +25,14 @@ const MediaItem = ({ isFirst, isLast, index, underIndicator }) => {
       setOpen(true);
     }
   };
+
   const handleClose = () => {
     setLeft(left);
     setTop(top);
-    dispatch(uiActions.setShowNext(false));
+    dispatch(sliderActions.setShowNext(false));
     setOpen(false);
   };
+
   return (
     <div className={classes.mediaItem}>
       <div ref={boxRef} onMouseEnter={handleOpen} className={classes.boxArt}>

@@ -7,8 +7,7 @@ import { styled } from '@mui/material/styles';
 import { useRef } from 'react';
 import { Fade } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { uiActions } from '../../store/redux/ui/ui.mjs';
-import debounce from 'debounce';
+import { sliderActions } from '../../store/redux/slider/slider';
 
 const MediaCard = (props) => {
   const dispatch = useDispatch();
@@ -34,7 +33,7 @@ const MediaCard = (props) => {
 
   useEffect(() => {
     if (props.show) {
-      dispatch(uiActions.setShowNext(true));
+      dispatch(sliderActions.setShowNext(true));
       cardRef.current.style.width = `${props.offsetWidth * 1.5}px`;
       cardRef.current.style.top = `${props.top - props.offsetWidth * 0.4}px`;
       if (props.isFirst) {
