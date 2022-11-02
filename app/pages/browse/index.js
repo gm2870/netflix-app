@@ -15,6 +15,28 @@ const browse = () => {
 
   const navigationToggleHandler = () =>
     setNavigationLinks(!showNavigationLinks);
+  const items = [
+    { name: 'red-notice' },
+    { name: 'breaking-bad' },
+    { name: 'lost1' },
+    { name: 'lost2' },
+    { name: 'lost3' },
+    { name: 'lost4' },
+    { name: 'lost5' },
+    { name: 'lost6' },
+    { name: 'lost7' },
+    { name: 'lost8' },
+    { name: 'lost9' },
+    { name: 'lost10' },
+    { name: 'lost11' },
+    { name: 'lost12' },
+    { name: 'lost13' },
+    { name: 'lost14' },
+    { name: 'lost15' },
+    { name: 'lost16' },
+    { name: 'lost17' },
+    { name: 'lost18' },
+  ];
   const navigations = [
     {
       name: 'Home',
@@ -104,7 +126,7 @@ const browse = () => {
 
       <section className={classes.billboard}></section>
       <section className={classes.sliderContainer}>
-        <Slider />
+        <Slider items={items} />
       </section>
     </section>
   );

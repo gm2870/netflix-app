@@ -22,9 +22,9 @@
   &__content {
     white-space: nowrap;
   }
-  &__next {
+  &__next,
+  &__prev {
     position: absolute;
-    right: 0;
     top: 0;
     width: 60px;
     height: 100%;
@@ -42,6 +42,12 @@
     &:hover {
       background: hsla(0, 0%, 8%, 0.7);
     }
+  }
+  &__next {
+    right: 0;
+  }
+  &__prev {
+    left: 0;
   }
   &__indicatorIcon {
     // display: none;

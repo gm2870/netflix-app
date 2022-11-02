@@ -2,6 +2,7 @@ import classes from './slider.module.scss';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import MediaItem from '../MediaItem/MediaItem';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'debounce';
@@ -23,18 +24,6 @@ const Slider = ({ items }) => {
   const min1200 = useMediaQuery(theme.breakpoints.up('lg'));
   const min1400 = useMediaQuery('(min-width:1400px)');
 
-  items = [
-    { name: 'red-notice' },
-    { name: 'breaking-bad' },
-    { name: 'lost1' },
-    { name: 'lost2' },
-    { name: 'lost3' },
-    { name: 'lost4' },
-    { name: 'lost5' },
-    { name: 'lost6' },
-    { name: 'lost7' },
-    { name: 'lost8' },
-  ];
   // const sliderItems = useSelector((state) => state.slider.items);
   const sliderItemsCount = () => {
     if (min1400) return 7;
@@ -43,38 +32,34 @@ const Slider = ({ items }) => {
     if (min600) return 4;
     return 3;
   };
+  useEffect(() => {
+    console.log(sliderItemsCount());
+  });
   const sliderMouseIn = () => dispatch(sliderActions.setShowNext(true));
   const sliderMouseOut = () => dispatch(sliderActions.setShowNext(false));
-  useLayoutEffect(() => {
-    const obj = {
-      left: [],
-      visible: items.slice(activeIndex, sliderItemsCount() - 1),
-      right: items.slice(sliderItemsCount() - 1),
-    };
-    setSliderItems(obj);
-  }, []);
-  const handleNextSlide = () => {
-    // setActiveIndex((prev) => prev++);
-    // const obj = {
-    //   left: [],
-    //   visible: items.slice(activeIndex, sliderItemsCount() - 1),
-    //   right: items.slice(sliderItemsCount() - 1),
-    // };
-    setSliderItems((prev) => {
-      const obj = {
-        left: [...prev.left, prev.visible[0]],
-        visible: [
-          ...prev.visible.slice(1, sliderItemsCount() - 1),
-          prev.right[0],
-        ],
-        right: prev.right.slice(1),
-      };
-      return obj;
-    });
-  };
-  const visibleItems = () => {
-    console.log(sliderItems);
+  // useLayoutEffect(() => {
 
+  // setSliderItems(obj);
+  // }, []);
+
+  const handleNextSlide = () => {
+    setSliderItems((prev) => ({
+      left: [...prev.left, ...prev.visible],
+      visible: [...prev.right].slice(0, sliderItemsCount() - 1),
+      right: prev.right.slice(sliderItemsCount() - 1),
+    }));
+  };
+
+  const handlePrevSlide = () => {
+    setSliderItems((prev) => ({
+      left: prev.left.slice(sliderItemsCount() - 1),
+      visible: [...prev.left].slice(0, sliderItemsCount() - 1),
+      right: [...prev.right, ...prev.visible],
+    }));
+  };
+
+  const visibleItems = () => {
+    // console.log(sliderItems);
     const vis = sliderItems.visible.map((item, i) => (
       <div
         key={item.name}
@@ -108,11 +93,11 @@ const Slider = ({ items }) => {
       className={classes.rowContent}
     >
       <div className={classes.slider}>
-        {/* {showNext && ( */}
-        <span onClick={handleNextSlide} className={classes.slider__next}>
-          <ArrowForwardIosIcon className={classes.slider__indicatorIcon} />
-        </span>
-        {/* )} */}
+        {sliderItems.right.length && (
+          <span onClick={handleNextSlide} className={classes.slider__next}>
+            <ArrowForwardIosIcon className={classes.slider__indicatorIcon} />
+          </span>
+        )}
         <ul className={classes.slider__pagination}>
           <li></li>
           <li></li>
@@ -125,6 +110,11 @@ const Slider = ({ items }) => {
         <div className={classes.slider__mask}>
           <div className={classes.slider__content}>{visibleItems()}</div>
         </div>
+        {sliderItems.left.length && (
+          <span onClick={handlePrevSlide} className={classes.slider__prev}>
+            <ArrowBackIosIcon className={classes.slider__indicatorIcon} />
+          </span>
+        )}
       </div>
     </div>
   );
