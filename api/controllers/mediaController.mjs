@@ -15,6 +15,17 @@ import {
 import AppError from '../utils/appError.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+export const getMediaItems = catchAsync(async (req, res, next) => {
+  const media = await Media.find();
+  if (!media) {
+    return next(new Error('No document found with that ID'), 404);
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: media,
+  });
+});
 
 export const getMedia = catchAsync(async (req, res, next) => {
   const media = await Media.findOne({ id: req.params.id });

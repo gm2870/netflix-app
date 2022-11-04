@@ -5,38 +5,49 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Slider from '../../src/components/Slider/Slider';
 
 import MediaItem from '../../src/components/MediaItem/MediaItem';
+import { useDispatch, useSelector } from 'react-redux';
+import { mediaActions } from '../../src/store/redux/media/media';
+import { getMediaItems } from '../../src/store/redux/media/media-actions';
 
 const browse = () => {
+  const dispatch = useDispatch();
   const [showNavigationLinks, setNavigationLinks] = useState(false);
-
+  const items = useSelector((state) => state.media.mediaItems);
   const navigationToggleHandler = () =>
     setNavigationLinks(!showNavigationLinks);
-  const items = [
-    { name: 'red-notice' },
-    { name: 'breaking-bad' },
-    { name: 'lost1' },
-    { name: 'lost2' },
-    { name: 'lost3' },
-    { name: 'lost4' },
-    { name: 'lost5' },
-    { name: 'lost6' },
-    { name: 'lost7' },
-    { name: 'lost8' },
-    { name: 'lost9' },
-    { name: 'lost10' },
-    { name: 'lost11' },
-    { name: 'lost12' },
-    { name: 'lost13' },
-    { name: 'lost14' },
-    { name: 'lost15' },
-    { name: 'lost16' },
-    { name: 'lost17' },
-    { name: 'lost18' },
-  ];
+  useEffect(() => {
+    if (!items) {
+      dispatch(getMediaItems());
+    }
+  }, []);
+  // const items = [
+  //   { name: 'red-notice' },
+  //   { name: 'breaking-bad' },
+  //   { name: 'lost1' },
+  //   { name: 'lost2' },
+  //   { name: 'lost3' },
+  //   { name: 'lost4' },
+  //   { name: 'lost5' },
+  //   { name: 'lost6' },
+  //   { name: 'lost7' },
+  //   { name: 'lost8' },
+  //   { name: 'lost9' },
+  //   { name: 'lost10' },
+  //   { name: 'lost11' },
+  //   { name: 'lost12' },
+  //   { name: 'lost13' },
+  //   { name: 'lost14' },
+  //   { name: 'lost15' },
+  //   { name: 'lost16' },
+  //   { name: 'lost17' },
+  //   { name: 'lost18' },
+  //   { name: 'lost19' },
+  //   { name: 'lost20' },
+  // ];
   const navigations = [
     {
       name: 'Home',
@@ -126,7 +137,7 @@ const browse = () => {
 
       <section className={classes.billboard}></section>
       <section className={classes.sliderContainer}>
-        <Slider items={items} />
+        {items && <Slider items={items} />}
       </section>
     </section>
   );

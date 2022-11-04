@@ -32,12 +32,12 @@ const mediaNames = [
   'breaking-bad',
   'money-heist',
   'better-call-saul',
-  'into-the-bad-lands',
   'dark',
   'house-of-dragons',
   'blindspot',
   'ted-lasso',
   'see',
+  'inception',
 ];
 
 const importMedia = async () => {
@@ -97,6 +97,7 @@ export const updateSrc = async (media) => {
     videoData = await getVideoSrc(media.title_id, 1080);
   }
   if (!videoData || !videoData.SD) return;
+  console.log(videoData);
   return await Media.findOneAndUpdate(
     { id: media.id },
     {

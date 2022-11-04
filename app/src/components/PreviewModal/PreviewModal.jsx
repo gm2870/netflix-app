@@ -33,6 +33,11 @@ const MediaCard = (props) => {
 
   useEffect(() => {
     if (props.show) {
+      // cardRef.current.style.opacity = 1;
+      // cardRef.current.style.transform = 'scale(1)';
+      // cardRef.current.style.transition =
+      //   'transform .54s cubic-bezier(.5,0,.1,1) 0s,opacity 0.1s';
+      // cardRef.current.style['transition-delay'] = '0.5s';
       dispatch(sliderActions.setShowNext(true));
       cardRef.current.style.width = `${props.offsetWidth * 1.5}px`;
       cardRef.current.style.top = `${props.top - props.offsetWidth * 0.4}px`;
@@ -57,7 +62,10 @@ const MediaCard = (props) => {
     >
       <div ref={cardRef} className={classes.card}>
         <div className={classes.imageContainer}>
-          <img className={classes.card__image} src={'/images/tiger.jpg'} />
+          <img
+            className={classes.card__image}
+            src={`http://localhost:8001/api/v1/media/image${props.item.backdrop_path}`}
+          />
         </div>
         <div className={classes.preview}>
           <div className={classes.preview__info}>

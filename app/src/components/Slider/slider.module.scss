@@ -2,7 +2,7 @@
 .rowContent {
   padding: 0;
   margin-top: 10rem;
-  overflow-x: hidden;
+  // overflow-x: hidden;
 }
 
 .slider {
@@ -26,7 +26,7 @@
   &__prev {
     position: absolute;
     top: 0;
-    width: 60px;
+    width: 4%;
     height: 100%;
     color: #fff;
     background: hsla(0, 0%, 8%, 0.5);
@@ -42,6 +42,9 @@
     &:hover {
       background: hsla(0, 0%, 8%, 0.7);
     }
+    @include respond(big-desktop) {
+      width: 60px;
+    }
   }
   &__next {
     right: 0;
@@ -51,8 +54,32 @@
   }
   &__indicatorIcon {
     // display: none;
-    transition: all 1.3s;
+    transition: all 0.5s;
     align-self: center;
+  }
+  &__pagination {
+    display: block;
+
+    @include respond(big-desktop) {
+      right: 62px;
+    }
+    list-style-type: none;
+    margin: -24px 0 12px;
+    padding: 0;
+    position: absolute;
+    right: 4%;
+    top: 0;
+
+    li {
+      background-color: #4d4d4d;
+      display: inline-block;
+      height: 2px;
+      margin-left: 1px;
+      width: 12px;
+    }
+    .active {
+      background-color: #aaa !important;
+    }
   }
   &__item {
     width: 50%;
@@ -72,4 +99,8 @@
       width: 16.66666666666667%;
     }
   }
+}
+.animating {
+  pointer-events: none;
+  transition: transform 0.75s ease 0s;
 }

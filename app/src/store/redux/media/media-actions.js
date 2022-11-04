@@ -1,16 +1,19 @@
 import { sendRequest } from '../../../utils/api.mjs';
 import { mediaActions } from './media.js';
 
-// export const getMovies = () => {
-//   return (dispatch) => {
-//     const config = {
-//       url: '/movies',
-//     };
-//     const handleError = (err) => console.log(err);
-//     const setMovies = (data) => console.log(data);
-//     sendRequest(config, dispatch, setMovies, handleError);
-//   };
-// };
+export const getMediaItems = () => {
+  return (dispatch) => {
+    const config = {
+      url: '/media/all',
+    };
+    const handleError = (err) => console.log(err);
+    const setMediaItems = (data) => {
+      console.log('11', data);
+      dispatch(mediaActions.setMediaItems(data));
+    };
+    sendRequest(config, dispatch, setMediaItems, handleError);
+  };
+};
 
 export const getMedia = (id) => {
   return (dispatch) => {

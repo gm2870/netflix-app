@@ -5,7 +5,7 @@ const mediaSlice = createSlice({
   initialState: {
     error: null,
     loading: false,
-    movies: null,
+    mediaItems: null,
     billboardMovie: null,
     playingBillboardTrailer: false,
   },
@@ -16,6 +16,9 @@ const mediaSlice = createSlice({
     setBillboardMovie: (state, action) => {
       state.billboardMovie = action.payload;
       state.playingBillboardTrailer = true;
+    },
+    setMediaItems: (state, action) => {
+      state.mediaItems = action.payload;
     },
   },
 });
