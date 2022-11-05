@@ -86,7 +86,7 @@ const Slider = ({ items }) => {
       }
       return [
         ...items
-          .slice(activeIndex * sliderItemsCount() - 1)
+          .slice(activeIndex * sliderItemsCount() - 2)
           .slice(0, sliderItemsCount() + 2),
       ];
     }
@@ -102,7 +102,7 @@ const Slider = ({ items }) => {
         .slice(0, sliderItemsCount() - 1);
     }
     return items
-      .slice((activeIndex + 1) * sliderItemsCount())
+      .slice((activeIndex + 1) * sliderItemsCount() + 1)
       .slice(0, sliderItemsCount());
   };
   const handleNextSlide = () => {
