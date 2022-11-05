@@ -28,11 +28,11 @@ const Slider = ({ items }) => {
   const min1400 = useMediaQuery('(min-width:1400px)');
   const sliderRow = useRef();
   const sliderItemsCount = () => {
-    if (min1400) return 7;
-    if (min1200) return 6;
-    if (min900) return 5;
-    if (min600) return 4;
-    return 3;
+    if (min1400) return 6;
+    if (min1200) return 5;
+    if (min900) return 4;
+    if (min600) return 3;
+    return 2;
   };
   const sliderWidth = () => {
     if (min1400) return 16.66666666666667;
@@ -52,14 +52,22 @@ const Slider = ({ items }) => {
 
   const sliderMouseIn = () => dispatch(sliderActions.setShowNext(true));
   const sliderMouseOut = () => dispatch(sliderActions.setShowNext(false));
-
   const leftItems = () => {
     if (sliderMoved) {
       if (activeIndex === 0) {
-        return [...sliderItems.visible.slice(0, 4), ...items.slice(-2)];
+        return [
+          ...sliderItems.visible.slice(0, sliderItemsCount() - 2),
+          ...items.slice(-2),
+        ];
+      }
+      if (activeIndex === 1) {
+        return [
+          ...items.slice((activeIndex - 1) * sliderItemsCount()).slice(-1),
+          ...sliderItems.visible.slice(0, sliderItemsCount() - 1),
+        ];
       }
       return [
-        ...sliderItems.visible.slice(0, 4),
+        ...sliderItems.visible.slice(0, sliderItemsCount() - 2),
         ...items.slice((activeIndex - 1) * sliderItemsCount()).slice(-2),
       ];
     }
@@ -77,19 +85,15 @@ const Slider = ({ items }) => {
         ];
       }
       return [
-        ...sliderItems.visible.slice(-2),
         ...items
-          .slice(activeIndex * sliderItemsCount())
-          .slice(0, sliderItemsCount() - 1),
+          .slice(activeIndex * sliderItemsCount() - 1)
+          .slice(0, sliderItemsCount() + 2),
       ];
     }
-    return items
-      .slice(activeIndex * sliderItemsCount())
-      .slice(0, sliderItemsCount());
+    return items.slice(0, sliderItemsCount() + 1);
   };
   const rightItems = () => {
-    if (activeIndex === Math.ceil(items.length / sliderItemsCount()) - 1) {
-      // items.slice(0, sliderItemsCount())
+    if (activeIndex === Math.ceil(items.length / (sliderItemsCount() - 1))) {
       return items.slice(0, sliderItemsCount());
     }
     if (activeIndex === 0 && sliderMoved) {
@@ -114,7 +118,7 @@ const Slider = ({ items }) => {
         100 + sliderWidth()
       }%,0,0)`;
       setActiveIndex((prevIndex) => {
-        if (prevIndex >= Math.ceil(items.length / sliderItemsCount()) - 1) {
+        if (prevIndex >= Math.ceil(items.length / sliderItemsCount() - 1)) {
           return 0;
         }
 
@@ -133,13 +137,13 @@ const Slider = ({ items }) => {
       sliderRow.current.style.transform = `translate3d(-${
         100 + sliderWidth()
       }%,0,0)`;
-      setActiveIndex((prevIndex) => {
-        if (prevIndex === 0) {
-          return Math.ceil(items.length / sliderItemsCount()) - 1;
-        }
-        return prevIndex - 1;
-      });
     }, 750);
+    setActiveIndex((prevIndex) => {
+      if (prevIndex === 0) {
+        return Math.ceil(items.length / sliderItemsCount() - 1);
+      }
+      return prevIndex - 1;
+    });
   };
   const isFirst = (index) =>
     (index === 0 && !sliderItems.left.length) ||
