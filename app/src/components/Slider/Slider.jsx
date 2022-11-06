@@ -14,11 +14,7 @@ const Slider = ({ items }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [animating, setAnimating] = useState(false);
   const [sliderMoved, setSliderMoved] = useState(false);
-  const [sliderItems, setSliderItems] = useState({
-    left: [],
-    visible: [],
-    right: [],
-  });
+  const [sliderItems, setSliderItems] = useState([]);
   // const showNext = useSelector((state) => state.slider.showNext);
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -42,12 +38,18 @@ const Slider = ({ items }) => {
     return 50;
   };
   useEffect(() => {
-    const obj = {
-      left: leftItems(),
-      visible: middleItems(),
-      right: rightItems(),
-    };
-    setSliderItems(obj);
+    // if (sliderMoved) {
+    //   setSliderItems((prev) => ({
+    //     left: prev.left,
+    //     visible: prev.visible,
+    //     right: rightItems(),
+    //   }));
+    // } else {
+    //   const obj = ;
+    setSliderItems(
+      items.slice(activeIndex * sliderItemsCount(), sliderItemsCount() * 2)
+    );
+    // }
   }, [min600, min900, min1200, min1400, activeIndex]);
 
   const sliderMouseIn = () => dispatch(sliderActions.setShowNext(true));
@@ -73,6 +75,7 @@ const Slider = ({ items }) => {
     }
     return [];
   };
+
   const middleItems = () => {
     if (sliderMoved) {
       if (activeIndex === 0) {
@@ -86,12 +89,13 @@ const Slider = ({ items }) => {
       }
       return [
         ...items
-          .slice(activeIndex * sliderItemsCount() - 2)
+          .slice(activeIndex * sliderItemsCount() - 1)
           .slice(0, sliderItemsCount() + 2),
       ];
     }
     return items.slice(0, sliderItemsCount() + 1);
   };
+
   const rightItems = () => {
     if (activeIndex === Math.ceil(items.length / (sliderItemsCount() - 1))) {
       return items.slice(0, sliderItemsCount());
@@ -105,26 +109,26 @@ const Slider = ({ items }) => {
       .slice((activeIndex + 1) * sliderItemsCount() + 1)
       .slice(0, sliderItemsCount());
   };
+
   const handleNextSlide = () => {
     setAnimating(true);
     setSliderMoved(true);
-
-    sliderRow.current.style.transform = `translate3d(-${
-      200 + sliderWidth()
-    }%,0,0)`;
+    sliderRow.current.style.transform = `translate3d(-${100}%,0,0)`;
+    console.log(sliderItems);
     setTimeout(() => {
       setAnimating(false);
+      // setTimeout(() => {
+      // }, 1750);
       sliderRow.current.style.transform = `translate3d(-${
         100 + sliderWidth()
       }%,0,0)`;
-      setActiveIndex((prevIndex) => {
-        if (prevIndex >= Math.ceil(items.length / sliderItemsCount() - 1)) {
-          return 0;
-        }
-
-        return prevIndex + 1;
-      });
-    }, 750);
+      // setActiveIndex((prevIndex) => {
+      //   if (prevIndex >= Math.ceil(items.length / sliderItemsCount() - 1)) {
+      //     return 0;
+      //   }
+      //   return prevIndex + 1;
+      // });
+    }, 5750);
   };
 
   const handlePrevSlide = () => {
@@ -137,7 +141,7 @@ const Slider = ({ items }) => {
       sliderRow.current.style.transform = `translate3d(-${
         100 + sliderWidth()
       }%,0,0)`;
-    }, 750);
+    }, 5750);
     setActiveIndex((prevIndex) => {
       if (prevIndex === 0) {
         return Math.ceil(items.length / sliderItemsCount() - 1);
@@ -146,40 +150,51 @@ const Slider = ({ items }) => {
     });
   };
   const isFirst = (index) =>
-    (index === 0 && !sliderItems.left.length) ||
-    (index === 1 && sliderItems.left.length);
-  const isLast = (index) => index === sliderItems.visible.length - 2;
-  const visibleItems = () => {
-    const vis = sliderItems.visible.map((item, i) => (
-      <div
-        key={Math.random()}
-        className={`${classes.slider__item} slider__item--${i}`}
-      >
-        <MediaItem
-          item={item}
-          index={i}
-          isFirst={isFirst(i)}
-          isLast={isLast(i)}
-        />
-      </div>
-    ));
+    (index === 0 && !sliderItems.length) || (index === 1 && sliderItems.length);
 
-    const leftHidden = sliderItems.left.map((item, i) => (
-      <div
-        key={Math.random()}
-        className={`${classes.slider__item} slider__item--`}
-      >
-        <MediaItem item={item} index={i} />
-      </div>
-    ));
-    const rightHidden = sliderItems.right.map((item, i) => (
-      <div
-        key={Math.random()}
-        className={`${classes.slider__item} slider__item--`}
-      >
-        <MediaItem item={item} index={i} />
-      </div>
-    ));
+  const isLast = (index) => index === sliderItems.length - 2;
+  const visibleItems = () => {
+    console.log(sliderItems);
+    const vis = sliderItems
+      .slice(activeIndex * sliderItemsCount(), sliderItemsCount() + 1)
+      .map((item, i) => (
+        <div
+          key={Math.random()}
+          className={`${classes.slider__item} slider__item--${i}`}
+        >
+          <MediaItem
+            item={item}
+            index={i}
+            isFirst={isFirst(i)}
+            isLast={isLast(i)}
+          />
+        </div>
+      ));
+
+    let leftHidden = sliderItems
+      .slice((activeIndex - 1) * sliderItemsCount(), sliderItemsCount() * 2)
+      .map((item, i) => (
+        <div
+          key={Math.random()}
+          className={`${classes.slider__item} slider__item--`}
+        >
+          <MediaItem item={item} index={i} />
+        </div>
+      ));
+    if (activeIndex === 0) leftHidden = [];
+    const rightHidden = sliderItems
+      .slice(
+        (activeIndex + 1) * (sliderItemsCount() + 1),
+        sliderItemsCount() * 2 + 1
+      )
+      .map((item, i) => (
+        <div
+          key={Math.random()}
+          className={`${classes.slider__item} slider__item--`}
+        >
+          <MediaItem item={item} index={i} />
+        </div>
+      ));
     return [...leftHidden, ...vis, ...rightHidden];
   };
 
@@ -214,7 +229,7 @@ const Slider = ({ items }) => {
             {visibleItems()}
           </div>
         </div>
-        {sliderItems.left.length ? (
+        {sliderItems.length ? (
           <span onClick={handlePrevSlide} className={classes.slider__prev}>
             <ArrowBackIosIcon className={classes.slider__indicatorIcon} />
           </span>
