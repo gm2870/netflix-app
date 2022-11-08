@@ -1,0 +1,31 @@
+@use '../../../styles/abstracts' as *;
+
+.media {
+  padding: 0 4%;
+  overflow-x: visible;
+  margin: 0;
+  z-index: 2;
+  position: relative;
+
+  @include respond(big-desktop) {
+    padding: 0 60px;
+  }
+  &__item {
+    width: 50%;
+    display: inline-block;
+    position: relative;
+    vertical-align: top;
+    @include respond(phone) {
+      width: 33.333333%;
+    }
+    @include respond(tablet) {
+      width: 25%;
+    }
+    @include respond(normal-desktop) {
+      width: 20%;
+    }
+    @include respond(big-desktop) {
+      width: 16.66666666666667%;
+    }
+  }
+}

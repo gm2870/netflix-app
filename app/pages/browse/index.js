@@ -12,6 +12,7 @@ import MediaItem from '../../src/components/MediaItem/MediaItem';
 import { useDispatch, useSelector } from 'react-redux';
 import { mediaActions } from '../../src/store/redux/media/media';
 import { getMediaItems } from '../../src/store/redux/media/media-actions';
+import MediaList from '../../src/components/MediaList/MediaList';
 
 const browse = () => {
   const dispatch = useDispatch();
@@ -19,35 +20,12 @@ const browse = () => {
   const items = useSelector((state) => state.media.mediaItems);
   const navigationToggleHandler = () =>
     setNavigationLinks(!showNavigationLinks);
-  useEffect(() => {
-    if (!items) {
-      dispatch(getMediaItems());
-    }
-  }, []);
-  // const items = [
-  //   { name: 'red-notice' },
-  //   { name: 'breaking-bad' },
-  //   { name: 'lost1' },
-  //   { name: 'lost2' },
-  //   { name: 'lost3' },
-  //   { name: 'lost4' },
-  //   { name: 'lost5' },
-  //   { name: 'lost6' },
-  //   { name: 'lost7' },
-  //   { name: 'lost8' },
-  //   { name: 'lost9' },
-  //   { name: 'lost10' },
-  //   { name: 'lost11' },
-  //   { name: 'lost12' },
-  //   { name: 'lost13' },
-  //   { name: 'lost14' },
-  //   { name: 'lost15' },
-  //   { name: 'lost16' },
-  //   { name: 'lost17' },
-  //   { name: 'lost18' },
-  //   { name: 'lost19' },
-  //   { name: 'lost20' },
-  // ];
+  // useEffect(() => {
+  //   if (!items) {
+  //     dispatch(getMediaItems());
+  //   }
+  // }, []);
+
   const navigations = [
     {
       name: 'Home',
@@ -137,7 +115,9 @@ const browse = () => {
 
       <section className={classes.billboard}></section>
       <section className={classes.sliderContainer}>
-        {items && <Slider items={items} />}
+        <Slider>
+          <MediaList />
+        </Slider>
       </section>
     </section>
   );
