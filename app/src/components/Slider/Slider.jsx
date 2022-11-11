@@ -6,21 +6,18 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import MediaItem from '../MediaItem/MediaItem';
 import { useDispatch } from 'react-redux';
 import debounce from 'debounce';
-import { Children, cloneElement, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { sliderActions } from '../../store/redux/slider/slider';
 import { useRef } from 'react';
 
-const Slider = ({ children }) => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [animating, setAnimating] = useState(false);
+const Slider = ({ items }) => {
   const [sliderMoved, setSliderMoved] = useState(false);
-  const [offset, setOffset] = useState(null);
-  const [sliderItems, setSliderItems] = useState({
-    left: [],
-    visible: [],
-    right: [],
+  const [sliderItems, setSliderItems] = useState([]);
+  const [sliderStates, setSliderStates] = useState({
+    animating: false,
+    activeIndex: 0,
   });
-  // const showNext = useSelector((state) => state.slider.showNext);
+
   const dispatch = useDispatch();
   const theme = useTheme();
   const min600 = useMediaQuery(theme.breakpoints.up('sm'));
@@ -43,68 +40,60 @@ const Slider = ({ children }) => {
     return 50;
   };
   const totalItems = () => {
-    const indicatorItemsCount = activeIndex === 0 ? 1 : 2;
+    const indicatorItemsCount = !sliderMoved ? 1 : 2;
     const count = !sliderMoved
-      ? visibleItemsCount() + indicatorItemsCount + visibleItemsCount()
-      : visibleItemsCount() +
-        visibleItemsCount() +
-        indicatorItemsCount +
-        visibleItemsCount();
+      ? visibleItemsCount() * 2 + indicatorItemsCount
+      : items.length;
 
     return Array.from(Array(count).keys());
   };
-
   useEffect(() => {
     const obj = {
       left: leftItems(),
       visible: middleItems(),
       right: rightItems(),
     };
-    console.log(obj);
-    setSliderItems(obj);
-  }, [min600, min900, min1200, min1400, activeIndex]);
+    setSliderItems([...obj.left, ...obj.visible, ...obj.right]);
+  }, [min600, min900, min1200, min1400, sliderStates.activeIndex]);
 
   const sliderMouseIn = () => dispatch(sliderActions.setShowNext(true));
   const sliderMouseOut = () => dispatch(sliderActions.setShowNext(false));
   const leftItems = () => {
     if (sliderMoved) {
-      if (activeIndex === 0) {
-        return [
-          ...sliderItems.visible.slice(0, visibleItemsCount() - 2),
-          ...totalItems().slice(-2),
-        ];
-      }
-      if (activeIndex === 1) {
+      if (sliderStates.activeIndex === 0) {
+        // get the last 7 items but drop the last one
         return [
           ...totalItems()
-            .slice((activeIndex - 1) * visibleItemsCount())
-            .slice(-1),
-          ...sliderItems.visible.slice(0, visibleItemsCount() - 1),
+            .slice(-(visibleItemsCount() + 1))
+            .slice(0, visibleItemsCount()),
         ];
       }
-      return [
-        ...sliderItems.visible.slice(0, visibleItemsCount() - 2),
-        ...totalItems()
-          .slice((activeIndex - 1) * visibleItemsCount())
-          .slice(-2),
-      ];
+
+      if (sliderStates.activeIndex === 1) {
+        return [
+          ...totalItems().slice(-1),
+          ...totalItems().slice(
+            sliderStates.activeIndex - 1,
+            visibleItemsCount() - 1
+          ),
+        ];
+      }
+      return totalItems()
+        .slice((sliderStates.activeIndex - 1) * visibleItemsCount() - 1)
+        .slice(0, visibleItemsCount());
     }
     return [];
   };
   const middleItems = () => {
     if (sliderMoved) {
-      if (activeIndex === 0) {
+      if (sliderStates.activeIndex === 0) {
         const lastItem = totalItems().slice(-1);
-        return [
-          ...lastItem,
-          ...totalItems()
-            .slice(activeIndex * visibleItemsCount())
-            .slice(0, visibleItemsCount()),
-        ];
+        return [...lastItem, ...totalItems().slice(0, visibleItemsCount() + 1)];
       }
+
       return [
         ...totalItems()
-          .slice(activeIndex * visibleItemsCount() - 1)
+          .slice(sliderStates.activeIndex * visibleItemsCount() - 1)
           .slice(0, visibleItemsCount() + 2),
       ];
     }
@@ -112,128 +101,117 @@ const Slider = ({ children }) => {
   };
   const rightItems = () => {
     if (
-      activeIndex === Math.ceil(totalItems().length / (visibleItemsCount() - 1))
+      sliderStates.activeIndex ===
+      Math.ceil(items.length / visibleItemsCount() - 1)
     ) {
       return totalItems().slice(0, visibleItemsCount());
     }
-    if (activeIndex === 0 && sliderMoved) {
-      return totalItems()
-        .slice((activeIndex + 1) * visibleItemsCount())
-        .slice(0, visibleItemsCount() - 1);
+    if (
+      sliderStates.activeIndex ===
+      Math.ceil(items.length / visibleItemsCount()) - 2
+    ) {
+      console.log('before last');
+      return [
+        ...totalItems()
+          .slice((sliderStates.activeIndex + 1) * visibleItemsCount() + 1)
+          .slice(0, visibleItemsCount()),
+        ...totalItems().slice(0, 1),
+      ];
     }
-
     return totalItems()
-      .slice((activeIndex + 1) * visibleItemsCount() + 1)
+      .slice((sliderStates.activeIndex + 1) * visibleItemsCount() + 1)
       .slice(0, visibleItemsCount());
   };
   const handleNextSlide = () => {
-    setAnimating(true);
-    setSliderMoved(true);
+    if (!sliderMoved) setSliderMoved(true);
+    setSliderStates(() => ({
+      ...sliderStates,
+      animating: true,
+    }));
     const offsetVal =
-      !sliderMoved && activeIndex === 0 ? 100 : 200 + sliderWidth();
-    setOffset(offsetVal);
+      !sliderMoved && sliderStates.activeIndex === 0
+        ? 100
+        : 200 + sliderWidth();
     sliderRow.current.style.transform = `translate3d(-${offsetVal}%,0,0)`;
+
     setTimeout(() => {
-      setAnimating(false);
-      setAnimating(false);
+      setSliderStates((prev) => {
+        let index;
+        if (
+          prev.activeIndex >=
+          Math.ceil(totalItems().length / visibleItemsCount()) - 1
+        ) {
+          index = 0;
+        } else index = prev.activeIndex + 1;
+        return { activeIndex: index, animating: false };
+      });
       sliderRow.current.style.transform = `translate3d(-${
         100 + sliderWidth()
       }%,0,0)`;
-      // sliderRow.current.style.transition = 'transform 5s';
-      setOffset(offsetVal);
-      setActiveIndex((prevIndex) => {
-        if (
-          prevIndex >= Math.ceil(totalItems().length / visibleItemsCount() - 1)
-        ) {
-          return 0;
-        }
-
-        return prevIndex + 1;
-      });
     }, 750);
   };
 
   const handlePrevSlide = () => {
-    setAnimating(true);
+    setSliderStates((prev) => ({
+      ...sliderStates,
+      animating: true,
+    }));
     setSliderMoved(true);
     sliderRow.current.style.transform = `translate3d(-${sliderWidth()}%,0,0)`;
     setTimeout(() => {
-      setAnimating(false);
+      setSliderStates((prev) => {
+        let index;
+        if (prev.activeIndex === 0) {
+          index = Math.ceil(totalItems().length / visibleItemsCount()) - 1;
+        } else index = prev.activeIndex - 1;
+        return { activeIndex: index, animating: false };
+      });
       sliderRow.current.style.transform = `translate3d(-${
         100 + sliderWidth()
       }%,0,0)`;
-      setActiveIndex((prevIndex) => {
-        if (prevIndex === 0) {
-          return Math.ceil(totalItems().length / visibleItemsCount() - 1);
-        }
-        return prevIndex - 1;
-      });
     }, 750);
   };
   const isFirst = (index) =>
     (index === 0 && !sliderItems.left.length) ||
     (index === 1 && sliderItems.left.length);
   const isLast = (index) => index === sliderItems.visible.length - 2;
-  // const visibleItems = () => {
-  //   console.log(sliderItems);
-  //   const vis = sliderItems.visible.map((item, i) => (
-  //     <div
-  //       key={Math.random()}
-  //       className={`${classes.slider__item} slider__item--${i}`}
-  //     >
-  //       <MediaItem
-  //         item={item}
-  //         index={i}
-  //         isFirst={isFirst(i)}
-  //         isLast={isLast(i)}
-  //       />
-  //     </div>
-  //   ));
 
-  //   const leftHidden = sliderItems.left.map((item, i) => (
-  //     <div
-  //       key={Math.random()}
-  //       className={`${classes.slider__item} slider__item--`}
-  //     >
-  //       <MediaItem item={item} index={i} />
-  //     </div>
-  //   ));
-  //   const rightHidden = sliderItems.right.map((item, i) => (
-  //     <div
-  //       key={Math.random()}
-  //       className={`${classes.slider__item} slider__item--`}
-  //     >
-  //       <MediaItem item={item} index={i} />
-  //     </div>
-  //   ));
-  //   return [...leftHidden, ...vis, ...rightHidden];
-  // };
-  const content = () => {
+  const middleItem = (itemIndex) => middleItems().includes(itemIndex);
+  const leftItem = (itemIndex) => leftItems().includes(itemIndex);
+
+  console.log(sliderItems);
+  const visibleItems = sliderItems.map((itemIndex, i) => {
+    if (sliderMoved && leftItem(itemIndex)) {
+      return (
+        <div
+          key={items[itemIndex].id}
+          className={`${classes.slider__item} slider__item--`}
+        >
+          <MediaItem item={items[itemIndex]} />
+        </div>
+      );
+    }
+    if (middleItem(itemIndex)) {
+      const index = !sliderMoved ? i : i - visibleItemsCount();
+      return (
+        <div
+          key={items[itemIndex].id}
+          className={`${classes.slider__item} slider__item--${index}`}
+        >
+          <MediaItem item={items[itemIndex]} />
+        </div>
+      );
+    }
     return (
       <div
-        ref={sliderRow}
-        className={`${classes.slider__content} ${
-          animating ? classes.animating : ''
-        }`}
+        key={items[itemIndex].id}
+        className={`${classes.slider__item} slider__item--`}
       >
-        {Children.map(children, (child) =>
-          cloneElement(child, { sliderItems })
-        )}
+        <MediaItem item={items[itemIndex]} />
       </div>
     );
-  };
-  // const content = () => {
-  //   return (
-  //     <div
-  //       ref={sliderRow}
-  //       className={`${classes.slider__content} ${
-  //         animating ? classes.animating : ''
-  //       }`}
-  //     >
-  //       {visibleItems()}
-  //     </div>
-  //   );
-  // };
+  });
+
   return (
     <div
       onMouseEnter={sliderMouseIn}
@@ -246,17 +224,28 @@ const Slider = ({ children }) => {
         </span>
 
         <ul className={classes.slider__pagination}>
-          {new Array(Math.ceil(totalItems().length / visibleItemsCount()))
+          {new Array(Math.ceil(items.length / visibleItemsCount()))
             .fill(0)
             .map((x, i) => (
               <li
                 key={i}
-                className={i === activeIndex ? classes.active : ''}
+                className={i === sliderStates.activeIndex ? classes.active : ''}
               ></li>
             ))}
         </ul>
-        <div className={classes.slider__mask}>{content()}</div>
-        {sliderItems.left.length ? (
+        {items?.length && (
+          <div className={classes.slider__mask}>
+            <div
+              ref={sliderRow}
+              className={`${classes.slider__content} ${
+                sliderStates.animating ? classes.animating : ''
+              }`}
+            >
+              {visibleItems}
+            </div>
+          </div>
+        )}
+        {sliderMoved ? (
           <span onClick={handlePrevSlide} className={classes.slider__prev}>
             <ArrowBackIosIcon className={classes.slider__indicatorIcon} />
           </span>

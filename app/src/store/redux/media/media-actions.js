@@ -8,7 +8,6 @@ export const getMediaItems = () => {
     };
     const handleError = (err) => console.log(err);
     const setMediaItems = (data) => {
-      console.log('11', data);
       dispatch(mediaActions.setMediaItems(data));
     };
     sendRequest(config, dispatch, setMediaItems, handleError);

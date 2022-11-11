@@ -20,11 +20,11 @@ const browse = () => {
   const items = useSelector((state) => state.media.mediaItems);
   const navigationToggleHandler = () =>
     setNavigationLinks(!showNavigationLinks);
-  // useEffect(() => {
-  //   if (!items) {
-  //     dispatch(getMediaItems());
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (!items) {
+      dispatch(getMediaItems());
+    }
+  }, []);
 
   const navigations = [
     {
@@ -115,9 +115,7 @@ const browse = () => {
 
       <section className={classes.billboard}></section>
       <section className={classes.sliderContainer}>
-        <Slider>
-          <MediaList />
-        </Slider>
+        {items && <Slider items={items} />}
       </section>
     </section>
   );

@@ -1,27 +1,20 @@
 import { Modal } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import classes from './MediaItem.module.scss';
-import PreviewModal from '../PreviewModal/PreviewModal';
 import { useDispatch } from 'react-redux';
 import { sliderActions } from '../../store/redux/slider/slider';
-
-const MediaItem = ({ item }) => {
+//eslint-disable-next-line
+const MediaItem = memo(({ item }) => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  const modalRef = useRef();
-  // console.log(isFirst, isLast, index, underIndicator);
-  const [offsetWidth, setOffsetWidth] = useState(null);
   const [left, setLeft] = useState(null);
   const [top, setTop] = useState(null);
   const boxRef = useRef();
-  useEffect(() => {
-    console.log(item);
-  }, [open]);
+  useEffect(() => {}, [open]);
   const handleOpen = () => {
     handleClose();
     if (!open) {
-      setOffsetWidth(boxRef.current.offsetWidth);
       const left = boxRef.current.getBoundingClientRect().left;
       const top = boxRef.current.getBoundingClientRect().top;
       setLeft(left);
@@ -63,6 +56,6 @@ const MediaItem = ({ item }) => {
       </Modal> */}
     </div>
   );
-};
+});
 
 export default MediaItem;
