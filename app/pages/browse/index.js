@@ -8,11 +8,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useState } from 'react';
 import Slider from '../../src/components/Slider/Slider';
 
-import MediaItem from '../../src/components/MediaItem/MediaItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { mediaActions } from '../../src/store/redux/media/media';
 import { getMediaItems } from '../../src/store/redux/media/media-actions';
-import MediaList from '../../src/components/MediaList/MediaList';
 
 const browse = () => {
   const dispatch = useDispatch();

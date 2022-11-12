@@ -4,20 +4,15 @@ import { useTheme } from '@mui/material/styles';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import MediaItem from '../MediaItem/MediaItem';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'debounce';
 import { useEffect, useState } from 'react';
 import { sliderActions } from '../../store/redux/slider/slider';
 import { useRef } from 'react';
 
 const Slider = ({ items }) => {
-  const [sliderMoved, setSliderMoved] = useState(false);
   const [sliderItems, setSliderItems] = useState([]);
-  const [sliderStates, setSliderStates] = useState({
-    animating: false,
-    activeIndex: 0,
-  });
-
+  const sliderStates = useSelector((state) => state.slider);
   const dispatch = useDispatch();
   const theme = useTheme();
   const min600 = useMediaQuery(theme.breakpoints.up('sm'));
@@ -40,26 +35,28 @@ const Slider = ({ items }) => {
     return 50;
   };
   const totalItems = () => {
-    const indicatorItemsCount = !sliderMoved ? 1 : 2;
-    const count = !sliderMoved
+    const indicatorItemsCount = !sliderStates.moved ? 1 : 2;
+    const count = !sliderStates.moved
       ? visibleItemsCount() * 2 + indicatorItemsCount
       : items.length;
 
     return Array.from(Array(count).keys());
   };
+
   useEffect(() => {
     const obj = {
       left: leftItems(),
       visible: middleItems(),
       right: rightItems(),
     };
+    console.log(obj);
     setSliderItems([...obj.left, ...obj.visible, ...obj.right]);
   }, [min600, min900, min1200, min1400, sliderStates.activeIndex]);
 
-  const sliderMouseIn = () => dispatch(sliderActions.setShowNext(true));
-  const sliderMouseOut = () => dispatch(sliderActions.setShowNext(false));
+  // const sliderMouseIn = () => dispatch(sliderActions.setShowNext(true));
+  // const sliderMouseOut = () => dispatch(sliderActions.setShowNext(false));
   const leftItems = () => {
-    if (sliderMoved) {
+    if (sliderStates.moved) {
       if (sliderStates.activeIndex === 0) {
         // get the last 7 items but drop the last one
         return [
@@ -85,7 +82,7 @@ const Slider = ({ items }) => {
     return [];
   };
   const middleItems = () => {
-    if (sliderMoved) {
+    if (sliderStates.moved) {
       if (sliderStates.activeIndex === 0) {
         const lastItem = totalItems().slice(-1);
         return [...lastItem, ...totalItems().slice(0, visibleItemsCount() + 1)];
@@ -110,7 +107,6 @@ const Slider = ({ items }) => {
       sliderStates.activeIndex ===
       Math.ceil(items.length / visibleItemsCount()) - 2
     ) {
-      console.log('before last');
       return [
         ...totalItems()
           .slice((sliderStates.activeIndex + 1) * visibleItemsCount() + 1)
@@ -123,31 +119,17 @@ const Slider = ({ items }) => {
       .slice(0, visibleItemsCount());
   };
   const handleNextSlide = () => {
-    if (!sliderMoved) setSliderMoved(true);
-    setSliderStates(() => ({
-      ...sliderStates,
-      animating: true,
-    }));
-    const offsetVal =
-      !sliderMoved && sliderStates.activeIndex === 0
-        ? 100
-        : 200 + sliderWidth();
-    sliderRow.current.style.transform = `translate3d(-${offsetVal}%,0,0)`;
+    dispatch(sliderActions.toggleAnimating());
+    dispatch(sliderActions.setTransFormValue({ sliderWidth: sliderWidth() }));
 
     setTimeout(() => {
-      setSliderStates((prev) => {
-        let index;
-        if (
-          prev.activeIndex >=
-          Math.ceil(totalItems().length / visibleItemsCount()) - 1
-        ) {
-          index = 0;
-        } else index = prev.activeIndex + 1;
-        return { activeIndex: index, animating: false };
-      });
-      sliderRow.current.style.transform = `translate3d(-${
-        100 + sliderWidth()
-      }%,0,0)`;
+      dispatch(
+        sliderActions.handleNext({
+          totalItemsLength: totalItems().length,
+          visibleItemsCount: visibleItemsCount(),
+          sliderWidth: sliderWidth(),
+        })
+      );
     }, 750);
   };
 
@@ -156,8 +138,9 @@ const Slider = ({ items }) => {
       ...sliderStates,
       animating: true,
     }));
-    setSliderMoved(true);
+    // setSliderMoved(true);
     sliderRow.current.style.transform = `translate3d(-${sliderWidth()}%,0,0)`;
+
     setTimeout(() => {
       setSliderStates((prev) => {
         let index;
@@ -181,7 +164,7 @@ const Slider = ({ items }) => {
 
   console.log(sliderItems);
   const visibleItems = sliderItems.map((itemIndex, i) => {
-    if (sliderMoved && leftItem(itemIndex)) {
+    if (leftItem(itemIndex)) {
       return (
         <div
           key={items[itemIndex].id}
@@ -192,7 +175,8 @@ const Slider = ({ items }) => {
       );
     }
     if (middleItem(itemIndex)) {
-      const index = !sliderMoved ? i : i - visibleItemsCount();
+      //
+      const index = i - leftItems().length;
       return (
         <div
           key={items[itemIndex].id}
@@ -213,11 +197,7 @@ const Slider = ({ items }) => {
   });
 
   return (
-    <div
-      onMouseEnter={sliderMouseIn}
-      onMouseLeave={debounce(sliderMouseOut, 250)}
-      className={classes.rowContent}
-    >
+    <div className={classes.rowContent}>
       <div className={classes.slider}>
         <span onClick={handleNextSlide} className={classes.slider__next}>
           <ArrowForwardIosIcon className={classes.slider__indicatorIcon} />
@@ -240,12 +220,13 @@ const Slider = ({ items }) => {
               className={`${classes.slider__content} ${
                 sliderStates.animating ? classes.animating : ''
               }`}
+              style={{ transform: sliderStates.transformValue }}
             >
               {visibleItems}
             </div>
           </div>
         )}
-        {sliderMoved ? (
+        {sliderStates.moved ? (
           <span onClick={handlePrevSlide} className={classes.slider__prev}>
             <ArrowBackIosIcon className={classes.slider__indicatorIcon} />
           </span>

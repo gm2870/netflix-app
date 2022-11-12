@@ -11,7 +11,7 @@ const MediaItem = memo(({ item }) => {
   const [left, setLeft] = useState(null);
   const [top, setTop] = useState(null);
   const boxRef = useRef();
-  useEffect(() => {}, [open]);
+
   const handleOpen = () => {
     handleClose();
     if (!open) {
@@ -26,7 +26,7 @@ const MediaItem = memo(({ item }) => {
   const handleClose = () => {
     setLeft(left);
     setTop(top);
-    dispatch(sliderActions.setShowNext(false));
+    // dispatch(sliderActions.setShowNext(false));
     setOpen(false);
   };
 
