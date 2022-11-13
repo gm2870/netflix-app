@@ -21,6 +21,12 @@ const sliderSlice = createSlice({
       state.items = action.payload;
     },
     toggleAnimating: (state, action) => {
+      console.log(!state.moved, state.activeIndex === 0);
+      const offsetVal =
+        !state.moved && state.activeIndex === 0
+          ? 100
+          : 200 + action.payload.sliderWidth;
+      state.transformValue = `translate3d(-${offsetVal}%,0,0)`;
       if (!state.moved) state.moved = true;
       state.animating = !state.animating;
     },
@@ -40,6 +46,7 @@ const sliderSlice = createSlice({
       } else state.activeIndex += 1;
     },
     setTransFormValue: (state, action) => {
+      console.log(!state.moved, state.activeIndex === 0);
       const offsetVal =
         !state.moved && state.activeIndex === 0
           ? 100

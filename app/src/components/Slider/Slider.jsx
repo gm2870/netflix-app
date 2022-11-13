@@ -119,8 +119,8 @@ const Slider = ({ items }) => {
       .slice(0, visibleItemsCount());
   };
   const handleNextSlide = () => {
-    dispatch(sliderActions.toggleAnimating());
-    dispatch(sliderActions.setTransFormValue({ sliderWidth: sliderWidth() }));
+    dispatch(sliderActions.toggleAnimating({ sliderWidth: sliderWidth() }));
+    // dispatch(sliderActions.setTransFormValue({ sliderWidth: sliderWidth() }));
 
     setTimeout(() => {
       dispatch(
@@ -134,10 +134,10 @@ const Slider = ({ items }) => {
   };
 
   const handlePrevSlide = () => {
-    setSliderStates((prev) => ({
-      ...sliderStates,
-      animating: true,
-    }));
+    // setSliderStates((prev) => ({
+    //   ...sliderStates,
+    //   animating: true,
+    // }));
     // setSliderMoved(true);
     sliderRow.current.style.transform = `translate3d(-${sliderWidth()}%,0,0)`;
 
