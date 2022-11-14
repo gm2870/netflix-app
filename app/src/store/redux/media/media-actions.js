@@ -9,7 +9,7 @@ export const getMediaItems = () => {
     };
     const handleError = (err) => console.log(err);
     const setMediaItems = (data) => {
-      dispatch(sliderActions.setItems(data));
+      dispatch(sliderActions.getAllItems(data));
     };
     sendRequest(config, dispatch, setMediaItems, handleError);
   };

@@ -9,8 +9,7 @@ import { useEffect, useState } from 'react';
 import { sliderActions } from '../../store/redux/slider/slider';
 import { useRef } from 'react';
 
-const Slider = ({ items }) => {
-  const [sliderItems, setSliderItems] = useState([]);
+const Slider = () => {
   const sliderStates = useSelector((state) => state.slider);
   const dispatch = useDispatch();
   const sliderRow = useRef();
@@ -47,168 +46,78 @@ const Slider = ({ items }) => {
       itemWidth: 50,
     };
   };
-
-  const totalItems = () => {
-    const indicatorItemsCount = !sliderStates.moved ? 1 : 2;
-    const count = !sliderStates.moved
-      ? sliderConfig().rowItems * 2 + indicatorItemsCount
-      : items.length;
-
-    return Array.from(Array(count).keys());
-  };
-
   useEffect(() => {
-    console.log(sliderStates);
-  }, [min1400, sliderStates.activeIndex]);
+    dispatch(
+      sliderActions.setSliderItems({ rowItems: sliderConfig().rowItems })
+    );
+  }, [min1400]);
 
-  // const sliderMouseIn = () => dispatch(sliderActions.setShowNext(true));
-  // const sliderMouseOut = () => dispatch(sliderActions.setShowNext(false));
-  const leftItems = () => {
-    if (sliderStates.moved) {
-      if (sliderStates.activeIndex === 0) {
-        // get the last 7 items but drop the last one
-        return [
-          ...totalItems()
-            .slice(-(sliderConfig().rowItems + 1))
-            .slice(0, sliderConfig().rowItems),
-        ];
-      }
-
-      if (sliderStates.activeIndex === 1) {
-        return [
-          ...totalItems().slice(-1),
-          ...totalItems().slice(
-            sliderStates.activeIndex - 1,
-            sliderConfig().rowItems - 1
-          ),
-        ];
-      }
-      return totalItems()
-        .slice((sliderStates.activeIndex - 1) * sliderConfig().rowItems - 1)
-        .slice(0, sliderConfig().rowItems);
-    }
-    return [];
-  };
-  const middleItems = () => {
-    if (sliderStates.moved) {
-      if (sliderStates.activeIndex === 0) {
-        const lastItem = totalItems().slice(-1);
-        return [
-          ...lastItem,
-          ...totalItems().slice(0, sliderConfig().rowItems + 1),
-        ];
-      }
-
-      return [
-        ...totalItems()
-          .slice(sliderStates.activeIndex * sliderConfig().rowItems - 1)
-          .slice(0, sliderConfig().rowItems + 2),
-      ];
-    }
-    return totalItems().slice(0, sliderConfig().rowItems + 1);
-  };
-  const rightItems = () => {
-    if (
-      sliderStates.activeIndex ===
-      Math.ceil(items.length / sliderConfig().rowItems - 1)
-    ) {
-      return totalItems().slice(0, sliderConfig().rowItems);
-    }
-    if (
-      sliderStates.activeIndex ===
-      Math.ceil(items.length / sliderConfig().rowItems) - 2
-    ) {
-      return [
-        ...totalItems()
-          .slice((sliderStates.activeIndex + 1) * sliderConfig().rowItems + 1)
-          .slice(0, sliderConfig().rowItems),
-        ...totalItems().slice(0, 1),
-      ];
-    }
-    return totalItems()
-      .slice((sliderStates.activeIndex + 1) * sliderConfig().rowItems + 1)
-      .slice(0, sliderConfig().rowItems);
-  };
   const handleNextSlide = () => {
     dispatch(
-      sliderActions.toggleAnimating({ sliderWidth: sliderConfig().itemWidth })
+      sliderActions.toggleAnimating({
+        direction: 'right',
+        itemWidth: sliderConfig().itemWidth,
+      })
     );
 
     setTimeout(() => {
       dispatch(
         sliderActions.handleNext({
-          totalItemsLength: totalItems().length,
-          visibleItemsCount: sliderConfig().rowItems,
-          sliderWidth: sliderConfig().itemWidth,
+          sliderConfig: sliderConfig(),
         })
       );
     }, 750);
   };
 
   const handlePrevSlide = () => {
-    setSliderStates((prev) => ({
-      ...sliderStates,
-      animating: true,
-    }));
-    // setSliderMoved(true);
-    sliderRow.current.style.transform = `translate3d(-${
-      sliderConfig().itemWidth
-    }%,0,0)`;
-
+    dispatch(
+      sliderActions.toggleAnimating({
+        direction: 'left',
+        itemWidth: sliderConfig().itemWidth,
+      })
+    );
     setTimeout(() => {
-      setSliderStates((prev) => {
-        let index;
-        if (prev.activeIndex === 0) {
-          index = Math.ceil(totalItems().length / sliderConfig().rowItems) - 1;
-        } else index = prev.activeIndex - 1;
-        return { activeIndex: index, animating: false };
-      });
-      sliderRow.current.style.transform = `translate3d(-${
-        100 + sliderConfig().itemWidth
-      }%,0,0)`;
+      dispatch(
+        sliderActions.handlePrevious({
+          sliderConfig: sliderConfig(),
+        })
+      );
     }, 750);
   };
-  const isFirst = (index) =>
-    (index === 0 && !sliderItems.left.length) ||
-    (index === 1 && sliderItems.left.length);
-  const isLast = (index) => index === sliderItems.visible.length - 2;
+  // const isFirst = (index) =>
+  //   (index === 0 && !sliderItems.left.length) ||
+  //   (index === 1 && sliderItems.left.length);
+  // const isLast = (index) => index === sliderItems.visible.length - 2;
 
-  const middleItem = (itemIndex) => middleItems().includes(itemIndex);
-  const leftItem = (itemIndex) => leftItems().includes(itemIndex);
+  // const middleItem = (itemIndex) => middleItems().includes(itemIndex);
+  // const leftItem = (itemIndex) => leftItems().includes(itemIndex);
 
-  console.log(sliderItems);
-  const visibleItems = sliderItems.map((itemIndex, i) => {
-    if (leftItem(itemIndex)) {
-      return (
-        <div
-          key={items[itemIndex].id}
-          className={`${classes.slider__item} slider__item--`}
-        >
-          <MediaItem item={items[itemIndex]} />
-        </div>
-      );
-    }
-    if (middleItem(itemIndex)) {
-      //
-      const index = i - leftItems().length;
-      return (
-        <div
-          key={items[itemIndex].id}
-          className={`${classes.slider__item} slider__item--${index}`}
-        >
-          <MediaItem item={items[itemIndex]} />
-        </div>
-      );
-    }
-    return (
-      <div
-        key={items[itemIndex].id}
-        className={`${classes.slider__item} slider__item--`}
-      >
-        <MediaItem item={items[itemIndex]} />
-      </div>
-    );
-  });
+  const leftItems = sliderStates.sliderItems.left.map((itemIndex) => (
+    <div
+      key={sliderStates.items[itemIndex].id}
+      className={`${classes.slider__item} slider__item--`}
+    >
+      <MediaItem item={sliderStates.items[itemIndex]} />
+    </div>
+  ));
+  const visibleItems = sliderStates.sliderItems.visible.map((itemIndex, i) => (
+    <div
+      key={sliderStates.items[itemIndex].id}
+      className={`${classes.slider__item} slider__item--${i}`}
+    >
+      <MediaItem item={sliderStates.items[itemIndex]} />
+    </div>
+  ));
+  const rightItems = sliderStates.sliderItems.right.map((itemIndex, i) => (
+    <div
+      key={sliderStates.items[itemIndex].id}
+      className={`${classes.slider__item} slider__item--`}
+    >
+      <MediaItem item={sliderStates.items[itemIndex]} />
+    </div>
+  ));
+
+  const result = [...leftItems, ...visibleItems, ...rightItems];
 
   return (
     <div className={classes.rowContent}>
@@ -218,7 +127,9 @@ const Slider = ({ items }) => {
         </span>
 
         <ul className={classes.slider__pagination}>
-          {new Array(Math.ceil(items.length / sliderConfig().rowItems))
+          {new Array(
+            Math.ceil(sliderStates.items.length / sliderConfig().rowItems)
+          )
             .fill(0)
             .map((x, i) => (
               <li
@@ -227,7 +138,7 @@ const Slider = ({ items }) => {
               ></li>
             ))}
         </ul>
-        {items?.length && (
+        {sliderStates.items.length && (
           <div className={classes.slider__mask}>
             <div
               ref={sliderRow}
@@ -236,7 +147,7 @@ const Slider = ({ items }) => {
               }`}
               style={{ transform: sliderStates.transformValue }}
             >
-              {visibleItems}
+              {result}
             </div>
           </div>
         )}

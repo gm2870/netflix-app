@@ -10,7 +10,11 @@ const sliderSlice = createSlice({
     showNext: false,
     transformValue: 'none',
     items: [],
-    sliderItems: [],
+    sliderItems: {
+      left: [],
+      visible: [],
+      right: [],
+    },
   },
   reducers: {
     showCard: (state, action) => {
@@ -19,14 +23,16 @@ const sliderSlice = createSlice({
     setShowNext: (state, action) => {
       state.showNext = action.payload;
     },
-    setItems: (state, action) => {
+    getAllItems: (state, action) => {
       state.items = action.payload;
     },
     toggleAnimating: (state, action) => {
       const offsetVal =
         !state.moved && state.activeIndex === 0
           ? 100
-          : 200 + action.payload.sliderWidth;
+          : action.payload.direction === 'right'
+          ? 200 + action.payload.itemWidth
+          : action.payload.itemWidth;
       state.transformValue = `translate3d(-${offsetVal}%,0,0)`;
       if (!state.moved) state.moved = true;
       state.animating = !state.animating;
@@ -34,52 +40,65 @@ const sliderSlice = createSlice({
     handleNext: (state, action) => {
       state.animating = false;
       state.transformValue = `translate3d(-${
-        100 + action.payload.sliderWidth
+        100 + action.payload.sliderConfig.itemWidth
       }%,0,0)`;
       if (
         state.activeIndex >=
-        Math.ceil(
-          action.payload.totalItemsLength / action.payload.visibleItemsCount
-        ) -
-          1
+        Math.ceil(state.items.length / action.payload.sliderConfig.rowItems) - 1
       ) {
         state.activeIndex = 0;
       } else state.activeIndex += 1;
-      state.sliderItems = setSliderItems(
+      state.sliderItems = calcItems(
         state.activeIndex,
-        action.payload.visibleItemsCount
+        action.payload.sliderConfig.rowItems,
+        state.items.length
       );
     },
-    setTransFormValue: (state, action) => {
-      const offsetVal =
-        !state.moved && state.activeIndex === 0
-          ? 100
-          : 200 + action.payload.sliderWidth;
-      state.transformValue = `translate3d(-${offsetVal}%,0,0)`;
-    },
 
-    handlePrevious: (state, action) => {},
+    handlePrevious: (state, action) => {
+      state.animating = false;
+      state.transformValue = `translate3d(-${
+        100 + action.payload.sliderConfig.itemWidth
+      }%,0,0)`;
+      if (state.activeIndex === 0) {
+        state.activeIndex =
+          Math.ceil(state.items.length / action.payload.sliderConfig.rowItems) -
+          1;
+      } else state.activeIndex -= 1;
+      state.sliderItems = calcItems(
+        state.activeIndex,
+        action.payload.sliderConfig.rowItems,
+        state.items.length
+      );
+    },
+    setSliderItems: (state, action) => {
+      state.sliderItems = calcItems(
+        state.activeIndex,
+        action.payload.rowItems,
+        state.items.length,
+        state.moved
+      );
+    },
   },
 });
-const setSliderItems = (activeIndex, rowItems) => {
+const calcItems = (activeIndex, rowItems, itemsLength, moved = true) => {
+  const indicatorItemsCount = !moved ? 1 : 2;
+  const count = !moved ? rowItems * 2 + indicatorItemsCount : itemsLength;
+  const itemsIndexes = Array.from(Array(count).keys());
   const leftItems = () => {
-    if (state.moved) {
+    if (moved) {
       if (activeIndex === 0) {
         // get the last 7 items but drop the last one
-        return [
-          ...totalItems()
-            .slice(-(rowItems + 1))
-            .slice(0, rowItems),
-        ];
+        return [...itemsIndexes.slice(-(rowItems + 1)).slice(0, rowItems)];
       }
 
       if (activeIndex === 1) {
         return [
-          ...totalItems().slice(-1),
-          ...totalItems().slice(activeIndex - 1, rowItems - 1),
+          ...itemsIndexes.slice(-1),
+          ...itemsIndexes.slice(activeIndex - 1, rowItems - 1),
         ];
       }
-      return totalItems()
+      return itemsIndexes
         .slice((activeIndex - 1) * rowItems - 1)
         .slice(0, rowItems);
     }
@@ -87,42 +106,50 @@ const setSliderItems = (activeIndex, rowItems) => {
   };
 
   const middleItems = () => {
-    if (state.moved) {
+    if (moved) {
       if (activeIndex === 0) {
-        const lastItem = totalItems().slice(-1);
-        return [...lastItem, ...totalItems().slice(0, rowItems + 1)];
+        const lastItem = itemsIndexes.slice(-1);
+        return [...lastItem, ...itemsIndexes.slice(0, rowItems + 1)];
       }
 
+      if (activeIndex === Math.ceil(itemsLength / rowItems - 1)) {
+        return [
+          ...itemsIndexes
+            .slice(activeIndex * rowItems - 1)
+            .slice(0, rowItems + 2),
+          itemsIndexes.slice(0, 1),
+        ];
+      }
       return [
-        ...totalItems()
+        ...itemsIndexes
           .slice(activeIndex * rowItems - 1)
           .slice(0, rowItems + 2),
       ];
     }
-    return totalItems().slice(0, rowItems + 1);
+    return itemsIndexes.slice(0, rowItems + 1);
   };
   const rightItems = () => {
-    if (activeIndex === Math.ceil(items.length / rowItems - 1)) {
-      return totalItems().slice(0, rowItems);
+    if (activeIndex === Math.ceil(itemsLength / rowItems - 1)) {
+      return itemsIndexes.slice(1, rowItems);
     }
-    if (activeIndex === Math.ceil(items.length / rowItems) - 2) {
+    if (activeIndex === Math.ceil(itemsLength / rowItems) - 2) {
       return [
-        ...totalItems()
+        ...itemsIndexes
           .slice((activeIndex + 1) * rowItems + 1)
           .slice(0, rowItems),
-        ...totalItems().slice(0, 1),
+        ...itemsIndexes.slice(0, 1),
       ];
     }
-    return totalItems()
+    return itemsIndexes
       .slice((activeIndex + 1) * rowItems + 1)
       .slice(0, rowItems);
   };
-  const obj = {
+
+  return {
     left: leftItems(),
     visible: middleItems(),
     right: rightItems(),
   };
-  return [...obj.left, ...obj.visible, ...obj.right];
 };
 export const sliderActions = sliderSlice.actions;
 export default sliderSlice;
