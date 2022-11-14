@@ -5,7 +5,6 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import MediaItem from '../MediaItem/MediaItem';
 import { useDispatch, useSelector } from 'react-redux';
-import debounce from 'debounce';
 import { useEffect, useState } from 'react';
 import { sliderActions } from '../../store/redux/slider/slider';
 import { useRef } from 'react';
@@ -14,44 +13,53 @@ const Slider = ({ items }) => {
   const [sliderItems, setSliderItems] = useState([]);
   const sliderStates = useSelector((state) => state.slider);
   const dispatch = useDispatch();
+  const sliderRow = useRef();
   const theme = useTheme();
   const min600 = useMediaQuery(theme.breakpoints.up('sm'));
   const min900 = useMediaQuery(theme.breakpoints.up('md'));
   const min1200 = useMediaQuery(theme.breakpoints.up('lg'));
   const min1400 = useMediaQuery('(min-width:1400px)');
-  const sliderRow = useRef();
-  const visibleItemsCount = () => {
-    if (min1400) return 6;
-    if (min1200) return 5;
-    if (min900) return 4;
-    if (min600) return 3;
-    return 2;
+  const sliderConfig = () => {
+    if (min1400) {
+      return {
+        rowItems: 6,
+        itemWidth: 16.66666666666667,
+      };
+    }
+
+    if (min1200)
+      return {
+        rowItems: 5,
+        itemWidth: 20,
+      };
+    if (min900)
+      return {
+        rowItems: 4,
+        itemWidth: 25,
+      };
+    if (min600)
+      return {
+        rowItems: 3,
+        itemWidth: 33.333333,
+      };
+    return {
+      rowItems: 2,
+      itemWidth: 50,
+    };
   };
-  const sliderWidth = () => {
-    if (min1400) return 16.66666666666667;
-    if (min1200) return 20;
-    if (min900) return 25;
-    if (min600) return 33.333333;
-    return 50;
-  };
+
   const totalItems = () => {
     const indicatorItemsCount = !sliderStates.moved ? 1 : 2;
     const count = !sliderStates.moved
-      ? visibleItemsCount() * 2 + indicatorItemsCount
+      ? sliderConfig().rowItems * 2 + indicatorItemsCount
       : items.length;
 
     return Array.from(Array(count).keys());
   };
 
   useEffect(() => {
-    const obj = {
-      left: leftItems(),
-      visible: middleItems(),
-      right: rightItems(),
-    };
-    console.log(obj);
-    setSliderItems([...obj.left, ...obj.visible, ...obj.right]);
-  }, [min600, min900, min1200, min1400, sliderStates.activeIndex]);
+    console.log(sliderStates);
+  }, [min1400, sliderStates.activeIndex]);
 
   // const sliderMouseIn = () => dispatch(sliderActions.setShowNext(true));
   // const sliderMouseOut = () => dispatch(sliderActions.setShowNext(false));
@@ -61,8 +69,8 @@ const Slider = ({ items }) => {
         // get the last 7 items but drop the last one
         return [
           ...totalItems()
-            .slice(-(visibleItemsCount() + 1))
-            .slice(0, visibleItemsCount()),
+            .slice(-(sliderConfig().rowItems + 1))
+            .slice(0, sliderConfig().rowItems),
         ];
       }
 
@@ -71,13 +79,13 @@ const Slider = ({ items }) => {
           ...totalItems().slice(-1),
           ...totalItems().slice(
             sliderStates.activeIndex - 1,
-            visibleItemsCount() - 1
+            sliderConfig().rowItems - 1
           ),
         ];
       }
       return totalItems()
-        .slice((sliderStates.activeIndex - 1) * visibleItemsCount() - 1)
-        .slice(0, visibleItemsCount());
+        .slice((sliderStates.activeIndex - 1) * sliderConfig().rowItems - 1)
+        .slice(0, sliderConfig().rowItems);
     }
     return [];
   };
@@ -85,49 +93,53 @@ const Slider = ({ items }) => {
     if (sliderStates.moved) {
       if (sliderStates.activeIndex === 0) {
         const lastItem = totalItems().slice(-1);
-        return [...lastItem, ...totalItems().slice(0, visibleItemsCount() + 1)];
+        return [
+          ...lastItem,
+          ...totalItems().slice(0, sliderConfig().rowItems + 1),
+        ];
       }
 
       return [
         ...totalItems()
-          .slice(sliderStates.activeIndex * visibleItemsCount() - 1)
-          .slice(0, visibleItemsCount() + 2),
+          .slice(sliderStates.activeIndex * sliderConfig().rowItems - 1)
+          .slice(0, sliderConfig().rowItems + 2),
       ];
     }
-    return totalItems().slice(0, visibleItemsCount() + 1);
+    return totalItems().slice(0, sliderConfig().rowItems + 1);
   };
   const rightItems = () => {
     if (
       sliderStates.activeIndex ===
-      Math.ceil(items.length / visibleItemsCount() - 1)
+      Math.ceil(items.length / sliderConfig().rowItems - 1)
     ) {
-      return totalItems().slice(0, visibleItemsCount());
+      return totalItems().slice(0, sliderConfig().rowItems);
     }
     if (
       sliderStates.activeIndex ===
-      Math.ceil(items.length / visibleItemsCount()) - 2
+      Math.ceil(items.length / sliderConfig().rowItems) - 2
     ) {
       return [
         ...totalItems()
-          .slice((sliderStates.activeIndex + 1) * visibleItemsCount() + 1)
-          .slice(0, visibleItemsCount()),
+          .slice((sliderStates.activeIndex + 1) * sliderConfig().rowItems + 1)
+          .slice(0, sliderConfig().rowItems),
         ...totalItems().slice(0, 1),
       ];
     }
     return totalItems()
-      .slice((sliderStates.activeIndex + 1) * visibleItemsCount() + 1)
-      .slice(0, visibleItemsCount());
+      .slice((sliderStates.activeIndex + 1) * sliderConfig().rowItems + 1)
+      .slice(0, sliderConfig().rowItems);
   };
   const handleNextSlide = () => {
-    dispatch(sliderActions.toggleAnimating());
-    dispatch(sliderActions.setTransFormValue({ sliderWidth: sliderWidth() }));
+    dispatch(
+      sliderActions.toggleAnimating({ sliderWidth: sliderConfig().itemWidth })
+    );
 
     setTimeout(() => {
       dispatch(
         sliderActions.handleNext({
           totalItemsLength: totalItems().length,
-          visibleItemsCount: visibleItemsCount(),
-          sliderWidth: sliderWidth(),
+          visibleItemsCount: sliderConfig().rowItems,
+          sliderWidth: sliderConfig().itemWidth,
         })
       );
     }, 750);
@@ -139,18 +151,20 @@ const Slider = ({ items }) => {
       animating: true,
     }));
     // setSliderMoved(true);
-    sliderRow.current.style.transform = `translate3d(-${sliderWidth()}%,0,0)`;
+    sliderRow.current.style.transform = `translate3d(-${
+      sliderConfig().itemWidth
+    }%,0,0)`;
 
     setTimeout(() => {
       setSliderStates((prev) => {
         let index;
         if (prev.activeIndex === 0) {
-          index = Math.ceil(totalItems().length / visibleItemsCount()) - 1;
+          index = Math.ceil(totalItems().length / sliderConfig().rowItems) - 1;
         } else index = prev.activeIndex - 1;
         return { activeIndex: index, animating: false };
       });
       sliderRow.current.style.transform = `translate3d(-${
-        100 + sliderWidth()
+        100 + sliderConfig().itemWidth
       }%,0,0)`;
     }, 750);
   };
@@ -204,7 +218,7 @@ const Slider = ({ items }) => {
         </span>
 
         <ul className={classes.slider__pagination}>
-          {new Array(Math.ceil(items.length / visibleItemsCount()))
+          {new Array(Math.ceil(items.length / sliderConfig().rowItems))
             .fill(0)
             .map((x, i) => (
               <li

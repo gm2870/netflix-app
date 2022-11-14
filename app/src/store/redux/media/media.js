@@ -17,9 +17,9 @@ const mediaSlice = createSlice({
       state.billboardMovie = action.payload;
       state.playingBillboardTrailer = true;
     },
-    setMediaItems: (state, action) => {
-      state.mediaItems = action.payload;
-    },
+    // setMediaItems: (state, action) => {
+    //   state.mediaItems = action.payload;
+    // },
   },
 });
 export const mediaActions = mediaSlice.actions;

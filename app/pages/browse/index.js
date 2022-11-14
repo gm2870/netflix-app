@@ -14,11 +14,11 @@ import { getMediaItems } from '../../src/store/redux/media/media-actions';
 const browse = () => {
   const dispatch = useDispatch();
   const [showNavigationLinks, setNavigationLinks] = useState(false);
-  const items = useSelector((state) => state.media.mediaItems);
+  const items = useSelector((state) => state.slider.items);
   const navigationToggleHandler = () =>
     setNavigationLinks(!showNavigationLinks);
   useEffect(() => {
-    if (!items) {
+    if (!items.length) {
       dispatch(getMediaItems());
     }
   }, []);
@@ -112,7 +112,7 @@ const browse = () => {
 
       <section className={classes.billboard}></section>
       <section className={classes.sliderContainer}>
-        {items && <Slider items={items} />}
+        {items.length && <Slider items={items} />}
       </section>
     </section>
   );

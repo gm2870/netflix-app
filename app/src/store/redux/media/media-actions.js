@@ -1,4 +1,5 @@
 import { sendRequest } from '../../../utils/api.mjs';
+import { sliderActions } from '../slider/slider.js';
 import { mediaActions } from './media.js';
 
 export const getMediaItems = () => {
@@ -8,7 +9,7 @@ export const getMediaItems = () => {
     };
     const handleError = (err) => console.log(err);
     const setMediaItems = (data) => {
-      dispatch(mediaActions.setMediaItems(data));
+      dispatch(sliderActions.setItems(data));
     };
     sendRequest(config, dispatch, setMediaItems, handleError);
   };
