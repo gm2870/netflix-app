@@ -5,7 +5,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import MediaItem from '../MediaItem/MediaItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { sliderActions } from '../../store/redux/slider/slider';
 import { useRef } from 'react';
 
@@ -25,7 +25,6 @@ const Slider = () => {
         itemWidth: 16.66666666666667,
       };
     }
-
     if (min1200)
       return {
         rowItems: 5,
@@ -46,11 +45,15 @@ const Slider = () => {
       itemWidth: 50,
     };
   };
+
   useEffect(() => {
     dispatch(
-      sliderActions.setSliderItems({ rowItems: sliderConfig().rowItems })
+      sliderActions.setfilteredItems({
+        rowItems: sliderConfig().rowItems,
+        itemWidth: sliderConfig().itemWidth,
+      })
     );
-  }, [min1400]);
+  }, [min600, min900, min1200, min1400]);
 
   const handleNextSlide = () => {
     dispatch(
@@ -85,14 +88,14 @@ const Slider = () => {
     }, 750);
   };
   // const isFirst = (index) =>
-  //   (index === 0 && !sliderItems.left.length) ||
-  //   (index === 1 && sliderItems.left.length);
-  // const isLast = (index) => index === sliderItems.visible.length - 2;
+  //   (index === 0 && !filteredItems.left.length) ||
+  //   (index === 1 && filteredItems.left.length);
+  // const isLast = (index) => index === filteredItems.visible.length - 2;
 
   // const middleItem = (itemIndex) => middleItems().includes(itemIndex);
   // const leftItem = (itemIndex) => leftItems().includes(itemIndex);
-
-  const leftItems = sliderStates.sliderItems.left.map((itemIndex) => (
+  console.log(sliderStates.filteredItems);
+  const leftItems = sliderStates.filteredItems.left.map((itemIndex) => (
     <div
       key={sliderStates.items[itemIndex].id}
       className={`${classes.slider__item} slider__item--`}
@@ -100,22 +103,28 @@ const Slider = () => {
       <MediaItem item={sliderStates.items[itemIndex]} />
     </div>
   ));
-  const visibleItems = sliderStates.sliderItems.visible.map((itemIndex, i) => (
-    <div
-      key={sliderStates.items[itemIndex].id}
-      className={`${classes.slider__item} slider__item--${i}`}
-    >
-      <MediaItem item={sliderStates.items[itemIndex]} />
-    </div>
-  ));
-  const rightItems = sliderStates.sliderItems.right.map((itemIndex, i) => (
-    <div
-      key={sliderStates.items[itemIndex].id}
-      className={`${classes.slider__item} slider__item--`}
-    >
-      <MediaItem item={sliderStates.items[itemIndex]} />
-    </div>
-  ));
+  const visibleItems = sliderStates.filteredItems.visible.map(
+    (itemIndex, i) => {
+      const key =
+        itemIndex !== -1 ? sliderStates.items[itemIndex].id : Math.random();
+      const item = itemIndex !== -1 ? sliderStates.items[itemIndex] : null; // itemIndex can be 0 which means mediaItem should be empty;
+      // console.log(item);
+      return (
+        <div key={key} className={`${classes.slider__item} slider__item--${i}`}>
+          <MediaItem item={item} />
+        </div>
+      );
+    }
+  );
+  const rightItems = sliderStates.filteredItems.right.map((itemIndex, i) => {
+    const key = sliderStates.items[itemIndex].id;
+    const item = sliderStates.items[itemIndex];
+    return (
+      <div key={key} className={`${classes.slider__item} slider__item--`}>
+        <MediaItem item={item} />
+      </div>
+    );
+  });
 
   const result = [...leftItems, ...visibleItems, ...rightItems];
 

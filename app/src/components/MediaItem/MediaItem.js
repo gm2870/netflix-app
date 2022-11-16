@@ -1,5 +1,5 @@
 import { Modal } from '@mui/material';
-import { memo, useEffect, useRef, useState } from 'react';
+import { Fragment, memo, useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import classes from './MediaItem.module.scss';
 import { useDispatch } from 'react-redux';
@@ -31,14 +31,20 @@ const MediaItem = memo(({ item }) => {
   };
 
   return (
-    <div className={classes.mediaItem}>
-      <div ref={boxRef} onMouseEnter={handleOpen} className={classes.boxArt}>
-        <img
-          className={classes.boxArt__image}
-          src={`http://localhost:8001/api/v1/media/image${item.backdrop_path}`}
-        />
-      </div>
-      {/* <Modal hideBackdrop open={open && !underIndicator}>
+    <Fragment>
+      {item && (
+        <div className={classes.mediaItem}>
+          <div
+            ref={boxRef}
+            onMouseEnter={handleOpen}
+            className={classes.boxArt}
+          >
+            <img
+              className={classes.boxArt__image}
+              src={`http://localhost:8001/api/v1/media/image${item.backdrop_path}`}
+            />
+          </div>
+          {/* <Modal hideBackdrop open={open && !underIndicator}>
         <div style={{ outline: 'none' }}>
           <Box onMouseLeave={handleClose}>
             <PreviewModal
@@ -54,7 +60,9 @@ const MediaItem = memo(({ item }) => {
           </Box>
         </div>
       </Modal> */}
-    </div>
+        </div>
+      )}
+    </Fragment>
   );
 });
 

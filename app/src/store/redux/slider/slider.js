@@ -10,7 +10,7 @@ const sliderSlice = createSlice({
     showNext: false,
     transformValue: 'none',
     items: [],
-    sliderItems: {
+    filteredItems: {
       left: [],
       visible: [],
       right: [],
@@ -48,7 +48,7 @@ const sliderSlice = createSlice({
       ) {
         state.activeIndex = 0;
       } else state.activeIndex += 1;
-      state.sliderItems = calcItems(
+      state.filteredItems = filterItems(
         state.activeIndex,
         action.payload.sliderConfig.rowItems,
         state.items.length
@@ -65,23 +65,28 @@ const sliderSlice = createSlice({
           Math.ceil(state.items.length / action.payload.sliderConfig.rowItems) -
           1;
       } else state.activeIndex -= 1;
-      state.sliderItems = calcItems(
+      state.filteredItems = filterItems(
         state.activeIndex,
         action.payload.sliderConfig.rowItems,
         state.items.length
       );
     },
-    setSliderItems: (state, action) => {
-      state.sliderItems = calcItems(
+    setfilteredItems: (state, action) => {
+      state.filteredItems = filterItems(
         state.activeIndex,
         action.payload.rowItems,
         state.items.length,
         state.moved
       );
+      if (state.moved) {
+        const offsetVal = 100 + action.payload.itemWidth;
+        state.transformValue = `translate3d(-${offsetVal}%,0,0)`;
+      }
     },
   },
 });
-const calcItems = (activeIndex, rowItems, itemsLength, moved = true) => {
+
+const filterItems = (activeIndex, rowItems, itemsLength, moved = true) => {
   const indicatorItemsCount = !moved ? 1 : 2;
   const count = !moved ? rowItems * 2 + indicatorItemsCount : itemsLength;
   const itemsIndexes = Array.from(Array(count).keys());
@@ -113,13 +118,21 @@ const calcItems = (activeIndex, rowItems, itemsLength, moved = true) => {
       }
 
       if (activeIndex === Math.ceil(itemsLength / rowItems - 1)) {
-        return [
+        let visItems = [
           ...itemsIndexes
             .slice(activeIndex * rowItems - 1)
             .slice(0, rowItems + 2),
-          itemsIndexes.slice(0, 1),
         ];
+        if (visItems.length < rowItems + 1) {
+          const diff = rowItems - visItems.length + 1;
+          const arr = Array.from(Array(diff).fill(-1));
+          visItems = [...visItems, ...arr, ...itemsIndexes.slice(0, 1)];
+        } else {
+          [...visItems, ...itemsIndexes.slice(0, 1)];
+        }
+        return visItems;
       }
+
       return [
         ...itemsIndexes
           .slice(activeIndex * rowItems - 1)
@@ -130,19 +143,13 @@ const calcItems = (activeIndex, rowItems, itemsLength, moved = true) => {
   };
   const rightItems = () => {
     if (activeIndex === Math.ceil(itemsLength / rowItems - 1)) {
-      return itemsIndexes.slice(1, rowItems);
+      return itemsIndexes.slice(1, rowItems + 1);
     }
-    if (activeIndex === Math.ceil(itemsLength / rowItems) - 2) {
-      return [
-        ...itemsIndexes
-          .slice((activeIndex + 1) * rowItems + 1)
-          .slice(0, rowItems),
-        ...itemsIndexes.slice(0, 1),
-      ];
-    }
-    return itemsIndexes
+    let rightItems = itemsIndexes
       .slice((activeIndex + 1) * rowItems + 1)
       .slice(0, rowItems);
+
+    return rightItems;
   };
 
   return {
@@ -151,5 +158,6 @@ const calcItems = (activeIndex, rowItems, itemsLength, moved = true) => {
     right: rightItems(),
   };
 };
+
 export const sliderActions = sliderSlice.actions;
 export default sliderSlice;
