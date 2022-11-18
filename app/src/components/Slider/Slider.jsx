@@ -47,6 +47,7 @@ const Slider = () => {
   };
 
   useEffect(() => {
+    console.log(sliderConfig());
     dispatch(
       sliderActions.setfilteredItems({
         rowItems: sliderConfig().rowItems,
@@ -56,19 +57,32 @@ const Slider = () => {
   }, [min600, min900, min1200, min1400]);
 
   const handleNextSlide = () => {
+    const w =
+      sliderStates.filteredItems.visible.length * sliderConfig().itemWidth;
     dispatch(
       sliderActions.toggleAnimating({
         direction: 'right',
         itemWidth: sliderConfig().itemWidth,
       })
     );
-
+    const offsetVal =
+      !sliderStates.moved && sliderStates.activeIndex === 0
+        ? w
+        : w * 2 + sliderConfig().itemWidth;
+    console.log(
+      sliderStates.filteredItems.right.length,
+      sliderConfig().rowItems
+    );
+    sliderRow.current.style.transform = `translate3d(-${offsetVal}%,0,0)`;
     setTimeout(() => {
       dispatch(
         sliderActions.handleNext({
           sliderConfig: sliderConfig(),
         })
       );
+      sliderRow.current.style.transform = `translate3d(-${
+        w + sliderConfig().itemWidth
+      }%,0,0)`;
     }, 750);
   };
 
@@ -154,7 +168,6 @@ const Slider = () => {
               className={`${classes.slider__content} ${
                 sliderStates.animating ? classes.animating : ''
               }`}
-              style={{ transform: sliderStates.transformValue }}
             >
               {result}
             </div>

@@ -8,7 +8,6 @@ const sliderSlice = createSlice({
     activeIndex: 0,
     cardOpen: false,
     showNext: false,
-    transformValue: 'none',
     items: [],
     filteredItems: {
       left: [],
@@ -27,47 +26,34 @@ const sliderSlice = createSlice({
       state.items = action.payload;
     },
     toggleAnimating: (state, action) => {
-      const offsetVal =
-        !state.moved && state.activeIndex === 0
-          ? 100
-          : action.payload.direction === 'right'
-          ? 200 + action.payload.itemWidth
-          : action.payload.itemWidth;
-      state.transformValue = `translate3d(-${offsetVal}%,0,0)`;
       if (!state.moved) state.moved = true;
       state.animating = !state.animating;
     },
     handleNext: (state, action) => {
+      const { itemWidth, rowItems } = action.payload.sliderConfig;
       state.animating = false;
-      state.transformValue = `translate3d(-${
-        100 + action.payload.sliderConfig.itemWidth
-      }%,0,0)`;
-      if (
-        state.activeIndex >=
-        Math.ceil(state.items.length / action.payload.sliderConfig.rowItems) - 1
-      ) {
+
+      if (state.activeIndex >= Math.ceil(state.items.length / rowItems) - 1) {
         state.activeIndex = 0;
       } else state.activeIndex += 1;
       state.filteredItems = filterItems(
         state.activeIndex,
-        action.payload.sliderConfig.rowItems,
+        rowItems,
         state.items.length
       );
     },
 
     handlePrevious: (state, action) => {
+      const { itemWidth, rowItems } = action.payload.sliderConfig;
+
       state.animating = false;
-      state.transformValue = `translate3d(-${
-        100 + action.payload.sliderConfig.itemWidth
-      }%,0,0)`;
+
       if (state.activeIndex === 0) {
-        state.activeIndex =
-          Math.ceil(state.items.length / action.payload.sliderConfig.rowItems) -
-          1;
+        state.activeIndex = Math.ceil(state.items.length / rowItems) - 1;
       } else state.activeIndex -= 1;
       state.filteredItems = filterItems(
         state.activeIndex,
-        action.payload.sliderConfig.rowItems,
+        rowItems,
         state.items.length
       );
     },
@@ -80,7 +66,7 @@ const sliderSlice = createSlice({
       );
       if (state.moved) {
         const offsetVal = 100 + action.payload.itemWidth;
-        state.transformValue = `translate3d(-${offsetVal}%,0,0)`;
+        // state.transformValue = `translate3d(-${offsetVal}%,0,0)`;
       }
     },
   },
@@ -122,14 +108,15 @@ const filterItems = (activeIndex, rowItems, itemsLength, moved = true) => {
           ...itemsIndexes
             .slice(activeIndex * rowItems - 1)
             .slice(0, rowItems + 2),
+          ...itemsIndexes.slice(0, 1),
         ];
-        if (visItems.length < rowItems + 1) {
-          const diff = rowItems - visItems.length + 1;
-          const arr = Array.from(Array(diff).fill(-1));
-          visItems = [...visItems, ...arr, ...itemsIndexes.slice(0, 1)];
-        } else {
-          [...visItems, ...itemsIndexes.slice(0, 1)];
-        }
+        // if (visItems.length < rowItems + 1) {
+        //   const diff = rowItems - visItems.length + 1;
+        //   const arr = Array.from(Array(diff).fill(-1));
+        //   visItems = [...visItems, ...arr, ...itemsIndexes.slice(0, 1)];
+        // } else {
+        //   visItems = [...visItems, ...itemsIndexes.slice(0, 1)];
+        // }
         return visItems;
       }
 
