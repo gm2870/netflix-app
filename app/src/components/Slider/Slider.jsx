@@ -47,7 +47,6 @@ const Slider = () => {
   };
 
   useEffect(() => {
-    console.log(sliderConfig());
     dispatch(
       sliderActions.setfilteredItems({
         rowItems: sliderConfig().rowItems,
@@ -57,48 +56,55 @@ const Slider = () => {
   }, [min600, min900, min1200, min1400]);
 
   const handleNextSlide = () => {
-    const w =
-      sliderStates.filteredItems.visible.length * sliderConfig().itemWidth;
+    let { rowItems, itemWidth } = sliderConfig();
+    let w = rowItems * itemWidth;
+    let diff = 0;
+    if (sliderStates.filteredItems.right.length < rowItems) {
+      diff = rowItems - sliderStates.filteredItems.right.length - 1;
+    }
+
     dispatch(
       sliderActions.toggleAnimating({
         direction: 'right',
-        itemWidth: sliderConfig().itemWidth,
+        itemWidth,
       })
     );
-    const offsetVal =
-      !sliderStates.moved && sliderStates.activeIndex === 0
-        ? w
-        : w * 2 + sliderConfig().itemWidth;
-    console.log(
-      sliderStates.filteredItems.right.length,
-      sliderConfig().rowItems
-    );
-    sliderRow.current.style.transform = `translate3d(-${offsetVal}%,0,0)`;
+    let translateX = !sliderStates.moved
+      ? w
+      : w * 2 + itemWidth - diff * itemWidth;
+
+    sliderRow.current.style.transform = `translate3d(-${translateX}%,0,0)`;
     setTimeout(() => {
       dispatch(
         sliderActions.handleNext({
           sliderConfig: sliderConfig(),
         })
       );
-      sliderRow.current.style.transform = `translate3d(-${
-        w + sliderConfig().itemWidth
-      }%,0,0)`;
+      const translateX = w + itemWidth - diff * itemWidth;
+      sliderRow.current.style.transform = `translate3d(-${translateX}%,0,0)`;
     }, 750);
   };
 
   const handlePrevSlide = () => {
+    let { rowItems, itemWidth } = sliderConfig();
+    let w = rowItems * itemWidth;
+    let translateX = itemWidth;
+
     dispatch(
       sliderActions.toggleAnimating({
         direction: 'left',
-        itemWidth: sliderConfig().itemWidth,
+        itemWidth: itemWidth,
       })
     );
+    sliderRow.current.style.transform = `translate3d(-${translateX}%,0,0)`;
+
     setTimeout(() => {
       dispatch(
         sliderActions.handlePrevious({
           sliderConfig: sliderConfig(),
         })
       );
+      sliderRow.current.style.transform = `translate3d(-${w + itemWidth}%,0,0)`;
     }, 750);
   };
   // const isFirst = (index) =>
