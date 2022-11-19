@@ -58,12 +58,18 @@ const sliderSlice = createSlice({
       );
     },
     setfilteredItems: (state, action) => {
+      console.log(state.activeIndex);
+      let ai = state.activeIndex;
+      if (ai > Math.ceil(state.items.length / action.payload.rowItems) - 1) {
+        ai = Math.ceil(state.items.length / action.payload.rowItems) - 1;
+      }
       state.filteredItems = filterItems(
-        state.activeIndex,
+        ai,
         action.payload.rowItems,
         state.items.length,
         state.moved
       );
+      state.activeIndex = ai;
       if (state.moved) {
         const offsetVal = 100 + action.payload.itemWidth;
         // state.transformValue = `translate3d(-${offsetVal}%,0,0)`;
@@ -73,6 +79,7 @@ const sliderSlice = createSlice({
 });
 
 const filterItems = (activeIndex, rowItems, itemsLength, moved = true) => {
+  console.log(activeIndex);
   const indicatorItemsCount = !moved ? 1 : 2;
   const count = !moved ? rowItems * 2 + indicatorItemsCount : itemsLength;
   const itemsIndexes = Array.from(Array(count).keys());
@@ -89,6 +96,11 @@ const filterItems = (activeIndex, rowItems, itemsLength, moved = true) => {
           ...itemsIndexes.slice(activeIndex - 1, rowItems - 1),
         ];
       }
+      // if (activeIndex === Math.ceil(itemsLength / rowItems - 1)) {
+      //   return itemsIndexes
+      //     .slice((activeIndex - 1) * rowItems - 2)
+      //     .slice(0, rowItems);
+      // }
       return itemsIndexes
         .slice((activeIndex - 1) * rowItems - 1)
         .slice(0, rowItems);
@@ -102,21 +114,13 @@ const filterItems = (activeIndex, rowItems, itemsLength, moved = true) => {
         const lastItem = itemsIndexes.slice(-1);
         return [...lastItem, ...itemsIndexes.slice(0, rowItems + 1)];
       }
-
       if (activeIndex === Math.ceil(itemsLength / rowItems - 1)) {
         let visItems = [
           ...itemsIndexes
             .slice(activeIndex * rowItems - 1)
-            .slice(0, rowItems + 2),
+            .slice(0, rowItems + 1),
           ...itemsIndexes.slice(0, 1),
         ];
-        // if (visItems.length < rowItems + 1) {
-        //   const diff = rowItems - visItems.length + 1;
-        //   const arr = Array.from(Array(diff).fill(-1));
-        //   visItems = [...visItems, ...arr, ...itemsIndexes.slice(0, 1)];
-        // } else {
-        //   visItems = [...visItems, ...itemsIndexes.slice(0, 1)];
-        // }
         return visItems;
       }
 
