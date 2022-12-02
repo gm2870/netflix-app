@@ -36,6 +36,7 @@ const sliderSlice = createSlice({
       if (state.activeIndex >= Math.ceil(state.items.length / rowItems) - 1) {
         state.activeIndex = 0;
       } else state.activeIndex += 1;
+
       state.filteredItems = filterItems(
         state.activeIndex,
         rowItems,
@@ -61,6 +62,7 @@ const sliderSlice = createSlice({
       console.log(state.activeIndex);
       let ai = state.activeIndex;
       if (ai > Math.ceil(state.items.length / action.payload.rowItems) - 1) {
+        console.log(ai);
         ai = Math.ceil(state.items.length / action.payload.rowItems) - 1;
       }
       state.filteredItems = filterItems(
@@ -70,42 +72,43 @@ const sliderSlice = createSlice({
         state.moved
       );
       state.activeIndex = ai;
-      if (state.moved) {
-        const offsetVal = 100 + action.payload.itemWidth;
-        // state.transformValue = `translate3d(-${offsetVal}%,0,0)`;
-      }
     },
   },
 });
 
 const filterItems = (activeIndex, rowItems, itemsLength, moved = true) => {
-  console.log(activeIndex);
+  // console.log(Math.ceil(itemsLength / rowItems - 1) - activeIndex);
+
   const indicatorItemsCount = !moved ? 1 : 2;
   const count = !moved ? rowItems * 2 + indicatorItemsCount : itemsLength;
   const itemsIndexes = Array.from(Array(count).keys());
-  const leftItems = () => {
-    if (moved) {
-      if (activeIndex === 0) {
-        // get the last 7 items but drop the last one
-        return [...itemsIndexes.slice(-(rowItems + 1)).slice(0, rowItems)];
-      }
+  let temp = [...itemsIndexes];
+  console.log(temp);
 
-      if (activeIndex === 1) {
-        return [
-          ...itemsIndexes.slice(-1),
-          ...itemsIndexes.slice(activeIndex - 1, rowItems - 1),
-        ];
-      }
-      // if (activeIndex === Math.ceil(itemsLength / rowItems - 1)) {
-      //   return itemsIndexes
-      //     .slice((activeIndex - 1) * rowItems - 2)
-      //     .slice(0, rowItems);
-      // }
-      return itemsIndexes
-        .slice((activeIndex - 1) * rowItems - 1)
-        .slice(0, rowItems);
+  const leftItems = () => {
+    if (!moved) {
+      return [];
     }
-    return [];
+    if (activeIndex === 0) {
+      // return [];
+
+      return [...itemsIndexes.slice(-(rowItems + 1)).slice(0, rowItems)];
+    }
+
+    if (activeIndex === 1) {
+      return [
+        ...itemsIndexes.slice(-1),
+        ...itemsIndexes.slice(activeIndex - 1, rowItems - 1),
+      ];
+    }
+    // if (activeIndex === Math.ceil(itemsLength / rowItems - 1)) {
+    //   return itemsIndexes
+    //     .slice((activeIndex - 1) * rowItems - 2)
+    //     .slice(0, rowItems);
+    // }
+    return itemsIndexes
+      .slice((activeIndex - 1) * rowItems - 1)
+      .slice(0, rowItems);
   };
 
   const middleItems = () => {
@@ -116,9 +119,7 @@ const filterItems = (activeIndex, rowItems, itemsLength, moved = true) => {
       }
       if (activeIndex === Math.ceil(itemsLength / rowItems - 1)) {
         let visItems = [
-          ...itemsIndexes
-            .slice(activeIndex * rowItems - 1)
-            .slice(0, rowItems + 1),
+          ...itemsIndexes.slice(-(rowItems + 1)),
           ...itemsIndexes.slice(0, 1),
         ];
         return visItems;
@@ -132,6 +133,7 @@ const filterItems = (activeIndex, rowItems, itemsLength, moved = true) => {
     }
     return itemsIndexes.slice(0, rowItems + 1);
   };
+
   const rightItems = () => {
     if (activeIndex === Math.ceil(itemsLength / rowItems - 1)) {
       return itemsIndexes.slice(1, rowItems + 1);

@@ -80,7 +80,7 @@ const Slider = () => {
           sliderConfig: sliderConfig(),
         })
       );
-      const translateX = w + itemWidth - diff * itemWidth;
+      const translateX = w + itemWidth;
       sliderRow.current.style.transform = `translate3d(-${translateX}%,0,0)`;
     }, 750);
   };
