@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, current } from '@reduxjs/toolkit';
 
 const sliderSlice = createSlice({
   name: 'slider',
@@ -59,10 +59,8 @@ const sliderSlice = createSlice({
       );
     },
     setfilteredItems: (state, action) => {
-      console.log(state.activeIndex);
       let ai = state.activeIndex;
       if (ai > Math.ceil(state.items.length / action.payload.rowItems) - 1) {
-        console.log(ai);
         ai = Math.ceil(state.items.length / action.payload.rowItems) - 1;
       }
       state.filteredItems = filterItems(
@@ -77,69 +75,51 @@ const sliderSlice = createSlice({
 });
 
 const filterItems = (activeIndex, rowItems, itemsLength, moved = true) => {
-  // console.log(Math.ceil(itemsLength / rowItems - 1) - activeIndex);
-
   const indicatorItemsCount = !moved ? 1 : 2;
   const count = !moved ? rowItems * 2 + indicatorItemsCount : itemsLength;
   const itemsIndexes = Array.from(Array(count).keys());
-  let temp = [...itemsIndexes];
-  console.log(temp);
+  const middleItems = () => {
+    if (!moved) {
+      return itemsIndexes.slice(0, rowItems + 1);
+    }
+    // on first index we need last item to be added
+    if (activeIndex === 0) {
+      const lastItem = itemsIndexes.slice(-1);
+      return [...lastItem, ...itemsIndexes.slice(0, rowItems + 1)];
+    }
+    // console.log(state.filteredItems.visible)
+    // on last index we need first item to be added
+    if (activeIndex === Math.ceil(itemsLength / rowItems - 1)) {
+      let visItems = [
+        ...itemsIndexes.slice(-(rowItems + 1)),
+        ...itemsIndexes.slice(0, 1),
+      ];
+      return visItems;
+    }
+
+    return [
+      ...itemsIndexes.slice(activeIndex * rowItems - 1).slice(0, rowItems + 2),
+    ];
+  };
 
   const leftItems = () => {
     if (!moved) {
       return [];
     }
-    if (activeIndex === 0) {
-      // return [];
-
-      return [...itemsIndexes.slice(-(rowItems + 1)).slice(0, rowItems)];
+    const midItemsFirstIndex = middleItems()[0];
+    const left = [
+      ...itemsIndexes.slice(0, midItemsFirstIndex).slice(-rowItems),
+    ];
+    if (left.length < rowItems) {
+      left.unshift(...itemsIndexes.slice(-1));
     }
-
-    if (activeIndex === 1) {
-      return [
-        ...itemsIndexes.slice(-1),
-        ...itemsIndexes.slice(activeIndex - 1, rowItems - 1),
-      ];
-    }
-    // if (activeIndex === Math.ceil(itemsLength / rowItems - 1)) {
-    //   return itemsIndexes
-    //     .slice((activeIndex - 1) * rowItems - 2)
-    //     .slice(0, rowItems);
-    // }
-    return itemsIndexes
-      .slice((activeIndex - 1) * rowItems - 1)
-      .slice(0, rowItems);
-  };
-
-  const middleItems = () => {
-    if (moved) {
-      if (activeIndex === 0) {
-        const lastItem = itemsIndexes.slice(-1);
-        return [...lastItem, ...itemsIndexes.slice(0, rowItems + 1)];
-      }
-      if (activeIndex === Math.ceil(itemsLength / rowItems - 1)) {
-        let visItems = [
-          ...itemsIndexes.slice(-(rowItems + 1)),
-          ...itemsIndexes.slice(0, 1),
-        ];
-        return visItems;
-      }
-
-      return [
-        ...itemsIndexes
-          .slice(activeIndex * rowItems - 1)
-          .slice(0, rowItems + 2),
-      ];
-    }
-    return itemsIndexes.slice(0, rowItems + 1);
+    return left;
   };
 
   const rightItems = () => {
-    if (activeIndex === Math.ceil(itemsLength / rowItems - 1)) {
-      return itemsIndexes.slice(1, rowItems + 1);
-    }
+    const midItemsLastIndex = [...middleItems()].pop();
     let rightItems = itemsIndexes
-      .slice((activeIndex + 1) * rowItems + 1)
+      .slice(midItemsLastIndex + 1)
       .slice(0, rowItems);
 
     return rightItems;

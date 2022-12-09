@@ -53,15 +53,28 @@ const Slider = () => {
         itemWidth: sliderConfig().itemWidth,
       })
     );
-  }, [min600, min900, min1200, min1400]);
+    if (sliderStates.moved) {
+      let { rowItems, itemWidth } = sliderConfig();
+      let translateX = rowItems * itemWidth + itemWidth;
 
-  const handleNextSlide = () => {
+      sliderRow.current.style.transform = `translate3d(-${translateX}%,0,0)`;
+    }
+  }, [min600, min900, min1200, min1400]);
+  const updateTransformValues = () => {
     let { rowItems, itemWidth } = sliderConfig();
     let w = rowItems * itemWidth;
     let diff = 0;
     if (sliderStates.filteredItems.right.length < rowItems) {
       diff = rowItems - sliderStates.filteredItems.right.length - 1;
     }
+    let translateX = !sliderStates.moved
+      ? w
+      : w * 2 + itemWidth - diff * itemWidth;
+
+    sliderRow.current.style.transform = `translate3d(-${translateX}%,0,0)`;
+  };
+  const handleNextSlide = () => {
+    let { rowItems, itemWidth } = sliderConfig();
 
     dispatch(
       sliderActions.toggleAnimating({
@@ -69,17 +82,14 @@ const Slider = () => {
         itemWidth,
       })
     );
-    let translateX = !sliderStates.moved
-      ? w
-      : w * 2 + itemWidth - diff * itemWidth;
-
-    sliderRow.current.style.transform = `translate3d(-${translateX}%,0,0)`;
+    updateTransformValues();
     setTimeout(() => {
       dispatch(
         sliderActions.handleNext({
           sliderConfig: sliderConfig(),
         })
       );
+      let w = rowItems * itemWidth;
       const translateX = w + itemWidth;
       sliderRow.current.style.transform = `translate3d(-${translateX}%,0,0)`;
     }, 750);
@@ -128,7 +138,6 @@ const Slider = () => {
       const key =
         itemIndex !== -1 ? sliderStates.items[itemIndex].id : Math.random();
       const item = itemIndex !== -1 ? sliderStates.items[itemIndex] : null; // itemIndex can be 0 which means mediaItem should be empty;
-      // console.log(item);
       return (
         <div key={key} className={`${classes.slider__item} slider__item--${i}`}>
           <MediaItem item={item} />
