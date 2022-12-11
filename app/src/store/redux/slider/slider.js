@@ -111,7 +111,7 @@ const filterItems = (activeIndex, rowItems, itemsLength, moved = true) => {
       ...itemsIndexes.slice(0, midItemsFirstIndex).slice(-rowItems),
     ];
     if (left.length < rowItems) {
-      left.unshift(...itemsIndexes.slice(-1));
+      left.unshift(...itemsIndexes.slice(-(rowItems - left.length)));
     }
     return left;
   };
