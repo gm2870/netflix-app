@@ -11,7 +11,7 @@ const sliderSlice = createSlice({
     items: [],
     filteredItems: {
       left: [],
-      visible: [],
+      middle: [],
       right: [],
     },
   },
@@ -36,8 +36,9 @@ const sliderSlice = createSlice({
       if (state.activeIndex >= Math.ceil(state.items.length / rowItems) - 1) {
         state.activeIndex = 0;
       } else state.activeIndex += 1;
-
       state.filteredItems = filterItems(
+        current(state.filteredItems),
+        'right',
         state.activeIndex,
         rowItems,
         state.items.length
@@ -46,13 +47,14 @@ const sliderSlice = createSlice({
 
     handlePrevious: (state, action) => {
       const { itemWidth, rowItems } = action.payload.sliderConfig;
-
       state.animating = false;
 
       if (state.activeIndex === 0) {
         state.activeIndex = Math.ceil(state.items.length / rowItems) - 1;
       } else state.activeIndex -= 1;
       state.filteredItems = filterItems(
+        current(state.filteredItems),
+        'left',
         state.activeIndex,
         rowItems,
         state.items.length
@@ -63,7 +65,10 @@ const sliderSlice = createSlice({
       if (ai > Math.ceil(state.items.length / action.payload.rowItems) - 1) {
         ai = Math.ceil(state.items.length / action.payload.rowItems) - 1;
       }
+      console.log(current(state.filteredItems));
       state.filteredItems = filterItems(
+        current(state.filteredItems),
+        null,
         ai,
         action.payload.rowItems,
         state.items.length,
@@ -74,10 +79,19 @@ const sliderSlice = createSlice({
   },
 });
 
-const filterItems = (activeIndex, rowItems, itemsLength, moved = true) => {
+const filterItems = (
+  currentItems,
+  direction,
+  activeIndex,
+  rowItems,
+  itemsLength,
+  moved = true
+) => {
   const indicatorItemsCount = !moved ? 1 : 2;
   const count = !moved ? rowItems * 2 + indicatorItemsCount : itemsLength;
   const itemsIndexes = Array.from(Array(count).keys());
+  const prevMidFirstIndex = currentItems.middle[0];
+  const prevMidLastIndex = [...currentItems.middle].pop();
   const middleItems = () => {
     if (!moved) {
       return itemsIndexes.slice(0, rowItems + 1);
@@ -87,7 +101,7 @@ const filterItems = (activeIndex, rowItems, itemsLength, moved = true) => {
       const lastItem = itemsIndexes.slice(-1);
       return [...lastItem, ...itemsIndexes.slice(0, rowItems + 1)];
     }
-    // console.log(state.filteredItems.visible)
+
     // on last index we need first item to be added
     if (activeIndex === Math.ceil(itemsLength / rowItems - 1)) {
       let visItems = [
@@ -97,26 +111,35 @@ const filterItems = (activeIndex, rowItems, itemsLength, moved = true) => {
       return visItems;
     }
 
-    return [
-      ...itemsIndexes.slice(activeIndex * rowItems - 1).slice(0, rowItems + 2),
-    ];
+    if (direction === 'right') {
+      return itemsIndexes.slice(prevMidLastIndex - 1).slice(0, rowItems + 2);
+    }
+
+    if (direction === 'left') {
+      return itemsIndexes
+        .slice(0, prevMidFirstIndex + 2)
+        .slice(-(rowItems + 2));
+    }
   };
 
   const leftItems = () => {
     if (!moved) {
       return [];
     }
+    if (!middleItems()) return;
     const midItemsFirstIndex = middleItems()[0];
-    const left = [
-      ...itemsIndexes.slice(0, midItemsFirstIndex).slice(-rowItems),
-    ];
+    let left = [...itemsIndexes.slice(0, midItemsFirstIndex).slice(-rowItems)];
+    if (activeIndex === 0) {
+      left = [...itemsIndexes.slice(-(rowItems + 1))].slice(0, -1);
+    }
     if (left.length < rowItems) {
-      left.unshift(...itemsIndexes.slice(-(rowItems - left.length)));
+      left.unshift(...itemsIndexes.slice(-1));
     }
     return left;
   };
 
   const rightItems = () => {
+    if (!middleItems()) return;
     const midItemsLastIndex = [...middleItems()].pop();
     let rightItems = itemsIndexes
       .slice(midItemsLastIndex + 1)
@@ -127,7 +150,7 @@ const filterItems = (activeIndex, rowItems, itemsLength, moved = true) => {
 
   return {
     left: leftItems(),
-    visible: middleItems(),
+    middle: middleItems(),
     right: rightItems(),
   };
 };

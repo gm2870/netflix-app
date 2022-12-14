@@ -67,6 +67,9 @@ const Slider = () => {
     if (sliderStates.filteredItems.right.length < rowItems) {
       diff = rowItems - sliderStates.filteredItems.right.length - 1;
     }
+    if (sliderStates.filteredItems.left.length < rowItems) {
+      diff = rowItems - sliderStates.filteredItems.left.length - 1;
+    }
     let translateX = !sliderStates.moved
       ? w
       : w * 2 + itemWidth - diff * itemWidth;
@@ -133,18 +136,16 @@ const Slider = () => {
       <MediaItem item={sliderStates.items[itemIndex]} />
     </div>
   ));
-  const visibleItems = sliderStates.filteredItems.visible.map(
-    (itemIndex, i) => {
-      const key =
-        itemIndex !== -1 ? sliderStates.items[itemIndex].id : Math.random();
-      const item = itemIndex !== -1 ? sliderStates.items[itemIndex] : null; // itemIndex can be 0 which means mediaItem should be empty;
-      return (
-        <div key={key} className={`${classes.slider__item} slider__item--${i}`}>
-          <MediaItem item={item} />
-        </div>
-      );
-    }
-  );
+  const visibleItems = sliderStates.filteredItems.middle.map((itemIndex, i) => {
+    const key =
+      itemIndex !== -1 ? sliderStates.items[itemIndex].id : Math.random();
+    const item = itemIndex !== -1 ? sliderStates.items[itemIndex] : null; // itemIndex can be 0 which means mediaItem should be empty;
+    return (
+      <div key={key} className={`${classes.slider__item} slider__item--${i}`}>
+        <MediaItem item={item} />
+      </div>
+    );
+  });
   const rightItems = sliderStates.filteredItems.right.map((itemIndex, i) => {
     const key = sliderStates.items[itemIndex].id;
     const item = sliderStates.items[itemIndex];
