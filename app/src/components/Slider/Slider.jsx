@@ -67,9 +67,6 @@ const Slider = () => {
     if (sliderStates.filteredItems.right.length < rowItems) {
       diff = rowItems - sliderStates.filteredItems.right.length - 1;
     }
-    if (sliderStates.filteredItems.left.length < rowItems) {
-      diff = rowItems - sliderStates.filteredItems.left.length - 1;
-    }
     let translateX = !sliderStates.moved
       ? w
       : w * 2 + itemWidth - diff * itemWidth;
@@ -100,7 +97,6 @@ const Slider = () => {
 
   const handlePrevSlide = () => {
     let { rowItems, itemWidth } = sliderConfig();
-    let w = rowItems * itemWidth;
     let translateX = itemWidth;
 
     dispatch(
@@ -117,7 +113,16 @@ const Slider = () => {
           sliderConfig: sliderConfig(),
         })
       );
-      sliderRow.current.style.transform = `translate3d(-${w + itemWidth}%,0,0)`;
+      let diff = 0;
+
+      if (
+        sliderStates.items % rowItems !== 0 &&
+        sliderStates.activeIndex === 2
+      ) {
+        diff = rowItems - sliderStates.filteredItems.left.length + 1;
+      }
+      const translateX = rowItems * itemWidth + itemWidth - diff * itemWidth;
+      sliderRow.current.style.transform = `translate3d(-${translateX}%,0,0)`;
     }, 750);
   };
   // const isFirst = (index) =>

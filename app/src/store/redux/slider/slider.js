@@ -65,7 +65,6 @@ const sliderSlice = createSlice({
       if (ai > Math.ceil(state.items.length / action.payload.rowItems) - 1) {
         ai = Math.ceil(state.items.length / action.payload.rowItems) - 1;
       }
-      console.log(current(state.filteredItems));
       state.filteredItems = filterItems(
         current(state.filteredItems),
         null,
@@ -133,6 +132,7 @@ const filterItems = (
       left = [...itemsIndexes.slice(-(rowItems + 1))].slice(0, -1);
     }
     if (left.length < rowItems) {
+      // left.unshift(...itemsIndexes.slice(-(rowItems - left.length)));
       left.unshift(...itemsIndexes.slice(-1));
     }
     return left;
