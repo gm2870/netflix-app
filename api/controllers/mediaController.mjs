@@ -15,6 +15,7 @@ import {
 import AppError from '../utils/appError.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
 export const getMediaItems = catchAsync(async (req, res, next) => {
   const media = await Media.find();
   if (!media) {
@@ -102,7 +103,6 @@ export const searchMediaByName = async (name) => {
       allResults: mediaData.data.results.slice(0, 4),
     };
   } catch (error) {
-    console.log(error);
     return new AppError(error.message || 'Something went wrong.', 500);
   }
 };
@@ -162,6 +162,8 @@ export const emptyAssets = (req, res, next) => {
 };
 
 export const mediaStream = catchAsync(async (req, res) => {
+  console.log(req.params);
+
   const media = await Media.findOne({ id: req.params.mediaId });
   const src = media.video_src.SD;
   const fileName = `${normalizeText(media.title)}.mp4`;
@@ -215,21 +217,25 @@ export const mediaStream = catchAsync(async (req, res) => {
   }
 });
 
-export const imageStream = async (req, res) => {
-  const imageStream = got.stream(
-    `https://image.tmdb.org/t/p/w1280/${req.params.path}`
-  );
+export const imageStream = catchAsync(async (req, res) => {
   const resolvedPath = path.join(
     __dirname,
     '..',
     'media-files',
     `${req.params.path}`
   );
-  const fileWriterStream = fs.createWriteStream(resolvedPath);
-  req.headers['content-type'] = 'image/jpg';
-  imageStream.on('response', (response) => {
-    response.pipe(res);
-  });
+  let sourcePath;
+  if (!fs.existsSync(resolvedPath)) {
+    sourcePath = `https://image.tmdb.org/t/p/w1280/${req.params.path}`;
+    const imageStream = got.stream(sourcePath);
+    const fileWriterStream = fs.createWriteStream(resolvedPath);
+    req.headers['content-type'] = 'image/jpg';
+    imageStream.on('response', (response) => {
+      response.pipe(res);
+    });
 
-  imageStream.pipe(fileWriterStream);
-};
+    imageStream.pipe(fileWriterStream);
+  } else {
+    res.sendFile(resolvedPath);
+  }
+});

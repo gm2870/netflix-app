@@ -97,7 +97,6 @@ export const updateSrc = async (media) => {
     videoData = await getVideoSrc(media.title_id, 1080);
   }
   if (!videoData || !videoData.SD) return;
-  console.log(videoData);
   return await Media.findOneAndUpdate(
     { id: media.id },
     {
