@@ -18,6 +18,10 @@ const Slider = () => {
   const min900 = useMediaQuery(theme.breakpoints.up('md'));
   const min1200 = useMediaQuery(theme.breakpoints.up('lg'));
   const min1400 = useMediaQuery('(min-width:1400px)');
+
+  if (sliderStates.translateX) {
+    sliderRow.current.style.transform = `translate3d(-${sliderStates.translateX}%,0,0)`;
+  }
   const sliderConfig = () => {
     if (min1400) {
       return {
@@ -60,79 +64,41 @@ const Slider = () => {
       sliderRow.current.style.transform = `translate3d(-${translateX}%,0,0)`;
     }
   }, [min600, min900, min1200, min1400]);
-  const updateTransformValues = () => {
-    let { rowItems, itemWidth } = sliderConfig();
-    let w = rowItems * itemWidth;
-    let diff = 0;
-    if (sliderStates.filteredItems.right.length < rowItems) {
-      diff = rowItems - sliderStates.filteredItems.right.length - 1;
-    }
-    let translateX = !sliderStates.moved
-      ? w
-      : w * 2 + itemWidth - diff * itemWidth;
 
-    sliderRow.current.style.transform = `translate3d(-${translateX}%,0,0)`;
-  };
   const handleNextSlide = () => {
     let { rowItems, itemWidth } = sliderConfig();
-
     dispatch(
       sliderActions.toggleAnimating({
         direction: 'right',
+        rowItems,
         itemWidth,
       })
     );
-    updateTransformValues();
     setTimeout(() => {
       dispatch(
         sliderActions.handleNext({
           sliderConfig: sliderConfig(),
         })
       );
-      let w = rowItems * itemWidth;
-      const translateX = w + itemWidth;
-      sliderRow.current.style.transform = `translate3d(-${translateX}%,0,0)`;
     }, 750);
   };
 
   const handlePrevSlide = () => {
-    let { rowItems, itemWidth } = sliderConfig();
-    let translateX = itemWidth;
-
+    let { itemWidth } = sliderConfig();
     dispatch(
       sliderActions.toggleAnimating({
         direction: 'left',
         itemWidth: itemWidth,
       })
     );
-    sliderRow.current.style.transform = `translate3d(-${translateX}%,0,0)`;
-
     setTimeout(() => {
       dispatch(
         sliderActions.handlePrevious({
           sliderConfig: sliderConfig(),
         })
       );
-      let diff = 0;
-
-      if (
-        sliderStates.items % rowItems !== 0 &&
-        sliderStates.activeIndex === 2
-      ) {
-        diff = rowItems - sliderStates.filteredItems.left.length + 1;
-      }
-      const translateX = rowItems * itemWidth + itemWidth - diff * itemWidth;
-      sliderRow.current.style.transform = `translate3d(-${translateX}%,0,0)`;
     }, 750);
   };
-  // const isFirst = (index) =>
-  //   (index === 0 && !filteredItems.left.length) ||
-  //   (index === 1 && filteredItems.left.length);
-  // const isLast = (index) => index === filteredItems.visible.length - 2;
-
-  // const middleItem = (itemIndex) => middleItems().includes(itemIndex);
-  // const leftItem = (itemIndex) => leftItems().includes(itemIndex);
-  console.log(sliderStates.filteredItems);
   const leftItems = sliderStates.filteredItems.left.map((itemIndex) => (
     <div
       key={sliderStates.items[itemIndex].id}
@@ -162,7 +128,9 @@ const Slider = () => {
   });
 
   const result = [...leftItems, ...visibleItems, ...rightItems];
-
+  const classNames = sliderStates.animating
+    ? `${classes.slider__content} ${classes.animating}`
+    : `${classes.slider__content}`;
   return (
     <div className={classes.rowContent}>
       <div className={classes.slider}>
@@ -184,12 +152,7 @@ const Slider = () => {
         </ul>
         {sliderStates.items.length && (
           <div className={classes.slider__mask}>
-            <div
-              ref={sliderRow}
-              className={`${classes.slider__content} ${
-                sliderStates.animating ? classes.animating : ''
-              }`}
-            >
+            <div ref={sliderRow} className={classNames}>
               {result}
             </div>
           </div>

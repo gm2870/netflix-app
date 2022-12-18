@@ -8,6 +8,7 @@ const sliderSlice = createSlice({
     activeIndex: 0,
     cardOpen: false,
     showNext: false,
+    translateX: null,
     items: [],
     filteredItems: {
       left: [],
@@ -26,8 +27,17 @@ const sliderSlice = createSlice({
       state.items = action.payload;
     },
     toggleAnimating: (state, action) => {
-      if (!state.moved) state.moved = true;
       state.animating = !state.animating;
+      state.translateX = calculateTranslateX(
+        current(state).translateX,
+        action.payload.direction,
+        state.filteredItems,
+        action.payload.rowItems,
+        action.payload.itemWidth,
+        state.moved,
+        state.animating
+      );
+      if (!state.moved) state.moved = true;
     },
     handleNext: (state, action) => {
       const { itemWidth, rowItems } = action.payload.sliderConfig;
@@ -42,6 +52,15 @@ const sliderSlice = createSlice({
         state.activeIndex,
         rowItems,
         state.items.length
+      );
+      state.translateX = calculateTranslateX(
+        current(state).translateX,
+        'right',
+        state.filteredItems,
+        rowItems,
+        itemWidth,
+        state.moved,
+        state.animating
       );
     },
 
@@ -59,6 +78,15 @@ const sliderSlice = createSlice({
         rowItems,
         state.items.length
       );
+      state.translateX = calculateTranslateX(
+        current(state).translateX,
+        'left',
+        state.filteredItems,
+        rowItems,
+        itemWidth,
+        state.moved,
+        state.animating
+      );
     },
     setfilteredItems: (state, action) => {
       let ai = state.activeIndex;
@@ -66,14 +94,25 @@ const sliderSlice = createSlice({
         ai = Math.ceil(state.items.length / action.payload.rowItems) - 1;
       }
       state.filteredItems = filterItems(
-        current(state.filteredItems),
-        null,
+        current(state).filteredItems,
+        'right',
         ai,
         action.payload.rowItems,
         state.items.length,
         state.moved
       );
       state.activeIndex = ai;
+      if (state.moved) {
+        state.translateX = calculateTranslateX(
+          current(state).translateX,
+          'right',
+          state.filteredItems,
+          action.payload.rowItems,
+          action.payload.itemWidth,
+          state.moved,
+          state.animating
+        );
+      }
     },
   },
 });
@@ -125,21 +164,18 @@ const filterItems = (
     if (!moved) {
       return [];
     }
-    if (!middleItems()) return;
     const midItemsFirstIndex = middleItems()[0];
     let left = [...itemsIndexes.slice(0, midItemsFirstIndex).slice(-rowItems)];
     if (activeIndex === 0) {
       left = [...itemsIndexes.slice(-(rowItems + 1))].slice(0, -1);
     }
     if (left.length < rowItems) {
-      // left.unshift(...itemsIndexes.slice(-(rowItems - left.length)));
       left.unshift(...itemsIndexes.slice(-1));
     }
     return left;
   };
 
   const rightItems = () => {
-    if (!middleItems()) return;
     const midItemsLastIndex = [...middleItems()].pop();
     let rightItems = itemsIndexes
       .slice(midItemsLastIndex + 1)
@@ -147,12 +183,49 @@ const filterItems = (
 
     return rightItems;
   };
+  const left = leftItems();
+  const middle = middleItems();
+  const right = rightItems();
 
   return {
-    left: leftItems(),
-    middle: middleItems(),
-    right: rightItems(),
+    left,
+    middle,
+    right,
   };
+};
+const calculateTranslateX = (
+  translateX,
+  direction,
+  items,
+  rowItems,
+  itemWidth,
+  moved,
+  animating
+) => {
+  let w = rowItems * itemWidth;
+
+  if (direction === 'left') {
+    let diff = 0;
+    if (items.left.length < rowItems) {
+      diff = rowItems - items.left.length;
+    }
+    if (animating) {
+      return itemWidth;
+    } else {
+      return w + itemWidth - diff * itemWidth;
+    }
+  }
+  let diff = 0;
+  if (items.right.length < rowItems) {
+    diff = rowItems - items.right.length - 1;
+  }
+  // we need to use previous translateX because in prev state we could have had diff value
+  // which means w + itemWidth would not be correct all the time
+  if (animating) {
+    return !moved ? w : translateX + w - diff * itemWidth;
+  } else {
+    return w + itemWidth;
+  }
 };
 
 export const sliderActions = sliderSlice.actions;
