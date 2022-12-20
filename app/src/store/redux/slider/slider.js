@@ -95,7 +95,7 @@ const sliderSlice = createSlice({
       }
       state.filteredItems = filterItems(
         current(state).filteredItems,
-        'right',
+        null,
         ai,
         action.payload.rowItems,
         state.items.length,
@@ -110,7 +110,7 @@ const sliderSlice = createSlice({
           action.payload.rowItems,
           action.payload.itemWidth,
           state.moved,
-          state.animating
+          false
         );
       }
     },
@@ -134,6 +134,7 @@ const filterItems = (
     if (!moved) {
       return itemsIndexes.slice(0, rowItems + 1);
     }
+
     // on first index we need last item to be added
     if (activeIndex === 0) {
       const lastItem = itemsIndexes.slice(-1);
@@ -148,8 +149,20 @@ const filterItems = (
       ];
       return visItems;
     }
+    // this is for the case when browser size changes without having direction
+    if (!direction) {
+      return itemsIndexes
+        .slice(activeIndex * rowItems - 1)
+        .slice(0, rowItems + 2);
+    }
 
     if (direction === 'right') {
+      if (prevMidLastIndex === 0) {
+        return itemsIndexes.slice(-(rowItems + 2));
+      }
+      if (prevMidLastIndex === Math.ceil(itemsLength / rowItems - 1)) {
+        return itemsIndexes.slice(0, rowItems + 2);
+      }
       return itemsIndexes.slice(prevMidLastIndex - 1).slice(0, rowItems + 2);
     }
 
@@ -186,7 +199,6 @@ const filterItems = (
   const left = leftItems();
   const middle = middleItems();
   const right = rightItems();
-
   return {
     left,
     middle,

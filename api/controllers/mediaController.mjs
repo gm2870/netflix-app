@@ -162,8 +162,6 @@ export const emptyAssets = (req, res, next) => {
 };
 
 export const mediaStream = catchAsync(async (req, res) => {
-  console.log(req.params);
-
   const media = await Media.findOne({ id: req.params.mediaId });
   const src = media.video_src.SD;
   const fileName = `${normalizeText(media.title)}.mp4`;
@@ -228,13 +226,13 @@ export const imageStream = catchAsync(async (req, res) => {
   if (!fs.existsSync(resolvedPath)) {
     sourcePath = `https://image.tmdb.org/t/p/w1280/${req.params.path}`;
     const imageStream = got.stream(sourcePath);
-    const fileWriterStream = fs.createWriteStream(resolvedPath);
+    // const fileWriterStream = fs.createWriteStream(resolvedPath);
+
     req.headers['content-type'] = 'image/jpg';
     imageStream.on('response', (response) => {
       response.pipe(res);
     });
-
-    imageStream.pipe(fileWriterStream);
+    imageStream.pipe(fs.createWriteStream(resolvedPath));
   } else {
     res.sendFile(resolvedPath);
   }
