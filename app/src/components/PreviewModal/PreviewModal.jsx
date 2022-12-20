@@ -11,7 +11,13 @@ import { sliderActions } from '../../store/redux/slider/slider';
 
 const MediaCard = (props) => {
   const dispatch = useDispatch();
-
+  const [playing, setPlaying] = useState(false);
+  const onTrailerStart = () => {
+    console.log(playing);
+    setTimeout(() => {
+      setPlaying(true);
+    }, 500);
+  };
   const LightTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
   ))(({ theme }) => ({
@@ -33,12 +39,6 @@ const MediaCard = (props) => {
 
   useEffect(() => {
     if (props.show) {
-      // cardRef.current.style.opacity = 1;
-      // cardRef.current.style.transform = 'scale(1)';
-      // cardRef.current.style.transition =
-      //   'transform .54s cubic-bezier(.5,0,.1,1) 0s,opacity 0.1s';
-      // cardRef.current.style['transition-delay'] = '0.5s';
-      dispatch(sliderActions.setShowNext(true));
       cardRef.current.style.width = `${props.offsetWidth * 1.5}px`;
       cardRef.current.style.top = `${props.top - props.offsetWidth * 0.4}px`;
       if (props.isFirst) {
@@ -61,12 +61,23 @@ const MediaCard = (props) => {
       style={{ transitionDelay: props.show ? '500ms' : '0ms' }}
     >
       <div ref={cardRef} className={classes.card}>
-        <div className={classes.imageContainer}>
-          <img
-            className={classes.card__image}
-            src={`http://localhost:8001/api/v1/media/image${props.item.backdrop_path}`}
-          />
-        </div>
+        {!playing && (
+          <div className={classes.imageContainer}>
+            <img
+              onMouseEnter={onTrailerStart}
+              className={classes.card__image}
+              src={`http://localhost:8001/api/v1/media/image/${props.item.backdrop_path}`}
+            />
+          </div>
+        )}
+        {playing && (
+          <div className={classes.trailerContainer}>
+            <video
+              className={classes.card__trailer}
+              src={`http://localhost:8001/api/v1/media/video/${props.item.id}`}
+            />
+          </div>
+        )}
         <div className={classes.preview}>
           <div className={classes.preview__info}>
             <div className={classes['preview__controls']}>

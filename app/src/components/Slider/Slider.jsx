@@ -113,7 +113,15 @@ const Slider = () => {
     const item = itemIndex !== -1 ? sliderStates.items[itemIndex] : null; // itemIndex can be 0 which means mediaItem should be empty;
     return (
       <div key={key} className={`${classes.slider__item} slider__item--${i}`}>
-        <MediaItem item={item} />
+        <MediaItem
+          isFirst={i === 0}
+          isLast={i === sliderStates.filteredItems.middle.length - 2}
+          underIndicator={
+            (i === 0 && sliderStates.filteredItems.left.length) ||
+            i === sliderStates.filteredItems.middle.length - 1
+          }
+          item={item}
+        />
       </div>
     );
   });
