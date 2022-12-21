@@ -114,7 +114,9 @@ const Slider = () => {
     return (
       <div key={key} className={`${classes.slider__item} slider__item--${i}`}>
         <MediaItem
-          isFirst={i === 0}
+          isFirst={
+            (sliderStates.moved && i === 1) || (!sliderStates.moved && i === 0)
+          }
           isLast={i === sliderStates.filteredItems.middle.length - 2}
           underIndicator={
             (i === 0 && sliderStates.filteredItems.left.length) ||
