@@ -16,7 +16,7 @@ const MediaCard = (props) => {
     console.log(playing);
     setTimeout(() => {
       setPlaying(true);
-    }, 500);
+    }, 1500);
   };
   const LightTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -34,7 +34,7 @@ const MediaCard = (props) => {
   }));
   const [showMiniModel, setShowMiniModal] = useState(false);
   const onLikeHover = () => setShowMiniModal(true);
-
+  const onEndTrailer = () => setPlaying(false);
   const cardRef = useRef();
 
   useEffect(() => {
@@ -71,9 +71,11 @@ const MediaCard = (props) => {
           </div>
         )}
         {playing && (
-          <div className={classes.trailerContainer}>
+          <div className={classes.video} onMouseLeave={onEndTrailer}>
             <video
-              className={classes.card__trailer}
+              autoPlay
+              muted
+              className={classes.video__src}
               src={`http://localhost:8001/api/v1/media/video/${props.item.id}`}
             />
           </div>
