@@ -6,44 +6,31 @@ export const getVideoSrc = async (id, quality = 480) => {
   });
   try {
     const page = await browser.newPage();
-    const titleUrl = `https://www.imdb.com/title/${id}?ref_=nv_sr_srsg_0`;
-    await page.goto(titleUrl, { waitUntil: 'load' });
+    const titleUrl = `https://www.imdb.com`;
+    await page.setUserAgent(
+      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
+    );
+
+    await page.goto(titleUrl);
     let videoId;
-    try {
-      await page.waitForSelector(
-        'a[data-testid="video-player-slate-overlay"]',
-        {
-          visible: true,
-          timeout: 30000,
-        }
-      );
-      videoId = await page.evaluate(() => {
-        // eslint-disable-next-line no-undef
-        const href = document
-          .querySelector('a[data-testid="video-player-slate-overlay"]')
-          .getAttribute('href');
-        const vid = href
-          .split('/')
-          .find((x) => x.startsWith('vi') && x !== 'video');
-        return vid;
-      });
-    } catch (e) {
-      console.log(e);
-      videoId = await page.evaluate(() => {
-        // eslint-disable-next-line no-undef
-        const href = document
-          .querySelector('a[data-testid="videos-slate-overlay-1"]')
-          .getAttribute('href');
+    await page.waitForSelector('#suggestion-search',{visible:true});
+    await page.type('input[id="suggestion-search"]', `${id}`, { delay: 300 });
+    const href = await page.evaluate(() => {
+      // eslint-disable-next-line no-undef
+      const link = document
+        .querySelector(
+          '#react-autowhatever-1--item-1 a[data-testid="search-result--video"]'
+        ) ||  document.querySelector(
+          '#react-autowhatever-1--item-2 a[data-testid="search-result--video"]'
+        );
+        
+        return link.getAttribute('href');
+    });
+    videoId = href
+      .split('/')
+      .find((x) => x.startsWith('vi') && x !== 'videoplayer');
 
-        const vid = href
-          ? href.split('/').find((x) => x.startsWith('vi') && x !== 'video')
-          : null;
-        return vid;
-      });
-    }
-
-    console.log('videoId', videoId);
-    if (!videoId) {
+    if (!videoId || !videoId.startsWith('vi')) {
       await browser.close();
       return null;
     }
@@ -61,10 +48,15 @@ export const getVideoSrc = async (id, quality = 480) => {
     }
     return {
       videoId,
+
       SD: sdSrc,
     };
   } catch (error) {
     console.log(error);
+    await browser.close();
+    return;
+  } finally {
+    await browser.close();
   }
 };
 const getSrc = async (link) => {
@@ -73,18 +65,25 @@ const getSrc = async (link) => {
   });
   try {
     const page = await browser.newPage();
-    await page.goto(link, {
-      waitUntil: 'load',
+    await page.setUserAgent(
+      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
+    );
+
+    await page.goto(link);
+    await page.waitForSelector('video[class="jw-video jw-reset"]', {
+      visible: true,
       timeout: 30000,
     });
-    await page.waitForSelector('.jw-video', { visible: true });
     const src = await page.evaluate(() => {
       // eslint-disable-next-line no-undef
-      return document.getElementsByTagName('video')[0].getAttribute('src');
+      return document
+        .querySelector('video[class="jw-video jw-reset"]')
+        .getAttribute('src');
     });
     return src;
   } catch (err) {
     console.log(err);
+  
   } finally {
     await browser.close();
   }
