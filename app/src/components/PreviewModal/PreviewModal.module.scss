@@ -19,6 +19,7 @@
     height: 100%;
     cursor: pointer;
     position: absolute;
+    background-size: cover;
     top: 0;
     left: 0;
     right: 0;
@@ -29,7 +30,8 @@
   display: inline-block;
   position: relative;
   width: 100%;
-  aspect-ratio: 16/9;
+  height: 100%;
+  padding: 28.125% 0;
   margin: 0;
   overflow: hidden;
 
@@ -40,15 +42,15 @@
     bottom: 0;
     right: 0;
     width: 100%;
-    height: calc(100% + 70px);
+    height: calc(100% + 72px);
     object-fit: fill;
     box-shadow: 0 0 5px;
     border-radius: 3px;
     @include respond(tablet) {
-      height: calc(100% + 80px);
+      height: calc(100% + 82px);
     }
     @include respond(big-desktop) {
-      height: calc(100% + 90px);
+      height: calc(100% + 92px);
     }
   }
 }

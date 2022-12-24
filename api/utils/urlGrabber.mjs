@@ -13,18 +13,20 @@ export const getVideoSrc = async (id, quality = 480) => {
 
     await page.goto(titleUrl);
     let videoId;
-    await page.waitForSelector('#suggestion-search',{visible:true});
+    await page.waitForSelector('#suggestion-search', { visible: true });
     await page.type('input[id="suggestion-search"]', `${id}`, { delay: 300 });
     const href = await page.evaluate(() => {
-      // eslint-disable-next-line no-undef
-      const link = document
-        .querySelector(
+      const link =
+        // eslint-disable-next-line no-undef
+        document.querySelector(
           '#react-autowhatever-1--item-1 a[data-testid="search-result--video"]'
-        ) ||  document.querySelector(
+        ) ||
+        // eslint-disable-next-line no-undef
+        document.querySelector(
           '#react-autowhatever-1--item-2 a[data-testid="search-result--video"]'
         );
-        
-        return link.getAttribute('href');
+
+      return link.getAttribute('href');
     });
     videoId = href
       .split('/')
@@ -83,7 +85,6 @@ const getSrc = async (link) => {
     return src;
   } catch (err) {
     console.log(err);
-  
   } finally {
     await browser.close();
   }

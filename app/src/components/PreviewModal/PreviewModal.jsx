@@ -8,14 +8,18 @@ import { useRef } from 'react';
 import { Fade } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { sliderActions } from '../../store/redux/slider/slider';
+import { getMediaStream } from '../../store/redux/media/media-actions';
 
 const MediaCard = (props) => {
   const dispatch = useDispatch();
   const [playing, setPlaying] = useState(false);
-  const onTrailerStart = () => {
-    console.log(playing);
+  const [hideImage, setHideImage] = useState(false);
+  const videoRef = useRef();
+  const onTrailerStart = (id) => {
     setTimeout(() => {
+      setHideImage(true);
       setPlaying(true);
+      // videoRef.current?.play();
     }, 1500);
   };
   const LightTooltip = styled(({ className, ...props }) => (
@@ -61,10 +65,10 @@ const MediaCard = (props) => {
       style={{ transitionDelay: props.show ? '500ms' : '0ms' }}
     >
       <div ref={cardRef} className={classes.card}>
-        {!playing && (
+        {!hideImage && (
           <div className={classes.imageContainer}>
             <img
-              onMouseEnter={onTrailerStart}
+              onMouseEnter={() => onTrailerStart(props.item.id)}
               className={classes.card__image}
               src={`http://localhost:8001/api/v1/media/image/${props.item.backdrop_path}`}
             />
@@ -73,8 +77,9 @@ const MediaCard = (props) => {
         {playing && (
           <div className={classes.video} onMouseLeave={onEndTrailer}>
             <video
-              autoPlay
+              ref={videoRef}
               muted
+              autoPlay
               className={classes.video__src}
               src={`http://localhost:8001/api/v1/media/video/${props.item.id}`}
             />
