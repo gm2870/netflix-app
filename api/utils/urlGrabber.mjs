@@ -16,18 +16,34 @@ export const getVideoSrc = async (id, quality = 480) => {
     await page.waitForSelector('#suggestion-search', { visible: true });
     await page.type('input[id="suggestion-search"]', `${id}`, { delay: 300 });
     const href = await page.evaluate(() => {
-      const link =
+      const firstLink =
         // eslint-disable-next-line no-undef
         document.querySelector(
           '#react-autowhatever-1--item-1 a[data-testid="search-result--video"]'
-        ) ||
-        // eslint-disable-next-line no-undef
-        document.querySelector(
-          '#react-autowhatever-1--item-2 a[data-testid="search-result--video"]'
         );
-
-      return link.getAttribute('href');
+      // eslint-disable-next-line no-undef
+      const secondLink = document.querySelector(
+        '#react-autowhatever-1--item-2 a[data-testid="search-result--video"]'
+      );
+      // eslint-disable-next-line no-undef
+      const firstItem = document.querySelector(
+        '#react-autowhatever-1--item-1 a[data-testid="search-result--video"] .searchResult__videoTitle'
+      ).innerHTML;
+      // eslint-disable-next-line no-undef
+      const secondItem = document.querySelector(
+        '#react-autowhatever-1--item-2 a[data-testid="search-result--video"] .searchResult__videoTitle'
+      ).innerHTML;
+      if (!firstLink) {
+        return secondLink.getAttribute('href');
+      }
+      // check if one of the two trailers are official
+      if (firstItem.includes('Official')) {
+        return firstLink.getAttribute('href');
+      } else if (secondItem.includes('Official')) {
+        return secondLink.getAttribute('href');
+      } else return firstLink.getAttribute('href');
     });
+
     videoId = href
       .split('/')
       .find((x) => x.startsWith('vi') && x !== 'videoplayer');
