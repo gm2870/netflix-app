@@ -26,15 +26,15 @@ export const getMedia = (id) => {
   };
 };
 
-export const getBillboardMovie = (id) => {
+export const getBillboardMedeia = (id) => {
   return (dispatch) => {
     const config = {
       url: `/media/${id}`,
     };
     const handleError = (err) => console.log(err);
-    const setBillboardMovie = (data) => {
-      dispatch(mediaActions.setBillboardMovie(data));
+    const getBillboardMedia = (data) => {
+      dispatch(mediaActions.getBillboardMedia(data));
     };
-    sendRequest(config, dispatch, setBillboardMovie, handleError);
+    sendRequest(config, dispatch, getBillboardMedia, handleError);
   };
 };

@@ -16,4 +16,5 @@ app.prepare().then(() => {
   });
 
   server.listen(port, () => console.log(`listening on ${port}`));
+  process.on('SIGINT', () => { console.log("Bye bye!"); process.exit(); });
 });

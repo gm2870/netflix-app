@@ -29,7 +29,6 @@ const MediaItem = ({ item, underIndicator, isFirst, isLast }) => {
   const handleClose = () => {
     setLeft(left);
     setTop(top);
-    // dispatch(sliderActions.setShowNext(false));
     setOpen(false);
   };
 

@@ -169,11 +169,12 @@ export const mediaStream = catchAsync(async (req, res) => {
   if (!requestRangeHeader) {
     res.status(400).send('Requires Range header');
   }
+  
   const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);
-  const axiosResponseHead = await axios.head(src);
-  const fileSize = axiosResponseHead['headers']['content-length'];
-
+  
   if (!fs.existsSync(resolvedPath)) {
+    const axiosResponseHead = await axios.head(src);
+    const fileSize = axiosResponseHead['headers']['content-length'];
     const downloadStream = got.stream(src);
     const fileWriterStream = fs.createWriteStream(resolvedPath);
     const { start, end, chunkSize } = getChunkProps(

@@ -110,7 +110,11 @@ const browse = () => {
         </div>
       </header>
 
-      <section className={classes.billboard}></section>
+      <section className={classes.billboard}>
+        <div className={classes.videoContainer}>
+          <video autoPlay src={``}></video>
+        </div>
+      </section>
       <section className={classes.sliderContainer}>
         {items.length && <Slider items={items} />}
       </section>

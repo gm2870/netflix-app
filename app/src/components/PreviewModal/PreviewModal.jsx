@@ -19,7 +19,6 @@ const MediaCard = (props) => {
     setTimeout(() => {
       setHideImage(true);
       setPlaying(true);
-      // videoRef.current?.play();
     }, 1500);
   };
   const LightTooltip = styled(({ className, ...props }) => (
@@ -38,7 +37,10 @@ const MediaCard = (props) => {
   }));
   const [showMiniModel, setShowMiniModal] = useState(false);
   const onLikeHover = () => setShowMiniModal(true);
-  const onEndTrailer = () => setPlaying(false);
+  const onEndTrailer = () => {
+    setPlaying(false);
+    setHideImage(false);
+  };
   const cardRef = useRef();
 
   useEffect(() => {
@@ -75,10 +77,9 @@ const MediaCard = (props) => {
           </div>
         )}
         {playing && (
-          <div className={classes.video} onMouseLeave={onEndTrailer}>
+          <div className={classes.video}>
             <video
               ref={videoRef}
-              muted
               autoPlay
               className={classes.video__src}
               src={`http://localhost:8001/api/v1/media/video/${props.item.id}`}

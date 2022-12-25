@@ -4,7 +4,7 @@
   "homepage": ".",
   "private": true,
   "scripts": {
-    "dev": "nodemon --watch ../api/ --watch src/**/* server.mjs",
+    "dev": "nodemon --watch ../api/ --watch src/  server.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

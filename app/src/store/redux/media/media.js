@@ -6,15 +6,15 @@ const mediaSlice = createSlice({
     error: null,
     loading: false,
     mediaItems: null,
-    billboardMovie: null,
+    billboardMedia: null,
     playingBillboardTrailer: false,
   },
   reducers: {
-    getMovies: (state, action) => {
-      state.movies = action.payload;
+    getMediaItems: (state, action) => {
+      state.mediaItems = action.payload;
     },
-    setBillboardMovie: (state, action) => {
-      state.billboardMovie = action.payload;
+    getBillboardMedia: (state, action) => {
+      state.billboardMedia = action.payload;
       state.playingBillboardTrailer = true;
     },
     // setMediaItems: (state, action) => {
