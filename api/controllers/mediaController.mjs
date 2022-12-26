@@ -169,9 +169,9 @@ export const mediaStream = catchAsync(async (req, res) => {
   if (!requestRangeHeader) {
     res.status(400).send('Requires Range header');
   }
-  
+
   const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);
-  
+
   if (!fs.existsSync(resolvedPath)) {
     const axiosResponseHead = await axios.head(src);
     const fileSize = axiosResponseHead['headers']['content-length'];
@@ -195,19 +195,7 @@ export const mediaStream = catchAsync(async (req, res) => {
     downloadStream.pipe(fileWriterStream);
   } else {
     const videoSize = fs.statSync(resolvedPath).size;
-    const { start, end, chunkSize } = getChunkProps(
-      requestRangeHeader,
-      videoSize
-    );
-    let headers = {
-      'Content-Range': `bytes ${start}-${end}/${videoSize}`,
-      range: `bytes=${start}-${end}`,
-      'Accept-Ranges': 'bytes',
-      'Content-Length': chunkSize,
-      'Content-Type': 'video/mp4',
-    };
-    res.writeHead(206, headers);
-    // create video read stream for this particular chunk;
+    const { start, end } = getChunkProps(requestRangeHeader, videoSize);
 
     const videoStream = fs.createReadStream(resolvedPath, { start, end });
 
@@ -227,8 +215,6 @@ export const imageStream = catchAsync(async (req, res) => {
   if (!fs.existsSync(resolvedPath)) {
     sourcePath = `https://image.tmdb.org/t/p/w1280/${req.params.path}`;
     const imageStream = got.stream(sourcePath);
-    // const fileWriterStream = fs.createWriteStream(resolvedPath);
-
     req.headers['content-type'] = 'image/jpg';
     imageStream.on('response', (response) => {
       response.pipe(res);

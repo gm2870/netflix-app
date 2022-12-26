@@ -7,19 +7,22 @@ import { styled } from '@mui/material/styles';
 import { useRef } from 'react';
 import { Fade } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { sliderActions } from '../../store/redux/slider/slider';
-import { getMediaStream } from '../../store/redux/media/media-actions';
 
 const MediaCard = (props) => {
   const dispatch = useDispatch();
   const [playing, setPlaying] = useState(false);
   const [hideImage, setHideImage] = useState(false);
   const videoRef = useRef();
-  const onTrailerStart = (id) => {
+  const videoContainer = useRef();
+  const onTrailerStart = () => {
+    setPlaying(true);
     setTimeout(() => {
+      if (videoContainer.current) {
+        videoContainer.current.style.padding = '28.125% 0';
+      }
+
       setHideImage(true);
-      setPlaying(true);
-    }, 1500);
+    }, 2000);
   };
   const LightTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -37,10 +40,7 @@ const MediaCard = (props) => {
   }));
   const [showMiniModel, setShowMiniModal] = useState(false);
   const onLikeHover = () => setShowMiniModal(true);
-  const onEndTrailer = () => {
-    setPlaying(false);
-    setHideImage(false);
-  };
+
   const cardRef = useRef();
 
   useEffect(() => {
@@ -70,17 +70,19 @@ const MediaCard = (props) => {
         {!hideImage && (
           <div className={classes.imageContainer}>
             <img
-              onMouseEnter={() => onTrailerStart(props.item.id)}
+              onMouseEnter={onTrailerStart}
               className={classes.card__image}
               src={`http://localhost:8001/api/v1/media/image/${props.item.backdrop_path}`}
             />
           </div>
         )}
         {playing && (
-          <div className={classes.video}>
+          <div ref={videoContainer} className={classes.video}>
             <video
               ref={videoRef}
-              autoPlay
+              autoPlay="autoPlay"
+              controls
+              muted
               className={classes.video__src}
               src={`http://localhost:8001/api/v1/media/video/${props.item.id}`}
             />
