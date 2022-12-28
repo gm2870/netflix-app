@@ -157,12 +157,16 @@ const filterItems = (
     }
 
     if (direction === 'right') {
+      console.log(prevMidLastIndex);
       if (prevMidLastIndex === 0) {
         return itemsIndexes.slice(-(rowItems + 2));
       }
-      if (prevMidLastIndex === Math.ceil(itemsLength / rowItems - 1)) {
+      if (prevMidLastIndex === itemsLength - 1) {
         return itemsIndexes.slice(0, rowItems + 2);
       }
+      console.log(
+        itemsIndexes.slice(prevMidLastIndex - 1).slice(0, rowItems + 2)
+      );
       return itemsIndexes.slice(prevMidLastIndex - 1).slice(0, rowItems + 2);
     }
 
