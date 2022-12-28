@@ -13,6 +13,7 @@
     position: relative;
     width: 100%;
     padding: 28.125% 0;
+    transition: opacity 0.4s;
   }
   &__image {
     width: 100%;
@@ -28,10 +29,9 @@
 }
 .video {
   display: inline-block;
-  position: relative;
+  position: absolute;
+  top: 0;
   width: 100%;
-  height: 100%;
-  padding: 0;
   margin: 0;
   overflow: hidden;
 
@@ -161,4 +161,24 @@
 .visible {
   opacity: 1;
   z-index: 1;
+}
+.video-js .vjs-control-text {
+  display: none;
+}
+.soundBtn {
+  position: absolute;
+  bottom: 2rem;
+  right: 1rem;
+  opacity: 0.5;
+  &:hover {
+    opacity: 1;
+  }
+}
+.netflixIcon {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  width: 24px;
+  height: 24px;
+  z-index: 5;
 }

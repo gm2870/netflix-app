@@ -7,22 +7,44 @@ import { styled } from '@mui/material/styles';
 import { useRef } from 'react';
 import { Fade } from '@mui/material';
 import { useDispatch } from 'react-redux';
+import VideoJS from '../VideoJS/VideoJS';
 
 const MediaCard = (props) => {
   const dispatch = useDispatch();
-  const [playing, setPlaying] = useState(false);
-  const [hideImage, setHideImage] = useState(false);
-  const videoRef = useRef();
+  const playerRef = useRef(null);
+  const cardRef = useRef();
+  const imageRef = useRef();
   const videoContainer = useRef();
+
+  const [playing, setPlaying] = useState(false);
+  const [imageOpacity, setImageOpacity] = useState(1);
+  const [soundOn, setSoundOn] = useState(false);
+
+  const videoJsOptions = {
+    autoplay: true,
+    muted: true,
+    children: ['MediaLoader'],
+    controls: false,
+    sources: [
+      {
+        src: `http://localhost:8001/api/v1/media/video/${props.item.id}`,
+        type: 'video/mp4',
+      },
+    ],
+  };
+  const toggleSound = () => {
+    setSoundOn((prev) => {
+      playerRef.current.muted(prev);
+      return !prev;
+    });
+  };
+  const handlePlayerReady = (player) => {
+    playerRef.current = player;
+    player.on('play', () => setImageOpacity(0));
+  };
+
   const onTrailerStart = () => {
     setPlaying(true);
-    setTimeout(() => {
-      if (videoContainer.current) {
-        videoContainer.current.style.padding = '28.125% 0';
-      }
-
-      setHideImage(true);
-    }, 2000);
   };
   const LightTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -40,9 +62,7 @@ const MediaCard = (props) => {
   }));
   const [showMiniModel, setShowMiniModal] = useState(false);
   const onLikeHover = () => setShowMiniModal(true);
-
-  const cardRef = useRef();
-
+  const hideModal = props.hideModal;
   useEffect(() => {
     if (props.show) {
       cardRef.current.style.width = `${props.offsetWidth * 1.5}px`;
@@ -61,31 +81,48 @@ const MediaCard = (props) => {
     }
   }, []);
   const onMiniModalMouseLeave = () => setShowMiniModal(false);
+
+  const onTrailerStartPlaying = () => {
+    playerRef?.current.muted(false);
+  };
   return (
     <Fade
       in={props.show}
       style={{ transitionDelay: props.show ? '500ms' : '0ms' }}
     >
-      <div ref={cardRef} className={classes.card}>
-        {!hideImage && (
-          <div className={classes.imageContainer}>
-            <img
-              onMouseEnter={onTrailerStart}
-              className={classes.card__image}
-              src={`http://localhost:8001/api/v1/media/image/${props.item.backdrop_path}`}
-            />
-          </div>
-        )}
+      <div ref={cardRef} onMouseLeave={hideModal} className={classes.card}>
+        {/* {!hideImage && ( */}
+        <div
+          ref={imageRef}
+          className={classes.imageContainer}
+          style={{ opacity: imageOpacity }}
+        >
+          <img
+            onMouseEnter={onTrailerStart}
+            className={classes.card__image}
+            src={`http://localhost:8001/api/v1/media/image/${props.item.backdrop_path}`}
+          />
+        </div>
+        {/* )} */}
         {playing && (
           <div ref={videoContainer} className={classes.video}>
-            <video
-              ref={videoRef}
-              autoPlay="autoPlay"
-              controls
-              muted
-              className={classes.video__src}
-              src={`http://localhost:8001/api/v1/media/video/${props.item.id}`}
+            <img className={classes.netflixIcon} src="/images/nficon.ico" />
+            <VideoJS
+              controlBar={false}
+              options={videoJsOptions}
+              onReady={handlePlayerReady}
             />
+            {!imageOpacity && (
+              <div className={classes.soundBtn}>
+                <CircleButton onClick={toggleSound}>
+                  {!soundOn ? (
+                    <img src="/images/volume-off.png" />
+                  ) : (
+                    <img src="/images/volume-on.png" />
+                  )}
+                </CircleButton>
+              </div>
+            )}
           </div>
         )}
         <div className={classes.preview}>
@@ -128,6 +165,7 @@ const MediaCard = (props) => {
               <div className={classes['preview__buttons--left']}>
                 <CircleButton white>
                   <PlayArrowIcon
+                    onClick={onTrailerStartPlaying}
                     className={`${classes.preview__icon} ${classes['preview__icon--black']}`}
                   />
                 </CircleButton>
@@ -141,7 +179,6 @@ const MediaCard = (props) => {
                     src="/images/like.png"
                   />
                 </CircleButton>
-                <div></div>
               </div>
               <div className={classes['preview__buttons--right']}>
                 <CircleButton>

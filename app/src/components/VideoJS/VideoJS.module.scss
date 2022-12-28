@@ -1,0 +1,21 @@
+@use '../../../styles/abstracts' as *;
+
+.videojsref {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  // padding-bottom: 56.25%;
+}
+.vjs-player {
+  width: 100%;
+  position: absolute;
+  top: -3.5rem;
+  height: calc(100% + 72px);
+  object-fit: fill;
+  @include respond(tablet) {
+    height: calc(100% + 82px);
+  }
+  @include respond(big-desktop) {
+    height: calc(100% + 92px);
+  }
+}

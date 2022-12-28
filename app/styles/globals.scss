@@ -99,3 +99,12 @@ ul {
 img {
   max-width: 100%;
 }
+.vjs-controls-disabled .vjs-button,
+.vjs-controls-disabled .vjs-icon-placeholder,
+.vjs-controls-disabled .vjs-control-text,
+.vjs-controls-disabled .vjs-progress-control,
+.vjs-controls-disabled .vjs-control,
+.vjs-controls-disabled .vjs-slider,
+.vjs-controls-disabled .vjs-fullscreen-control {
+  display: none;
+}
