@@ -25,6 +25,7 @@ const MediaCard = (props) => {
     muted: true,
     children: ['MediaLoader'],
     controls: false,
+    componentName: 'card',
     sources: [
       {
         src: `http://localhost:8001/api/v1/media/video/${props.item.id}`,
@@ -41,6 +42,7 @@ const MediaCard = (props) => {
   const handlePlayerReady = (player) => {
     playerRef.current = player;
     player.on('play', () => setImageOpacity(0));
+    player.on('ended', () => setImageOpacity(1));
   };
 
   const onTrailerStart = () => {
@@ -106,7 +108,7 @@ const MediaCard = (props) => {
         {/* )} */}
         {playing && (
           <div ref={videoContainer} className={classes.video}>
-            <img className={classes.netflixIcon} src="/images/nficon.ico" />
+            {/* <img className={classes.netflixIcon} src="/images/nficon.ico" /> */}
             <VideoJS
               controlBar={false}
               options={videoJsOptions}
