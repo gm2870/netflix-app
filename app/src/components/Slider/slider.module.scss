@@ -1,10 +1,32 @@
 @use '../../../styles/abstracts' as *;
+.sliderContainer {
+  grid-area: 3/1 / span 1 / span 3;
+  padding: 0;
+  margin: 3vw 0;
+  z-index: 3;
+}
 .rowContent {
   padding: 0;
-  margin-top: 10rem;
-  // overflow-x: hidden;
 }
-
+.title {
+  color: #e5e5e5;
+  display: inline-block;
+  font-size: 1.4vw;
+  font-weight: 500;
+  margin: 0 4% 0.5em;
+  min-width: 6em;
+  text-decoration: none;
+  @include respond(big-desktop) {
+    margin-left: 60px;
+  }
+  &__header {
+    color: #fff;
+    display: table-cell;
+    font-size: 1.4vw;
+    line-height: 1.25vw;
+    vertical-align: bottom;
+  }
+}
 .slider {
   padding: 0 4%;
   overflow-x: visible;

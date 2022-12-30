@@ -5,9 +5,10 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import MediaItem from '../MediaItem/MediaItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 import { sliderActions } from '../../store/redux/slider/slider';
 import { useRef } from 'react';
+import { Link } from '@mui/material';
 
 const Slider = () => {
   const sliderStates = useSelector((state) => state.slider);
@@ -142,38 +143,47 @@ const Slider = () => {
     ? `${classes.slider__content} ${classes.animating}`
     : `${classes.slider__content}`;
   return (
-    <div className={classes.rowContent}>
-      <div className={classes.slider}>
-        <span onClick={handleNextSlide} className={classes.slider__next}>
-          <ArrowForwardIosIcon className={classes.slider__indicatorIcon} />
-        </span>
-
-        <ul className={classes.slider__pagination}>
-          {new Array(
-            Math.ceil(sliderStates.items.length / sliderConfig().rowItems)
-          )
-            .fill(0)
-            .map((x, i) => (
-              <li
-                key={i}
-                className={i === sliderStates.activeIndex ? classes.active : ''}
-              ></li>
-            ))}
-        </ul>
-        {sliderStates.items.length && (
-          <div className={classes.slider__mask}>
-            <div ref={sliderRow} className={classNames}>
-              {result}
-            </div>
-          </div>
-        )}
-        {sliderStates.moved ? (
-          <span onClick={handlePrevSlide} className={classes.slider__prev}>
-            <ArrowBackIosIcon className={classes.slider__indicatorIcon} />
+    <section className={classes.sliderContainer}>
+      <Link href="/" className={classes.title}>
+        <h2 className={classes.title__header}>
+          Suspenseful European TV Thrillers
+        </h2>
+      </Link>
+      <div className={classes.rowContent}>
+        <div className={classes.slider}>
+          <span onClick={handleNextSlide} className={classes.slider__next}>
+            <ArrowForwardIosIcon className={classes.slider__indicatorIcon} />
           </span>
-        ) : null}
+
+          <ul className={classes.slider__pagination}>
+            {new Array(
+              Math.ceil(sliderStates.items.length / sliderConfig().rowItems)
+            )
+              .fill(0)
+              .map((x, i) => (
+                <li
+                  key={i}
+                  className={
+                    i === sliderStates.activeIndex ? classes.active : ''
+                  }
+                ></li>
+              ))}
+          </ul>
+          {sliderStates.items.length && (
+            <div className={classes.slider__mask}>
+              <div ref={sliderRow} className={classNames}>
+                {result}
+              </div>
+            </div>
+          )}
+          {sliderStates.moved ? (
+            <span onClick={handlePrevSlide} className={classes.slider__prev}>
+              <ArrowBackIosIcon className={classes.slider__indicatorIcon} />
+            </span>
+          ) : null}
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 
