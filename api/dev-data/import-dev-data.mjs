@@ -18,26 +18,43 @@ const DB = process.env.DATABASE.replace(
 mongoose.connect(DB);
 
 const mediaNames = [
-  'red-notice',
-  'avengers-endgame',
-  'spiderman-no-way-home',
-  'the-batman',
-  'uncharted',
-  'irishman',
-  'scream',
-  'the-lost-city',
-  'hustle',
-  'bullet-train',
-  'joker',
-  'breaking-bad',
-  'money-heist',
-  'better-call-saul',
-  'dark',
-  'house-of-dragons',
-  'blindspot',
-  'ted-lasso',
-  'see',
-  'inception',
+  // 'red-notice',
+  // 'avengers-endgame',
+  // 'spiderman-no-way-home',
+  // 'the-batman',
+  // 'irishman',
+  // 'scream',
+  // 'the-lost-city',
+  // 'bullet-train',
+  // 'joker',
+  // 'breaking-bad',
+  // 'money-heist',
+  // 'better-call-saul',
+  // 'dark',
+  // 'house-of-dragons',
+  // 'blindspot',
+  // 'ted-lasso',
+  // 'see',
+  // 'inception',
+  // 'money-heist',
+  // 'the-unforgivable',
+  // '1899',
+  // 'undercover',
+  // 'glass-onion',
+  // 'my-name-is-vendetta',
+  // 'wednesday',
+  'narcos',
+  'army-of-thieves',
+  'sttranger-things',
+  'all-quiet-on-the-western-front',
+  'elchapo',
+  'troll',
+  'all-of-us-are-dead',
+  'me-time',
+  'virgin-river',
+  'treason',
+  'the-sandman',
+  'he-recruit',
 ];
 
 const importMedia = async () => {
@@ -122,5 +139,5 @@ if (process.argv[2] === '--import') {
 } else if (process.argv[2] === '--update-src') {
   forceSrcUpdate();
 } else if (process.argv[2] === '--update') {
-  updateMedia(512195);
+  updateMedia(873126);
 }

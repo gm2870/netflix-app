@@ -2,20 +2,36 @@
 
 .videojsref {
   width: 100%;
-  height: 100%;
   object-fit: cover;
-  // padding-bottom: 56.25%;
+  padding-bottom: 56.25%;
+  height: 0;
 }
-.vjs-player {
+.vjs-card {
   width: 100%;
   position: absolute;
-  top: -3.5rem;
+  // top: -3.5rem;
+  height: 100%;
+  // padding-bottom: 56.25%;
+  // height: calc(100% + 72px);
+  // object-fit: fill;
+  // @include respond(tablet) {
+  //   height: calc(100% + 82px);
+  // }
+  // @include respond(big-desktop) {
+  //   height: calc(100% + 92px);
+  // }
+}
+
+.vjs-billboard {
+  width: 100%;
+  position: absolute;
+  top: -11rem;
   height: calc(100% + 72px);
   object-fit: fill;
   @include respond(tablet) {
     height: calc(100% + 82px);
   }
   @include respond(big-desktop) {
-    height: calc(100% + 92px);
+    height: calc(100% + 110px);
   }
 }

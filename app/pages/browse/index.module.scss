@@ -5,14 +5,20 @@
   display: grid;
   overflow-x: hidden;
 }
-
-.header {
+.headerWrapper {
   grid-area: 1 / 1 / span 1 / span 3;
+  z-index: 999;
+}
+.header {
   z-index: 5;
   display: flex;
   height: 41px;
   padding: 0 4%;
-
+  background-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.7) 10%,
+    transparent
+  );
   &__logo-box {
     display: flex;
     align-items: center;
@@ -35,13 +41,17 @@
     padding: 0 60px;
   }
 }
+.sticky {
+  width: 100%;
+  position: fixed;
+  background: rgb(20, 20, 20);
+  top: 0;
+  left: 0;
+}
 .billboard {
   grid-area: 1 / 1 / span 3 / span 3;
 }
 
-.sliderContainer {
-  grid-area: 3/1 / span 1 / span 3;
-}
 .navigation {
   color: #fff;
   display: flex;

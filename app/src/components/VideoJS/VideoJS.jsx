@@ -19,7 +19,11 @@ export const VideoJS = (props) => {
             iterator.remove();
           }
         }
-        videoRef.current?.classList.add(classes['vjs-player']);
+        console.log(options.componentName);
+        videoRef.current?.classList.add(
+          classes[`vjs-${options.componentName}`]
+        );
+        // videoRef.current?.classList.add(classes[`vjs-billboard`]);
 
         onReady && onReady(player);
       });
@@ -46,7 +50,7 @@ export const VideoJS = (props) => {
 
   return (
     <div data-vjs-player>
-      <video ref={videoRef} className={`vjs-fluid ${classes.videojsref}`} />
+      <video ref={videoRef} className={`vjs-16-9 ${classes.videojsref}`} />
     </div>
   );
 };
