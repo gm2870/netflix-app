@@ -5,7 +5,6 @@ import CircleButton from '../../../src/components/CircleButton/CircleButton';
 import VideoJS from '../../../src/components/VideoJS/VideoJS';
 import classes from './Billboard.module.scss';
 const Billboard = ({ item }) => {
-  console.log(item);
   const playerRef = useRef(null);
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(false);
@@ -37,7 +36,8 @@ const Billboard = ({ item }) => {
   };
   const toggleSoundHandler = () =>
     setVolume((prev) => {
-      playerRef.current.muted(!prev);
+      console.log(prev);
+      playerRef.current.muted(prev);
       return !prev;
     });
 
@@ -51,7 +51,7 @@ const Billboard = ({ item }) => {
           >
             <img
               className={classes.billboard__image}
-              src={`http://localhost:8001/api/v1/media/image/${item.backdrop_path}`}
+              src={`http://localhost:8001/api/v1/media/image/${item.id}`}
             />
           </div>
         )}

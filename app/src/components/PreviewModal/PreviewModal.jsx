@@ -102,7 +102,7 @@ const MediaCard = (props) => {
           <img
             onMouseEnter={onTrailerStart}
             className={classes.card__image}
-            src={`http://localhost:8001/api/v1/media/image/${props.item.backdrop_path}`}
+            src={`http://localhost:8001/api/v1/media/image/${props.item.id}`}
           />
         </div>
         {/* )} */}

@@ -205,22 +205,33 @@ export const mediaStream = catchAsync(async (req, res) => {
 });
 
 export const imageStream = catchAsync(async (req, res) => {
+  const media = await Media.findOne({ id: +req.params.id });
+  const localPath = path.join(
+    __dirname,
+    '..',
+    'media-files',
+    `${media.title}.jpg`
+  );
   const resolvedPath = path.join(
     __dirname,
     '..',
     'media-files',
-    `${req.params.path}`
+    `${media.backdrop_path}`
   );
   let sourcePath;
-  if (!fs.existsSync(resolvedPath)) {
-    sourcePath = `https://image.tmdb.org/t/p/w1280/${req.params.path}`;
-    const imageStream = got.stream(sourcePath);
-    req.headers['content-type'] = 'image/jpg';
-    imageStream.on('response', (response) => {
-      response.pipe(res);
-    });
-    imageStream.pipe(fs.createWriteStream(resolvedPath));
+  if (fs.existsSync(localPath)) {
+    res.sendFile(localPath);
   } else {
-    res.sendFile(resolvedPath);
+    if (!fs.existsSync(resolvedPath)) {
+      sourcePath = `https://image.tmdb.org/t/p/w1280/${media.backdrop_path}`;
+      const imageStream = got.stream(sourcePath);
+      req.headers['content-type'] = 'image/jpg';
+      imageStream.on('response', (response) => {
+        response.pipe(res);
+      });
+      imageStream.pipe(fs.createWriteStream(resolvedPath));
+    } else {
+      res.sendFile(resolvedPath);
+    }
   }
 });
