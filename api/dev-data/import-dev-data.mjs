@@ -128,6 +128,7 @@ export const updateSrc = async (media) => {
 
 const updateMedia = async (id) => {
   const item = await Media.findOne({ id });
+  console.log(item.title);
   await updateSrc(item);
   process.exit();
 };
@@ -139,5 +140,5 @@ if (process.argv[2] === '--import') {
 } else if (process.argv[2] === '--update-src') {
   forceSrcUpdate();
 } else if (process.argv[2] === '--update') {
-  updateMedia(873126);
+  updateMedia(512195);
 }

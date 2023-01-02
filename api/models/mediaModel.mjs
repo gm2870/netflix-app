@@ -82,6 +82,10 @@ const MediaSchema = new mongoose.Schema({
   overview: String,
   homepage: String,
   runtime: Number,
+  uiConfig: {
+    height: String,
+    top: String,
+  },
 });
 
 const Media = mongoose.model('Media', MediaSchema);

@@ -192,6 +192,22 @@ export const mediaStream = catchAsync(async (req, res) => {
     downloadStream.on('response', (response) => {
       response.pipe(res);
     });
+    let done = false;
+    downloadStream.on('downloadProgress', async (response) => {
+      if (response.percent > 0.2 && !done) {
+        console.log(response);
+        await Media.findOneAndUpdate(
+          { id: media.id },
+          {
+            uiConfig: {
+              height: '70px',
+              top: '35px',
+            },
+          }
+        );
+        done = true;
+      }
+    });
     downloadStream.pipe(fileWriterStream);
   } else {
     const videoSize = fs.statSync(resolvedPath).size;
@@ -202,6 +218,26 @@ export const mediaStream = catchAsync(async (req, res) => {
     // Stream the video chunk to the client
     videoStream.pipe(res);
   }
+});
+
+export const getUiConfif = catchAsync(async (req, res) => {
+  const media = await Media.findOne({ id: req.params.mediaId });
+  const src = media.video_src.SD;
+  const downloadStream = got.stream(src);
+  let done = false;
+  downloadStream.on('downloadProgress', async (response) => {
+    if (response.percent > 0.2 && !done) {
+      console.log(response);
+      res.status(200).json({
+        status: 'success',
+        data: {
+          height: '70px',
+          top: '35px',
+        },
+      });
+      done = true;
+    }
+  });
 });
 
 export const imageStream = catchAsync(async (req, res) => {

@@ -93,7 +93,6 @@ const MediaCard = (props) => {
       style={{ transitionDelay: props.show ? '500ms' : '0ms' }}
     >
       <div ref={cardRef} onMouseLeave={hideModal} className={classes.card}>
-        {/* {!hideImage && ( */}
         <div
           ref={imageRef}
           className={classes.imageContainer}
@@ -105,10 +104,8 @@ const MediaCard = (props) => {
             src={`http://localhost:8001/api/v1/media/image/${props.item.id}`}
           />
         </div>
-        {/* )} */}
         {playing && (
           <div ref={videoContainer} className={classes.video}>
-            {/* <img className={classes.netflixIcon} src="/images/nficon.ico" /> */}
             <VideoJS
               controlBar={false}
               options={videoJsOptions}
