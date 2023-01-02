@@ -6,8 +6,9 @@ import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
 import { useRef } from 'react';
 import { Fade } from '@mui/material';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import VideoJS from '../VideoJS/VideoJS';
+import { getUiConfig } from '../../store/redux/media/media-actions';
 
 const MediaCard = (props) => {
   const dispatch = useDispatch();
@@ -15,7 +16,8 @@ const MediaCard = (props) => {
   const cardRef = useRef();
   const imageRef = useRef();
   const videoContainer = useRef();
-
+  const uiConfig = useSelector((state) => state.uiConfig);
+  console.log(uiConfig);
   const [playing, setPlaying] = useState(false);
   const [imageOpacity, setImageOpacity] = useState(1);
   const [soundOn, setSoundOn] = useState(false);
@@ -33,6 +35,9 @@ const MediaCard = (props) => {
       },
     ],
   };
+  useEffect(() => {
+    dispatch(getUiConfig(props.item.id));
+  }, []);
   const toggleSound = () => {
     setSoundOn((prev) => {
       playerRef.current.muted(prev);

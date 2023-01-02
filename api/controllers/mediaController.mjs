@@ -1,12 +1,18 @@
 import fs from 'fs';
 import axios from 'axios';
 import got from 'got';
-import path from 'path';
+// import path from 'path';
 import catchAsync from '../utils/catchAsync.mjs';
 import Media from '../models/mediaModel.mjs';
 import { getSrcWithVideoId, getVideoSrc } from '../utils/urlGrabber.mjs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { exec } from 'child_process';
+import ffmpeg from 'fluent-ffmpeg';
+import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
+import * as path from 'path';
+ffmpeg.setFfmpegPath(ffmpegInstaller.path);
+
 import {
   emptyFolder,
   getChunkProps,
@@ -165,12 +171,11 @@ export const mediaStream = catchAsync(async (req, res) => {
   const media = await Media.findOne({ id: req.params.mediaId });
   const src = media.video_src.SD;
   const fileName = `${normalizeText(media.title)}.mp4`;
+  const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);
   const requestRangeHeader = req.headers.range;
   if (!requestRangeHeader) {
     res.status(400).send('Requires Range header');
   }
-
-  const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);
 
   if (!fs.existsSync(resolvedPath)) {
     const axiosResponseHead = await axios.head(src);
@@ -192,22 +197,6 @@ export const mediaStream = catchAsync(async (req, res) => {
     downloadStream.on('response', (response) => {
       response.pipe(res);
     });
-    let done = false;
-    downloadStream.on('downloadProgress', async (response) => {
-      if (response.percent > 0.2 && !done) {
-        console.log(response);
-        await Media.findOneAndUpdate(
-          { id: media.id },
-          {
-            uiConfig: {
-              height: '70px',
-              top: '35px',
-            },
-          }
-        );
-        done = true;
-      }
-    });
     downloadStream.pipe(fileWriterStream);
   } else {
     const videoSize = fs.statSync(resolvedPath).size;
@@ -221,13 +210,18 @@ export const mediaStream = catchAsync(async (req, res) => {
 });
 
 export const getUiConfif = catchAsync(async (req, res) => {
-  const media = await Media.findOne({ id: req.params.mediaId });
+  const media = await Media.findOne({ id: req.params.id });
   const src = media.video_src.SD;
+  const fileName = `${normalizeText(media.title)}-temp.mp4`;
+  const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);
   const downloadStream = got.stream(src);
+  const fileWriterStream = fs.createWriteStream(resolvedPath);
+
   let done = false;
   downloadStream.on('downloadProgress', async (response) => {
     if (response.percent > 0.2 && !done) {
-      console.log(response);
+      const val = ffmpeg.run(`-i ${fileName} -vf cropdetect -f null`);
+      console.log('224 ==>', val);
       res.status(200).json({
         status: 'success',
         data: {
@@ -238,6 +232,7 @@ export const getUiConfif = catchAsync(async (req, res) => {
       done = true;
     }
   });
+  downloadStream.pipe(fileWriterStream);
 });
 
 export const imageStream = catchAsync(async (req, res) => {

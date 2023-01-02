@@ -25,7 +25,19 @@ export const getMedia = (id) => {
     sendRequest(config, dispatch, setMedia, handleError);
   };
 };
-
+export const getUiConfig = (id) => {
+  return (dispatch) => {
+    const config = {
+      url: `/media/ui-config/${id}`,
+    };
+    const handleError = (err) => console.log(err);
+    const uiConfig = (data) => {
+      console.log(data);
+      dispatch(sliderActions.setUiConfig(data));
+    };
+    sendRequest(config, dispatch, uiConfig, handleError);
+  };
+};
 export const getImageSrcFromStream = (id) => {
   fetch(`http://localhost:8001/api/v1/media/image/${id}`)
     // Retrieve its body as ReadableStream

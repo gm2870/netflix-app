@@ -8,6 +8,7 @@ const mediaSlice = createSlice({
     mediaItems: null,
     billboardMedia: null,
     playingBillboardTrailer: false,
+    uiConfig: null,
   },
   reducers: {
     getMediaItems: (state, action) => {
@@ -20,6 +21,9 @@ const mediaSlice = createSlice({
     // setMediaItems: (state, action) => {
     //   state.mediaItems = action.payload;
     // },
+    setUiConfig: (state, action) => {
+      state.uiConfig = action.payload;
+    },
   },
 });
 export const mediaActions = mediaSlice.actions;

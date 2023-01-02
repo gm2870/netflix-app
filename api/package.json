@@ -28,7 +28,9 @@
     "mongoose": "^6.6.1",
     "node-schedule": "^2.1.0",
     "puppeteer": "^18.0.5",
-    "validator": "^13.7.0"
+    "validator": "^13.7.0",
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "fluent-ffmpeg": "^2.1.2"
   },
   "devDependencies": {
     "del": "^5.1.0",
