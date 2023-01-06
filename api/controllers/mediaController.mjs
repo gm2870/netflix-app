@@ -7,7 +7,7 @@ import Media from '../models/mediaModel.mjs';
 import { getSrcWithVideoId, getVideoSrc } from '../utils/urlGrabber.mjs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 import * as path from 'path';
@@ -220,8 +220,19 @@ export const getUiConfif = catchAsync(async (req, res) => {
   let done = false;
   downloadStream.on('downloadProgress', async (response) => {
     if (response.percent > 0.2 && !done) {
-      const val = ffmpeg.run(`-i ${fileName} -vf cropdetect -f null`);
-      console.log('224 ==>', val);
+      var ffmpeg = spawn('ffmpeg', [
+        '-i',
+        fileName,
+        '-vf',
+        'cropdetect',
+        '-f',
+        'null',
+      ]);
+
+      ffmpeg.stdout.on('data', (data) => {
+        console.log(data);
+      });
+
       res.status(200).json({
         status: 'success',
         data: {
