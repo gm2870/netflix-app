@@ -3,11 +3,12 @@ import axios from 'axios';
 import got from 'got';
 // import path from 'path';
 import catchAsync from '../utils/catchAsync.mjs';
+import util from 'util';
 import Media from '../models/mediaModel.mjs';
 import { getSrcWithVideoId, getVideoSrc } from '../utils/urlGrabber.mjs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { exec, spawn } from 'child_process';
+import { exec } from 'child_process';
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 import * as path from 'path';
@@ -204,12 +205,11 @@ export const mediaStream = catchAsync(async (req, res) => {
 
     const videoStream = fs.createReadStream(resolvedPath, { start, end });
 
-    // Stream the video chunk to the client
     videoStream.pipe(res);
   }
 });
 
-export const getUiConfif = catchAsync(async (req, res) => {
+export const getVideoCropSize = catchAsync(async (req, res) => {
   const media = await Media.findOne({ id: req.params.id });
   const src = media.video_src.SD;
   const fileName = `${normalizeText(media.title)}-temp.mp4`;
@@ -218,26 +218,21 @@ export const getUiConfif = catchAsync(async (req, res) => {
   const fileWriterStream = fs.createWriteStream(resolvedPath);
 
   let done = false;
+  const asyncExec = util.promisify(exec);
+
   downloadStream.on('downloadProgress', async (response) => {
     if (response.percent > 0.2 && !done) {
-      var ffmpeg = spawn('ffmpeg', [
-        '-i',
-        fileName,
-        '-vf',
-        'cropdetect',
-        '-f',
-        'null',
-      ]);
-
-      ffmpeg.stdout.on('data', (data) => {
-        console.log(data);
-      });
-
+      const { err, stdout } = await asyncExec(
+        `ffmpeg -i ${resolvedPath} -vf cropdetect -f null - 2>&1 | awk \'/crop/ { print $NF }\' | tail -1`
+      );
+      if (err) {
+        return new AppError('crop value not found.', 500);
+      }
+      const val = stdout.split(':').pop();
       res.status(200).json({
         status: 'success',
         data: {
-          height: '70px',
-          top: '35px',
+          blackBarHeight: +val + 1,
         },
       });
       done = true;
