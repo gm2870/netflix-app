@@ -12,6 +12,7 @@ export const VideoJS = (props) => {
     // Make sure Video.js player is only initialized once
     if (!playerRef.current && videoRef.current) {
       const player = videojs(videoRef.current, options, () => {
+        console.log('options.cropSize', options.cropSize);
         if (!options.controls) {
           videoRef.current?.classList.add('vjs-controls-disabled');
           const nodeList = document.querySelectorAll('.vjs-control');
@@ -19,12 +20,15 @@ export const VideoJS = (props) => {
             iterator.remove();
           }
         }
-        console.log(options.componentName);
         videoRef.current?.classList.add(
           classes[`vjs-${options.componentName}`]
         );
-        // videoRef.current?.classList.add(classes[`vjs-billboard`]);
-
+        if (options.cropSize) {
+          let cropSize = +options.cropSize;
+          if (cropSize > 50) cropSize = 50;
+          videoRef.current.style.top = `-${cropSize + 2}px`;
+          videoRef.current.style.height = `calc(100% + ${cropSize * 2}px)`;
+        }
         onReady && onReady(player);
       });
 

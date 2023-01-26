@@ -157,7 +157,6 @@ const filterItems = (
     }
 
     if (direction === 'right') {
-      console.log(prevMidLastIndex);
       if (prevMidLastIndex === 0) {
         return itemsIndexes.slice(-(rowItems + 2));
       }

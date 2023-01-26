@@ -25,19 +25,20 @@ export const getMedia = (id) => {
     sendRequest(config, dispatch, setMedia, handleError);
   };
 };
-export const getUiConfig = (id) => {
+
+export const getCropSize = (id) => {
   return (dispatch) => {
     const config = {
-      url: `/media/ui-config/${id}`,
+      url: `/media/crop-size/${id}`,
     };
     const handleError = (err) => console.log(err);
     const uiConfig = (data) => {
-      console.log(data);
-      dispatch(sliderActions.setUiConfig(data));
+      dispatch(mediaActions.setCropSize(data.blackBarHeight));
     };
     sendRequest(config, dispatch, uiConfig, handleError);
   };
 };
+
 export const getImageSrcFromStream = (id) => {
   fetch(`http://localhost:8001/api/v1/media/image/${id}`)
     // Retrieve its body as ReadableStream

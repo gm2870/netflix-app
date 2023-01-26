@@ -10,14 +10,17 @@ const __dirname = dirname(__filename);
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 import util from 'util';
 
-const fileName = 'arrow.mp4';
+const fileName = 'hustle.mp4';
 const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);
 const asyncExec = util.promisify(exec);
 
-const { err, stdout } = await asyncExec(
-  `ffmpeg -i ${resolvedPath} -vf cropdetect -f null - 2>&1 | awk \'/crop/ { print $NF }\' | tail -1`
+exec(
+  `ffmpeg -i ${resolvedPath} -vf cropdetect -f null - 2>&1 | awk '/crop/ { print $NF }' | tail -1`,
+  (err, stdout) => {
+    console.log(err);
+    console.log(stdout);
+  }
 );
-console.log(stdout);
 const cropFile = (fileName, path, cropValues) => {
   exec(
     `ffmpeg -i ${path} -vf "${cropValues}" ${fileName} `,

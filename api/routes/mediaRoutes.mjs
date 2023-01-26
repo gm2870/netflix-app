@@ -5,6 +5,6 @@ router.get('/all', mediaController.getMediaItems);
 router.get('/:id', mediaController.getMedia);
 router.get('/search/:name', mediaController.searchMedia);
 router.get('/video/:mediaId', mediaController.mediaStream);
-router.get('/ui-config/:id', mediaController.getVideoCropSize);
+router.get('/crop-size/:id', mediaController.getVideoCropSize);
 router.get('/image/:id', mediaController.imageStream);
 export default router;

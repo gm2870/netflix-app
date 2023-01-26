@@ -8,7 +8,7 @@ import { useRef } from 'react';
 import { Fade } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import VideoJS from '../VideoJS/VideoJS';
-import { getUiConfig } from '../../store/redux/media/media-actions';
+import { getCropSize } from '../../store/redux/media/media-actions';
 
 const MediaCard = (props) => {
   const dispatch = useDispatch();
@@ -16,8 +16,8 @@ const MediaCard = (props) => {
   const cardRef = useRef();
   const imageRef = useRef();
   const videoContainer = useRef();
-  const uiConfig = useSelector((state) => state.uiConfig);
-  console.log(uiConfig);
+  const cropSize = useSelector((state) => state.media.cropSize);
+
   const [playing, setPlaying] = useState(false);
   const [imageOpacity, setImageOpacity] = useState(1);
   const [soundOn, setSoundOn] = useState(false);
@@ -34,9 +34,10 @@ const MediaCard = (props) => {
         type: 'video/mp4',
       },
     ],
+    cropSize,
   };
   useEffect(() => {
-    dispatch(getUiConfig(props.item.id));
+    dispatch(getCropSize(props.item.id));
   }, []);
   const toggleSound = () => {
     setSoundOn((prev) => {
@@ -92,6 +93,7 @@ const MediaCard = (props) => {
   const onTrailerStartPlaying = () => {
     playerRef?.current.muted(false);
   };
+  console.log(cropSize);
   return (
     <Fade
       in={props.show}
@@ -109,7 +111,7 @@ const MediaCard = (props) => {
             src={`http://localhost:8001/api/v1/media/image/${props.item.id}`}
           />
         </div>
-        {playing && (
+        {playing && cropSize && (
           <div ref={videoContainer} className={classes.video}>
             <VideoJS
               controlBar={false}
