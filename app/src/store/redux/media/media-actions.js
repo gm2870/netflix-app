@@ -39,6 +39,10 @@ export const getCropSize = (id) => {
   };
 };
 
+export const resetCropSize = () => {
+  return (dispatch) => dispatch(mediaActions.setCropSize(null));
+};
+
 export const getImageSrcFromStream = (id) => {
   fetch(`http://localhost:8001/api/v1/media/image/${id}`)
     // Retrieve its body as ReadableStream

@@ -8,9 +8,11 @@ import { useRef } from 'react';
 import { Fade } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import VideoJS from '../VideoJS/VideoJS';
-import { getCropSize } from '../../store/redux/media/media-actions';
-
-const MediaCard = (props) => {
+import {
+  getCropSize,
+  resetCropSize,
+} from '../../store/redux/media/media-actions';
+const PreviewModal = (props) => {
   const dispatch = useDispatch();
   const playerRef = useRef(null);
   const cardRef = useRef();
@@ -70,7 +72,7 @@ const MediaCard = (props) => {
   }));
   const [showMiniModel, setShowMiniModal] = useState(false);
   const onLikeHover = () => setShowMiniModal(true);
-  const hideModal = props.hideModal;
+  const onHideModal = props.hideModal;
   useEffect(() => {
     if (props.show) {
       cardRef.current.style.width = `${props.offsetWidth * 1.5}px`;
@@ -87,19 +89,21 @@ const MediaCard = (props) => {
         }px`;
       }
     }
+    return () => {
+      dispatch(resetCropSize());
+    };
   }, []);
   const onMiniModalMouseLeave = () => setShowMiniModal(false);
 
   const onTrailerStartPlaying = () => {
     playerRef?.current.muted(false);
   };
-  console.log(cropSize);
   return (
     <Fade
       in={props.show}
       style={{ transitionDelay: props.show ? '500ms' : '0ms' }}
     >
-      <div ref={cardRef} onMouseLeave={hideModal} className={classes.card}>
+      <div ref={cardRef} onMouseLeave={onHideModal} className={classes.card}>
         <div
           ref={imageRef}
           className={classes.imageContainer}
@@ -219,4 +223,4 @@ const MediaCard = (props) => {
     </Fade>
   );
 };
-export default MediaCard;
+export default PreviewModal;

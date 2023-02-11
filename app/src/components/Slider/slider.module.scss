@@ -16,7 +16,7 @@
   margin: 0 4% 0.5em;
   min-width: 6em;
   text-decoration: none;
-  @include respond(big-desktop) {
+  @include respond(normal-desktop) {
     margin-left: 60px;
   }
   &__header {
@@ -34,7 +34,7 @@
   z-index: 2;
   position: relative;
 
-  @include respond(big-desktop) {
+  @include respond(normal-desktop) {
     padding: 0 60px;
   }
   &__mask {
@@ -64,7 +64,7 @@
     &:hover {
       background: hsla(0, 0%, 8%, 0.7);
     }
-    @include respond(big-desktop) {
+    @include respond(normal-desktop) {
       width: 60px;
     }
   }
@@ -82,7 +82,7 @@
   &__pagination {
     display: block;
 
-    @include respond(big-desktop) {
+    @include respond(normal-desktop) {
       right: 62px;
     }
     list-style-type: none;
@@ -114,10 +114,10 @@
     @include respond(tablet) {
       width: 25%;
     }
-    @include respond(normal-desktop) {
+    @include respond(small-desktop) {
       width: 20%;
     }
-    @include respond(big-desktop) {
+    @include respond(normal-desktop) {
       width: 16.66666666666667%;
     }
   }

@@ -3,7 +3,7 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import classes from './MediaItem.module.scss';
 import { useDispatch } from 'react-redux';
-import MediaCard from '../PreviewModal/PreviewModal';
+import PreviewModal from '../PreviewModal/PreviewModal';
 
 const MediaItem = ({ item, underIndicator, isFirst, isLast }) => {
   const dispatch = useDispatch();
@@ -67,7 +67,7 @@ const MediaItem = ({ item, underIndicator, isFirst, isLast }) => {
           </div>
           <Modal hideBackdrop open={open && !underIndicator}>
             <Box>
-              <MediaCard
+              <PreviewModal
                 isFirst={isFirst}
                 isLast={isLast}
                 item={item}
@@ -76,7 +76,7 @@ const MediaItem = ({ item, underIndicator, isFirst, isLast }) => {
                 offsetWidth={offsetWidth}
                 show={open}
                 hideModal={hideModal}
-              ></MediaCard>
+              ></PreviewModal>
             </Box>
           </Modal>
         </div>

@@ -9,28 +9,28 @@
 .vjs-card {
   width: 100%;
   position: absolute;
-  // top: -3rem;
-
-  // height: calc(100% + 72px);
   object-fit: fill;
-  // @include respond(tablet) {
-  //   height: calc(100% + 82px);
-  // }
-  // @include respond(big-desktop) {
-  //   height: calc(100% + 92px);
-  // }
 }
 
 .vjs-billboard {
   width: 100%;
   position: absolute;
-  top: -11rem;
+  top: -6rem;
   height: calc(100% + 72px);
   object-fit: fill;
   @include respond(tablet) {
+    top: -7rem;
+
     height: calc(100% + 82px);
   }
-  @include respond(big-desktop) {
+  @include respond(normal-desktop) {
+    top: -11rem;
+
     height: calc(100% + 110px);
+  }
+  @include respond(normal-desktop) {
+    top: -12rem;
+
+    height: calc(100% + 130px);
   }
 }

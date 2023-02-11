@@ -8,7 +8,7 @@ html {
     font-size: 75%;
   }
 
-  @include respond(normal-desktop) {
+  @include respond(small-desktop) {
     font-size: 87.5%;
   }
 }
