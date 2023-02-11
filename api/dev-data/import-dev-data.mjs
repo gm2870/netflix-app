@@ -113,7 +113,10 @@ export const updateSrc = async (media) => {
   } else {
     videoData = await getVideoSrc(media.title_id, 1080);
   }
-  if (!videoData || !videoData.SD) return;
+  if (!videoData || !videoData.SD) {
+    console.log(`${media.title} failed`);
+    return;
+  }
   return await Media.findOneAndUpdate(
     { id: media.id },
     {
@@ -128,7 +131,6 @@ export const updateSrc = async (media) => {
 
 const updateMedia = async (id) => {
   const item = await Media.findOne({ id });
-  console.log(item.title);
   await updateSrc(item);
   process.exit();
 };

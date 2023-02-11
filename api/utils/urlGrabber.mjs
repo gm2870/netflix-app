@@ -15,6 +15,9 @@ export const getVideoSrc = async (id, quality = 480) => {
     let videoId;
     await page.waitForSelector('#suggestion-search', { visible: true });
     await page.type('input[id="suggestion-search"]', `${id}`, { delay: 300 });
+    await page.waitForSelector('#react-autowhatever-1--item-1', {
+      visible: true,
+    });
     const href = await page.evaluate(() => {
       const firstLink =
         // eslint-disable-next-line no-undef

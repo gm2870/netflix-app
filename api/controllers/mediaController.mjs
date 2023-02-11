@@ -224,7 +224,7 @@ export const getVideoCropSize = catchAsync(async (req, res) => {
     .on('downloadProgress', async (progress) => {
       // console.log('percent', response);
       downloaded = progress.percent;
-      if (downloaded >= 0.2) {
+      if (downloaded >= 0.1) {
         downloadStream.destroy();
         const { err, stdout } = await asyncExec(
           `ffmpeg -i ${resolvedPath} -vf cropdetect -f null - 2>&1 | awk '/crop/ { print $NF }' | tail -1`
