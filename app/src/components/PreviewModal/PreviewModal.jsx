@@ -40,6 +40,9 @@ const PreviewModal = (props) => {
   };
   useEffect(() => {
     dispatch(getCropSize(props.item.id));
+    return () => {
+      dispatch(resetCropSize());
+    };
   }, []);
   const toggleSound = () => {
     setSoundOn((prev) => {
@@ -73,26 +76,7 @@ const PreviewModal = (props) => {
   const [showMiniModel, setShowMiniModal] = useState(false);
   const onLikeHover = () => setShowMiniModal(true);
   const onHideModal = props.hideModal;
-  useEffect(() => {
-    if (props.show) {
-      cardRef.current.style.width = `${props.offsetWidth * 1.5}px`;
-      cardRef.current.style.top = `${props.top - props.offsetWidth * 0.4}px`;
-      if (props.isFirst) {
-        cardRef.current.style.left = `${props.left}px`;
-      } else if (props.isLast) {
-        cardRef.current.style.left = `${
-          props.left - props.offsetWidth * 0.5
-        }px`;
-      } else {
-        cardRef.current.style.left = `${
-          props.left - props.offsetWidth * 0.25
-        }px`;
-      }
-    }
-    return () => {
-      dispatch(resetCropSize());
-    };
-  }, []);
+
   const onMiniModalMouseLeave = () => setShowMiniModal(false);
 
   const onTrailerStartPlaying = () => {

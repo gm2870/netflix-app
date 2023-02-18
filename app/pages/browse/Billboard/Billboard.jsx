@@ -3,10 +3,12 @@ import { useState } from 'react';
 import { useRef } from 'react';
 import CircleButton from '../../../src/components/CircleButton/CircleButton';
 import VideoJS from '../../../src/components/VideoJS/VideoJS';
+import videojs from 'video.js';
+
 import classes from './Billboard.module.scss';
-const Billboard = ({ item }) => {
+const Billboard = (props) => {
   const playerRef = useRef(null);
-  const [playing, setPlaying] = useState(false);
+  const [playing, setPlaying] = useState(true);
   const [volume, setVolume] = useState(false);
   const videoOptions = {
     autoplay: true,
@@ -16,7 +18,7 @@ const Billboard = ({ item }) => {
     componentName: 'billboard',
     sources: [
       {
-        src: `http://localhost:8001/api/v1/media/video/${item.id}`,
+        src: `http://localhost:8001/api/v1/media/video/${props.item.id}`,
         type: 'video/mp4',
       },
     ],
@@ -27,16 +29,13 @@ const Billboard = ({ item }) => {
       setPlaying(false);
     });
   };
-  useEffect(() => {
-    setPlaying(true);
-  }, []);
+
   const reloadVideoHandler = () => {
     playerRef.current.load();
     setPlaying(true);
   };
   const toggleSoundHandler = () =>
     setVolume((prev) => {
-      console.log(prev);
       playerRef.current.muted(prev);
       return !prev;
     });
@@ -51,7 +50,7 @@ const Billboard = ({ item }) => {
           >
             <img
               className={classes.billboard__image}
-              src={`http://localhost:8001/api/v1/media/image/${item.id}`}
+              src={`http://localhost:8001/api/v1/media/image/${props.item.id}`}
             />
           </div>
         )}
@@ -69,7 +68,6 @@ const Billboard = ({ item }) => {
             <span className={classes.actions__maturityRating}>16</span>
           </div>
         </div>
-        {/* {playing && ( */}
         <div
           className={classes.videoContainer}
           style={{ opacity: playing ? 1 : 0 }}
@@ -80,7 +78,6 @@ const Billboard = ({ item }) => {
             onReady={handlePlayerReady}
           />
         </div>
-        {/* )} */}
         <div>
           <img src="" alt="" />
           <div className={classes.billboard__gradient}></div>

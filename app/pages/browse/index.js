@@ -17,7 +17,6 @@ const browse = () => {
   const dispatch = useDispatch();
   const [showNavigationLinks, setNavigationLinks] = useState(false);
   const [stickyHeader, setStickyHeader] = useState(false);
-
   const items = useSelector((state) => state.slider.items);
   const navigationToggleHandler = () =>
     setNavigationLinks(!showNavigationLinks);
@@ -26,6 +25,7 @@ const browse = () => {
       dispatch(getMediaItems());
     }
   }, [items]);
+
   useEffect(() => {
     window.addEventListener('scroll', () => {
       if (window.scrollY !== 0) {
@@ -133,7 +133,7 @@ const browse = () => {
       </div>
       {items.length && (
         <Fragment>
-          <Billboard item={items[23]} />
+          <Billboard item={items[19]} />
           <Slider items={items} />
         </Fragment>
       )}

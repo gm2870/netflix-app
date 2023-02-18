@@ -11,31 +11,20 @@ const MediaItem = ({ item, underIndicator, isFirst, isLast }) => {
   const [open, setOpen] = useState(false);
   const [closedModal, setClosedModal] = useState(false);
 
-  const [left, setLeft] = useState(null);
-  const [top, setTop] = useState(null);
-  const [offsetWidth, setOffsetWidth] = useState(null);
-
   const boxRef = useRef();
   let timeout = null;
 
   useEffect(() => {
     const divNode = boxRef.current;
 
-    const handleEvent = (event) => {
-      if (divNode) {
-        if (divNode.contains(event.target)) {
-          setOffsetWidth(boxRef.current.offsetWidth);
-          const left = boxRef.current.getBoundingClientRect().left;
-          const top = boxRef.current.getBoundingClientRect().top;
-          setLeft(left);
-          setTop(top);
-          timeout = setTimeout(() => {
-            if (!closedModal) {
-              setOpen(true);
-              setClosedModal(false);
-            }
-          }, 1000);
-        }
+    const openModal = (event) => {
+      if (divNode && divNode.contains(event.target)) {
+        timeout = setTimeout(() => {
+          if (!closedModal) {
+            setOpen(true);
+            setClosedModal(false);
+          }
+        }, 1000);
       }
     };
 
@@ -43,14 +32,33 @@ const MediaItem = ({ item, underIndicator, isFirst, isLast }) => {
       clearTimeout(timeout);
       setClosedModal(true);
     };
-    divNode.addEventListener('mouseenter', handleEvent);
+    divNode.addEventListener('mouseenter', openModal);
 
     divNode.addEventListener('mouseleave', hideModal);
 
     return () => {
-      document.removeEventListener('mouseleave', handleEvent);
+      document.removeEventListener('mouseleave', openModal);
     };
   }, [boxRef]);
+  const modalPosition = () => {
+    const position = {
+      position: 'absolute',
+      outline: 'none',
+    };
+    const offsetWidth = boxRef.current.offsetWidth;
+    const left = boxRef.current.getBoundingClientRect().left;
+    const top = boxRef.current.getBoundingClientRect().top;
+    position.width = `${offsetWidth * 1.5}px`;
+    position.top = `${top - offsetWidth * 0.4}px`;
+    if (isFirst) {
+      position.left = `${left}px`;
+    } else if (isLast) {
+      position.left = `${left - offsetWidth * 0.5}px`;
+    } else {
+      position.left = `${left - offsetWidth * 0.25}px`;
+    }
+    return position;
+  };
   const hideModal = () => {
     clearTimeout(timeout);
     setOpen(false);
@@ -66,14 +74,9 @@ const MediaItem = ({ item, underIndicator, isFirst, isLast }) => {
             />
           </div>
           <Modal hideBackdrop open={open && !underIndicator}>
-            <Box>
+            <Box sx={modalPosition}>
               <PreviewModal
-                isFirst={isFirst}
-                isLast={isLast}
                 item={item}
-                left={left}
-                top={top}
-                offsetWidth={offsetWidth}
                 show={open}
                 hideModal={hideModal}
               ></PreviewModal>

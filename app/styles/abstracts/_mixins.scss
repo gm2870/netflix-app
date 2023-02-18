@@ -15,7 +15,7 @@
     }
   }
   @if $breakpoint == normal-desktop {
-    @media only screen and (min-width: 93.75em) {
+    @media only screen and (min-width: 87.5em) {
       @content;
     }
   }
