@@ -1,14 +1,15 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import videojs from 'video.js';
 import classes from './VideoJS.module.scss';
 
 export const VideoJS = (props) => {
   const videoRef = useRef();
   const playerRef = useRef();
-
   const { options, onReady } = props;
 
   useEffect(() => {
+    // +++  Determine the available player IDs +++//
+
     // Make sure Video.js player is only initialized once
     if (!playerRef.current && videoRef.current) {
       const player = videojs(videoRef.current, options, () => {
@@ -26,7 +27,7 @@ export const VideoJS = (props) => {
           let cropSize = +options.cropSize;
 
           if (cropSize == 64 || cropSize === 40) {
-            cropSize = 45;
+            cropSize = 47;
           } else if (cropSize === 32) {
             cropSize = 19;
           } else if (cropSize > 50) {
@@ -39,17 +40,17 @@ export const VideoJS = (props) => {
         }
         onReady && onReady(player);
       });
-
+      player.on('play', function () {
+        console.log(this.options().componentName);
+      });
       player.on('mouseenter', function () {
         player.userActive(false);
       });
-
-      // You could update an existing player in the `else` block here
-      // on prop change, for example:
     }
   }, [options, videoRef]);
 
   useEffect(() => {
+    // var setPlayer = Object.keys(videojs.players);
     const player = playerRef.current;
 
     return () => {

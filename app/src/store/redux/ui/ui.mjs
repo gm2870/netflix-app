@@ -4,10 +4,14 @@ const uiSlice = createSlice({
   name: 'ui',
   initialState: {
     loading: false,
+    billboardPlaying: true,
   },
   reducers: {
     toggleLoader: (state) => {
       state.loading = !state.loading;
+    },
+    toggleBillnoardPlaying: (state) => {
+      state.billboardPlaying = !state.billboardPlaying;
     },
   },
 });

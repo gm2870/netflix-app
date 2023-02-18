@@ -12,6 +12,8 @@ import {
   getCropSize,
   resetCropSize,
 } from '../../store/redux/media/media-actions';
+import { uiActions } from '../../store/redux/ui/ui.mjs';
+
 const PreviewModal = (props) => {
   const dispatch = useDispatch();
   const playerRef = useRef(null);
@@ -38,27 +40,35 @@ const PreviewModal = (props) => {
     ],
     cropSize,
   };
+
   useEffect(() => {
     dispatch(getCropSize(props.item.id));
     return () => {
       dispatch(resetCropSize());
+      dispatch(uiActions.toggleBillnoardPlaying(true));
     };
   }, []);
+
   const toggleSound = () => {
     setSoundOn((prev) => {
       playerRef.current.muted(prev);
       return !prev;
     });
   };
+
   const handlePlayerReady = (player) => {
     playerRef.current = player;
-    player.on('play', () => setImageOpacity(0));
+    player.on('play', () => {
+      setImageOpacity(0);
+      dispatch(uiActions.toggleBillnoardPlaying(false));
+    });
     player.on('ended', () => setImageOpacity(1));
   };
 
   const onTrailerStart = () => {
     setPlaying(true);
   };
+
   const LightTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
   ))(({ theme }) => ({
@@ -73,15 +83,15 @@ const PreviewModal = (props) => {
       padding: '0.5rem 1.5rem',
     },
   }));
+
   const [showMiniModel, setShowMiniModal] = useState(false);
   const onLikeHover = () => setShowMiniModal(true);
   const onHideModal = props.hideModal;
-
   const onMiniModalMouseLeave = () => setShowMiniModal(false);
-
   const onTrailerStartPlaying = () => {
     playerRef?.current.muted(false);
   };
+
   return (
     <Fade
       in={props.show}

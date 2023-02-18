@@ -3,13 +3,14 @@ import { useState } from 'react';
 import { useRef } from 'react';
 import CircleButton from '../../../src/components/CircleButton/CircleButton';
 import VideoJS from '../../../src/components/VideoJS/VideoJS';
-import videojs from 'video.js';
 
 import classes from './Billboard.module.scss';
-const Billboard = (props) => {
+import { useSelector } from 'react-redux';
+const Billboard = ({ item }) => {
   const playerRef = useRef(null);
   const [playing, setPlaying] = useState(true);
   const [volume, setVolume] = useState(false);
+  const shouldPlay = useSelector((state) => state.ui.billboardPlaying);
   const videoOptions = {
     autoplay: true,
     muted: true,
@@ -18,11 +19,12 @@ const Billboard = (props) => {
     componentName: 'billboard',
     sources: [
       {
-        src: `http://localhost:8001/api/v1/media/video/${props.item.id}`,
+        src: `http://localhost:8001/api/v1/media/video/${item.id}`,
         type: 'video/mp4',
       },
     ],
   };
+
   const handlePlayerReady = (player) => {
     playerRef.current = player;
     player.on('ended', () => {
@@ -40,6 +42,29 @@ const Billboard = (props) => {
       return !prev;
     });
 
+  const handleScroll = () => {
+    if (
+      window.scrollY > 600 &&
+      playerRef.current &&
+      !playerRef.current?.paused()
+    ) {
+      playerRef.current?.pause();
+    } else {
+      playerRef.current?.play();
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+  }, []);
+  useEffect(() => {
+    if (!shouldPlay) {
+      playerRef.current?.pause();
+    } else {
+      playerRef.current?.play();
+    }
+  }, [shouldPlay]);
+
   return (
     <section className={classes.billboardRow}>
       <div className={classes.billboard}>
@@ -50,7 +75,7 @@ const Billboard = (props) => {
           >
             <img
               className={classes.billboard__image}
-              src={`http://localhost:8001/api/v1/media/image/${props.item.id}`}
+              src={`http://localhost:8001/api/v1/media/image/${item.id}`}
             />
           </div>
         )}
@@ -79,7 +104,6 @@ const Billboard = (props) => {
           />
         </div>
         <div>
-          <img src="" alt="" />
           <div className={classes.billboard__gradient}></div>
         </div>
       </div>

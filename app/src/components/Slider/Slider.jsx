@@ -5,7 +5,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import MediaItem from '../MediaItem/MediaItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { Fragment, useEffect } from 'react';
+import { useEffect } from 'react';
 import { sliderActions } from '../../store/redux/slider/slider';
 import { useRef } from 'react';
 import { Link } from '@mui/material';
