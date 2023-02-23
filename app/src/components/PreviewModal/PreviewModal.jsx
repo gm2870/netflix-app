@@ -12,7 +12,7 @@ import {
   getCropSize,
   resetCropSize,
 } from '../../store/redux/media/media-actions';
-import { uiActions } from '../../store/redux/ui/ui.mjs';
+import { uiActions } from '../../store/redux/ui/ui.js';
 
 const PreviewModal = (props) => {
   const dispatch = useDispatch();

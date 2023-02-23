@@ -1,6 +1,6 @@
 export const API_URL = 'http://localhost:8001/api/v1';
 import axios from 'axios';
-import { uiActions } from '../store/redux/ui/ui.mjs';
+import { uiActions } from '../store/redux/ui/ui.js';
 
 const instance = axios.create({
   baseURL: API_URL,

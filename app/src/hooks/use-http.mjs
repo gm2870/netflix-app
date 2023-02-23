@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../utils/api.mjs';
 import { useDispatch } from 'react-redux';
-import { uiActions } from '../store/redux/ui/ui.mjs';
+import { uiActions } from '../store/redux/ui/ui.js';
 
 const useHttp = () => {
   const [error, setError] = useState(null);

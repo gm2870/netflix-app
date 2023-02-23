@@ -1,11 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+interface UiState {
+  loading: boolean;
+  billboardPlaying: boolean;
+}
+
+const initialState: UiState = {
+  loading: false,
+  billboardPlaying: true,
+};
+
 const uiSlice = createSlice({
   name: 'ui',
-  initialState: {
-    loading: false,
-    billboardPlaying: true,
-  },
+  initialState,
   reducers: {
     toggleLoader: (state) => {
       state.loading = !state.loading;

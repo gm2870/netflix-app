@@ -1,13 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit';
-let user;
-if (typeof window !== 'undefined') {
-  user = JSON.parse(localStorage.getItem('user'));
+
+interface AuthState {
+  user: any;
+  isLoggedIn: boolean;
+  invalidMessage: string;
+  email: string;
+  error: any;
 }
 
-const initialState = {
-  user: user || null,
+let user;
+if (typeof window !== 'undefined') {
+  user = JSON.parse(JSON.stringify(localStorage.getItem('user')));
+}
+
+const initialState: AuthState = {
+  user: user,
   isLoggedIn: false,
-  email: null,
+  email: '',
   error: null,
   invalidMessage: '',
 };
