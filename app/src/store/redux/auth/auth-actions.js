@@ -1,6 +1,6 @@
 import Router from 'next/router';
 import { sendRequest } from '../../../utils/api.mjs';
-import { authActions } from './auth-slice.js';
+import { authActions } from './auth-slice.ts';
 
 export const getCurrentUser = () => {
   return (dispatch) => {

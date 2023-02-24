@@ -1,6 +1,6 @@
 import '../styles/styles.scss';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import store from '../src/store/redux/index.mjs';
+import store from '../src/store/redux/index.ts';
 import { Provider } from 'react-redux';
 
 const theme = createTheme({

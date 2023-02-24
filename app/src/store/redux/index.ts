@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
-import uiSlice from './ui/ui.js';
+import uiSlice from './ui/ui';
 import mediaSlice from './media/media.js';
-import authSlice from './auth/auth-slice.js';
+import authSlice from './auth/auth-slice';
 import sliderSlice from './slider/slider.js';
 
 const store = configureStore({
