@@ -43,6 +43,7 @@ const UserSchema = new mongoose.Schema({
   },
   blocked_at: Date,
 });
+
 UserSchema.pre('save', async function (next) {
   // if (!this.isModified('password')) return next();
 
@@ -55,10 +56,12 @@ UserSchema.methods.correctPassword = async (candidatePass, userPass) => {
   const correct = await bcrypt.compare(candidatePass, userPass);
   return correct;
 };
+
 UserSchema.pre(/^find/, function (next) {
   this.find().select('-__v');
   next();
 });
+
 const User = mongoose.model('User', UserSchema);
 
 export default User;

@@ -78,24 +78,6 @@ export const protect = catchAsync(async (req, res, next) => {
   next();
 });
 
-export const isLoggedIn = async (req, res, next) => {
-  if (req.cookies.jwt) {
-    try {
-      const decoded = await promisify(jwt.verify)(
-        req.cookies.jwt,
-        process.env.JWT_SECRET
-      );
-      const currentUser = await User.findById(decoded.id);
-      if (!currentUser) {
-        return next();
-      }
-      req.user = currentUser;
-    } catch (error) {
-      return next();
-    }
-  }
-};
-
 export const refreshToken = catchAsync(async (req, res, next) => {
   const refreshToken = req.cookies.jwt;
   const dbToken = await Token.findOne({

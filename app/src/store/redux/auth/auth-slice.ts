@@ -1,23 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 interface AuthState {
-  user: any;
   isLoggedIn: boolean;
   invalidMessage: string;
   email: string;
-  error: any;
-}
-
-let user;
-if (typeof window !== 'undefined') {
-  user = JSON.parse(JSON.stringify(localStorage.getItem('user')));
+  error: string;
 }
 
 const initialState: AuthState = {
-  user: user,
   isLoggedIn: false,
   email: '',
-  error: null,
+  error: '',
   invalidMessage: '',
 };
 
@@ -30,7 +23,6 @@ const authSlice = createSlice({
     },
     authenticate: (state, action) => {
       state.isLoggedIn = true;
-      state.user = action.payload;
     },
     setError(state, action) {
       state.error = action.payload;
@@ -40,7 +32,6 @@ const authSlice = createSlice({
     },
 
     logoutUser: (state, action) => {
-      state.user = null;
       state.isLoggedIn = false;
     },
   },

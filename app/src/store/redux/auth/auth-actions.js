@@ -66,7 +66,6 @@ export const signupUser = (data) => {
 };
 
 const authenticateAndRedirect = (user, path) => {
-  localStorage.setItem('user', JSON.stringify(user));
   authActions.authenticate(user);
   Router.push(path);
 };
