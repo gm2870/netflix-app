@@ -9,9 +9,11 @@ import CustomButton from '../../src/components/CustomButton/CustomButton';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../../src/store/redux/auth/auth-actions.js';
-
+import { useSelector } from 'react-redux';
+import { authenticateAndRedirect } from '../../src/store/redux/auth/auth-actions';
+import { useLoginUserMutation } from '../../src/services/auth';
+import { authActions } from '../../src/store/redux/auth/auth-slice';
+import { useAppDispatch } from '../../hooks/hooks';
 const CustomInput = styled(TextField)({
   '& label': {
     color: '#8c8c8c',
@@ -43,8 +45,9 @@ const validationSchema = Yup.object().shape({
 
 const login = () => {
   const ref = useRef();
-  const dispatch = useDispatch();
   const invalidMessage = useSelector((state) => state.auth.invalidMessage);
+  const [loginUser, { error }] = useLoginUserMutation();
+  const dispatch = useAppDispatch();
   const [showLearnMore, setShowLearnMore] = useState({});
   const handleLearnMore = () => {
     setShowLearnMore({
@@ -61,8 +64,14 @@ const login = () => {
     resolver: yupResolver(validationSchema),
   });
   const loading = useSelector((state) => state.ui.loading);
-  const loginHandler = (data) => {
-    dispatch(loginUser(data));
+  const loginHandler = async (d) => {
+    const res = await loginUser(d);
+    console.log(res.data);
+    if (res.data?.user) {
+      authenticateAndRedirect(res.data.user, '/browse');
+    } else {
+      dispatch(authActions.setMessage(res.error.message));
+    }
   };
 
   return (

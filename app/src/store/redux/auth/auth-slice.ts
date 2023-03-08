@@ -21,7 +21,7 @@ const authSlice = createSlice({
     setEmail(state, action) {
       state.email = action.payload;
     },
-    authenticate: (state, action) => {
+    authenticate: (state) => {
       state.isLoggedIn = true;
     },
     setError(state, action) {
@@ -31,7 +31,7 @@ const authSlice = createSlice({
       state.invalidMessage = action.payload;
     },
 
-    logoutUser: (state, action) => {
+    logoutUser: (state) => {
       state.isLoggedIn = false;
     },
   },

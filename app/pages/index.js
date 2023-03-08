@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import classes from './index.module.scss';
-import * as authActions from '../src/store/redux/auth/auth-actions.js';
+// import * as authActions from '../src/store/redux/auth/auth-actions.js';
 import { Button, TextField } from '@mui/material';
 import AnimationCardComponent from '../src/components/animation-card/animation-card';
 import { Fragment } from 'react';
@@ -29,7 +29,7 @@ export default function Home() {
     resolver: yupResolver(validationSchema),
   });
   const sendEmail = ({ email }) => {
-    dispatch(authActions.checkEmail(email));
+    // dispatch(authActions.checkEmail(email));
   };
 
   // const logOut = useCallback(() => {

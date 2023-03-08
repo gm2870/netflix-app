@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-interface UiState {
+type UiState = {
   loading: boolean;
   billboardPlaying: boolean;
-}
+};
 
 const initialState: UiState = {
   loading: false,
