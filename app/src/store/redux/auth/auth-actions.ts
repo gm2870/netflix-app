@@ -1,8 +1,8 @@
 import Router from 'next/router';
 import { authActions } from './auth-slice';
-import { AppDispatch } from '../index';
-import { useLoginUserMutation } from '../../../services/auth';
-type LoginData = {
+import { AppDispatch } from '../../redux/index';
+import { sendRequest } from '../../../services/api';
+type Credentials = {
   username: string;
   email: string;
 };
@@ -11,7 +11,7 @@ type LoginData = {
 //     url: '/users/currentUser',
 //     method: 'GET',
 //   };
-//   const result = await AppDispatch(sendRequest(config));
+//   const result = await dispatch(sendRequest(config));
 //   if (result.fulfil) {
 //   }
 //   const handleSuccess = (user) => authActions.authenticate(user);
@@ -19,50 +19,51 @@ type LoginData = {
 //   const handleErr = () => authActions.logoutUser();
 // };
 
-// export const loginUser = (data: LoginData) => {
-//   const [loginUser] = useLoginUserMutation();
-//   try {
-//     const res = loginUser(data);
-//     console.log(res);
-//     // authenticateAndRedirect(res.user, '/browse');
-//   } catch (error) {}
-// };
+export const loginUser = (data: Credentials) => (dispatch: AppDispatch) => {
+  const handleSuccess = () => {
+    authenticateAndRedirect('/browse');
+  };
+  const handleErr = (errMsg: string) =>
+    dispatch(authActions.setMessage(errMsg));
 
-// export const checkEmail = (email) => {
-//   return async (AppDispatch) => {
-//     const config = {
-//       url: '/auth/check-email',
-//       method: 'POST',
-//       data: { email },
-//     };
-//     const handleError = () => {
-//       Router.push('/login');
-//     };
-//     const redirectUser = () => {
-//       AppDispatch(authActions.setEmail(email));
-//       Router.push('/signup');
-//     };
-//     sendRequest(config, AppDispatch, redirectUser, handleError);
-//   };
-// };
+  const config = {
+    url: '/auth/login',
+    method: 'POST',
+    data,
+  };
+  sendRequest(config, dispatch, handleSuccess, handleErr);
+};
 
-// export const signupUser = (data) => {
-//   return (AppDispatch) => {
-//     const config = {
-//       url: '/auth/signup',
-//       method: 'POST',
-//       data,
-//     };
-//     const handleSuccess = ({ user }) =>
-//       authenticateAndRedirect(user, '/browse');
-//     const handleErr = (msg) => AppDispatch(authActions.setError(msg));
+export const checkEmail = (email: string) => async (dispatch: AppDispatch) => {
+  const config = {
+    url: '/auth/check-email',
+    method: 'POST',
+    data: { email },
+  };
+  const handleError = () => {
+    Router.push('/login');
+  };
+  const redirectUser = () => {
+    dispatch(authActions.setEmail(email));
+    Router.push('/signup');
+  };
+  sendRequest(config, dispatch, redirectUser, handleError);
+};
 
-//     sendRequest(config, AppDispatch, handleSuccess, handleErr);
-//   };
-// };
+export const signupUser = (data: any) => (dispatch: AppDispatch) => {
+  const config = {
+    url: '/auth/signup',
+    method: 'POST',
+    data,
+  };
+  const handleSuccess = () => authenticateAndRedirect('/browse');
+  const handleErr = (msg: string) => dispatch(authActions.setError(msg));
 
-export const authenticateAndRedirect = (user, path) => {
-  authActions.authenticate(user);
+  sendRequest(config, dispatch, handleSuccess, handleErr);
+};
+
+export const authenticateAndRedirect = (path: string) => {
+  authActions.authenticate();
   Router.push(path);
 };
 

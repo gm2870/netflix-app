@@ -10,9 +10,7 @@ import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
-import { authenticateAndRedirect } from '../../src/store/redux/auth/auth-actions';
-import { useLoginUserMutation } from '../../src/services/auth';
-import { authActions } from '../../src/store/redux/auth/auth-slice';
+import { loginUser } from '../../src/store/redux/auth/auth-actions';
 import { useAppDispatch } from '../../hooks/hooks';
 const CustomInput = styled(TextField)({
   '& label': {
@@ -46,7 +44,6 @@ const validationSchema = Yup.object().shape({
 const login = () => {
   const ref = useRef();
   const invalidMessage = useSelector((state) => state.auth.invalidMessage);
-  const [loginUser, { error }] = useLoginUserMutation();
   const dispatch = useAppDispatch();
   const [showLearnMore, setShowLearnMore] = useState({});
   const handleLearnMore = () => {
@@ -64,16 +61,9 @@ const login = () => {
     resolver: yupResolver(validationSchema),
   });
   const loading = useSelector((state) => state.ui.loading);
-  const loginHandler = async (d) => {
-    const res = await loginUser(d);
-    console.log(res.data);
-    if (res.data?.user) {
-      authenticateAndRedirect(res.data.user, '/browse');
-    } else {
-      dispatch(authActions.setMessage(res.error.message));
-    }
+  const loginHandler = (data) => {
+    dispatch(loginUser(data));
   };
-
   return (
     <div className={classes.login}>
       <header className={classes.header}>

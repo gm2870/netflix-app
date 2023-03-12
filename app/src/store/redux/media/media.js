@@ -18,9 +18,9 @@ const mediaSlice = createSlice({
       state.billboardMedia = action.payload;
       state.playingBillboardTrailer = true;
     },
-    // setMediaItems: (state, action) => {
-    //   state.mediaItems = action.payload;
-    // },
+    setMediaItems: (state, action) => {
+      state.mediaItems = action.payload;
+    },
     setCropSize: (state, action) => {
       state.cropSize = action.payload;
     },

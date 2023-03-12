@@ -1,12 +1,11 @@
-import { BaseQueryFn, createApi } from '@reduxjs/toolkit/query/react';
-import { Mutex } from 'async-mutex';
-import axios from 'axios';
-import type { AxiosRequestConfig, AxiosError } from 'axios';
-
-const mutex = new Mutex();
 export const API_URL = 'http://localhost:8001/api/v1';
 
-const axiosInstance = axios.create({
+import axios from 'axios';
+import { AppDispatch } from '../store/redux/index';
+import { uiActions } from '../store/redux/ui/ui';
+import { RequestConfig } from './models';
+
+const instance = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
@@ -14,73 +13,52 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-const axiosBaseQuery =
-  (
-    { baseUrl }: { baseUrl: string } = { baseUrl: '' }
-  ): BaseQueryFn<
-    {
-      url: string;
-      method: AxiosRequestConfig['method'];
-      data?: AxiosRequestConfig['data'];
-      params?: AxiosRequestConfig['params'];
-    },
-    unknown,
-    unknown
-  > =>
-  async ({ url, method, data, params }) => {
-    // console.log(data);
-    await mutex.waitForUnlock();
-
-    try {
-      let result = await axiosInstance({
-        url: API_URL + url,
-        method,
-        data,
-        params,
-      });
-      console.log(result.data.data);
-      return {
-        data: result.data.data,
-      };
-    } catch (axiosError) {
-      let err = axiosError as AxiosError;
-      if (
-        !err.config?.url?.includes('login') &&
-        err.response?.status === 401 &&
-        !err.config?.url?.includes('currentUser')
-      ) {
-        if (!mutex.isLocked()) {
-          const release = await mutex.acquire();
-          try {
-            await axiosInstance({
-              url: API_URL + '/auth/refreshtoken',
-              method: 'GET',
-            });
-
-            return axiosInstance(err.config);
-          } catch (_error) {
-            return {
-              error: _error,
-            };
-          } finally {
-            release();
-          }
-        } else {
-          // wait until the mutex is available without locking it
-          await mutex.waitForUnlock();
-          await axiosInstance({ url: baseUrl + url, method, data, params });
+instance.interceptors.response.use(
+  (res) => {
+    return res;
+  },
+  async (err) => {
+    const originalConfig = err.config;
+    if (!originalConfig.url.includes('/currentUser') && !originalConfig.retry) {
+      if (err.response.status === 401 && !originalConfig.retry) {
+        originalConfig.retry = true;
+        try {
+          await instance({
+            url: API_URL + '/auth/refreshtoken',
+            method: 'GET',
+          });
+          return instance(originalConfig);
+        } catch (_error) {
+          return Promise.reject(_error);
         }
       }
-
-      return {
-        error: err.response?.data,
-      };
     }
-  };
+    return Promise.reject(err);
+  }
+);
 
-export const api = createApi({
-  baseQuery: axiosBaseQuery({
-    baseUrl: API_URL,
-  }),
-  endpoints: () => ({}),
-});
+export const sendRequest = async (
+  requestConfig: RequestConfig,
+  dispatch: AppDispatch,
+  handleSuccess: (data: any) => void,
+  handleError: (error: any) => void
+) => {
+  dispatch(uiActions.toggleLoader());
+  try {
+    const res = await instance({
+      url: API_URL + requestConfig.url,
+      method: requestConfig.method || 'GET',
+      headers: requestConfig.headers,
+      params: requestConfig.params,
+      data: requestConfig.data,
+      withCredentials: true,
+    });
+    if (res.data.status === 'success') {
+      handleSuccess(res.data.data);
+    }
+  } catch (error: any) {
+    const err = error.response?.data?.message || error.message || error;
+    handleError(err);
+  }
+  dispatch(uiActions.toggleLoader());
+};

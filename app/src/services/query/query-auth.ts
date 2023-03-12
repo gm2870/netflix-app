@@ -1,9 +1,8 @@
-import { api } from './api';
+import { api } from './query-api';
 
-type LoginResponse = {};
 export const authApi = api.injectEndpoints({
   endpoints: (build) => ({
-    loginUser: build.mutation<any, any>({
+    signIn: build.mutation<any, any>({
       query({ email, password }) {
         return {
           method: 'POST',
@@ -14,8 +13,11 @@ export const authApi = api.injectEndpoints({
           },
         };
       },
+      transformErrorResponse: (response: any) => {
+        return response.data;
+      },
     }),
   }),
 });
 
-export const { useLoginUserMutation } = authApi;
+export const { useSignInMutation } = authApi;
