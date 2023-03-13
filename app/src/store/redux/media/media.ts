@@ -1,15 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
-
+import { Media } from './model';
+type MediaState = {
+  error: string;
+  loading: boolean;
+  mediaItems: Media[];
+  billboardMedia: Media | null;
+  playingBillboardTrailer: boolean;
+  cropSize: number;
+};
+const initialState: MediaState = {
+  error: '',
+  loading: false,
+  mediaItems: [],
+  billboardMedia: null,
+  playingBillboardTrailer: false,
+  cropSize: 0,
+};
 const mediaSlice = createSlice({
   name: 'media',
-  initialState: {
-    error: null,
-    loading: false,
-    mediaItems: null,
-    billboardMedia: null,
-    playingBillboardTrailer: false,
-    cropSize: null,
-  },
+  initialState,
   reducers: {
     getMediaItems: (state, action) => {
       state.mediaItems = action.payload;

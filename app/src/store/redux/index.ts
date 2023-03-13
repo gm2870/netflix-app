@@ -1,6 +1,6 @@
-import { configureStore, ConfigureStoreOptions } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import uiSlice from './ui/ui';
-import mediaSlice from './media/media.js';
+import mediaSlice from './media/media';
 import authSlice from './auth/auth-slice';
 import sliderSlice from './slider/slider.js';
 
@@ -13,7 +13,5 @@ export const store = configureStore({
   },
 });
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
