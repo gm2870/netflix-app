@@ -2,12 +2,9 @@ import { Modal } from '@mui/material';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import classes from './MediaItem.module.scss';
-import { useDispatch } from 'react-redux';
 import PreviewModal from '../PreviewModal/PreviewModal';
 
 const MediaItem = ({ item, underIndicator, isFirst, isLast }) => {
-  const dispatch = useDispatch();
-
   const [open, setOpen] = useState(false);
   const [closedModal, setClosedModal] = useState(false);
 
