@@ -1,21 +1,39 @@
 import { createSlice, current } from '@reduxjs/toolkit';
+type SliderState = {
+  moved: boolean;
+  animating: boolean;
+  activeIndex: number;
+  cardOpen: boolean;
+  showNext: boolean;
+  translateX: number;
+  items: [];
+  filteredRow: SliderRow;
+};
+
+type SliderRow = {
+  left: number[];
+  middle: number[];
+  right: number[];
+};
+
+const initialState: SliderState = {
+  moved: false,
+  animating: false,
+  activeIndex: 0,
+  cardOpen: false,
+  showNext: false,
+  translateX: 0,
+  items: [],
+  filteredRow: {
+    left: [],
+    middle: [],
+    right: [],
+  },
+};
 
 const sliderSlice = createSlice({
   name: 'slider',
-  initialState: {
-    moved: false,
-    animating: false,
-    activeIndex: 0,
-    cardOpen: false,
-    showNext: false,
-    translateX: null,
-    items: [],
-    filteredItems: {
-      left: [],
-      middle: [],
-      right: [],
-    },
-  },
+  initialState,
   reducers: {
     showCard: (state, action) => {
       state.cardOpen = action.payload;
@@ -31,7 +49,7 @@ const sliderSlice = createSlice({
       state.translateX = calculateTranslateX(
         current(state).translateX,
         action.payload.direction,
-        state.filteredItems,
+        state.filteredRow,
         action.payload.rowItems,
         action.payload.itemWidth,
         state.moved,
@@ -46,8 +64,8 @@ const sliderSlice = createSlice({
       if (state.activeIndex >= Math.ceil(state.items.length / rowItems) - 1) {
         state.activeIndex = 0;
       } else state.activeIndex += 1;
-      state.filteredItems = filterItems(
-        current(state.filteredItems),
+      state.filteredRow = filterItems(
+        current(state).filteredRow,
         'right',
         state.activeIndex,
         rowItems,
@@ -56,7 +74,7 @@ const sliderSlice = createSlice({
       state.translateX = calculateTranslateX(
         current(state).translateX,
         'right',
-        state.filteredItems,
+        state.filteredRow,
         rowItems,
         itemWidth,
         state.moved,
@@ -71,8 +89,8 @@ const sliderSlice = createSlice({
       if (state.activeIndex === 0) {
         state.activeIndex = Math.ceil(state.items.length / rowItems) - 1;
       } else state.activeIndex -= 1;
-      state.filteredItems = filterItems(
-        current(state.filteredItems),
+      state.filteredRow = filterItems(
+        current(state).filteredRow,
         'left',
         state.activeIndex,
         rowItems,
@@ -81,7 +99,7 @@ const sliderSlice = createSlice({
       state.translateX = calculateTranslateX(
         current(state).translateX,
         'left',
-        state.filteredItems,
+        state.filteredRow,
         rowItems,
         itemWidth,
         state.moved,
@@ -93,9 +111,9 @@ const sliderSlice = createSlice({
       if (ai > Math.ceil(state.items.length / action.payload.rowItems) - 1) {
         ai = Math.ceil(state.items.length / action.payload.rowItems) - 1;
       }
-      state.filteredItems = filterItems(
-        current(state).filteredItems,
-        null,
+      state.filteredRow = filterItems(
+        current(state).filteredRow,
+        'right',
         ai,
         action.payload.rowItems,
         state.items.length,
@@ -106,7 +124,7 @@ const sliderSlice = createSlice({
         state.translateX = calculateTranslateX(
           current(state).translateX,
           'right',
-          state.filteredItems,
+          state.filteredRow,
           action.payload.rowItems,
           action.payload.itemWidth,
           state.moved,
@@ -118,27 +136,22 @@ const sliderSlice = createSlice({
 });
 
 const filterItems = (
-  currentItems,
-  direction,
-  activeIndex,
-  rowItems,
-  itemsLength,
+  currentItems: SliderRow,
+  direction: string,
+  activeIndex: number,
+  rowItems: number,
+  itemsLength: number,
   moved = true
 ) => {
   const indicatorItemsCount = !moved ? 1 : 2;
   const count = !moved ? rowItems * 2 + indicatorItemsCount : itemsLength;
   const itemsIndexes = Array.from(Array(count).keys());
-  const prevMidFirstIndex = currentItems.middle[0];
-  const prevMidLastIndex = [...currentItems.middle].pop();
+  const currMidFirstIndex = currentItems.middle[0];
+  const currMidLastIndex = currentItems.middle[currentItems.middle.length - 1];
+
   const middleItems = () => {
     if (!moved) {
       return itemsIndexes.slice(0, rowItems + 1);
-    }
-
-    // on first index we need last item to be added
-    if (activeIndex === 0) {
-      const lastItem = itemsIndexes.slice(-1);
-      return [...lastItem, ...itemsIndexes.slice(0, rowItems + 1)];
     }
 
     // on last index we need first item to be added
@@ -157,23 +170,25 @@ const filterItems = (
     }
 
     if (direction === 'right') {
-      if (prevMidLastIndex === 0) {
+      if (currMidLastIndex === 0) {
         return itemsIndexes.slice(-(rowItems + 2));
       }
-      if (prevMidLastIndex === itemsLength - 1) {
+      if (currMidLastIndex === itemsLength - 1) {
         return itemsIndexes.slice(0, rowItems + 2);
       }
-      console.log(
-        itemsIndexes.slice(prevMidLastIndex - 1).slice(0, rowItems + 2)
-      );
-      return itemsIndexes.slice(prevMidLastIndex - 1).slice(0, rowItems + 2);
+
+      return itemsIndexes.slice(currMidLastIndex - 1).slice(0, rowItems + 2);
     }
 
     if (direction === 'left') {
       return itemsIndexes
-        .slice(0, prevMidFirstIndex + 2)
+        .slice(0, currMidFirstIndex + 2)
         .slice(-(rowItems + 2));
     }
+    // on first index we need last item to be added
+
+    const lastItem = itemsIndexes.slice(-1);
+    return [...lastItem, ...itemsIndexes.slice(0, rowItems + 1)];
   };
 
   const leftItems = () => {
@@ -192,7 +207,7 @@ const filterItems = (
   };
 
   const rightItems = () => {
-    const midItemsLastIndex = [...middleItems()].pop();
+    const midItemsLastIndex = middleItems()[middleItems().length - 1];
     let rightItems = itemsIndexes
       .slice(midItemsLastIndex + 1)
       .slice(0, rowItems);
@@ -209,13 +224,13 @@ const filterItems = (
   };
 };
 const calculateTranslateX = (
-  translateX,
-  direction,
-  items,
-  rowItems,
-  itemWidth,
-  moved,
-  animating
+  translateX: number,
+  direction: 'left' | 'right',
+  items: SliderRow,
+  rowItems: number,
+  itemWidth: number,
+  moved: boolean,
+  animating: boolean
 ) => {
   let w = rowItems * itemWidth;
 

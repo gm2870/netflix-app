@@ -11,7 +11,7 @@ import { useRef } from 'react';
 import { Link } from '@mui/material';
 
 const Slider = () => {
-  const sliderStates = useSelector((state) => state.slider);
+  const sliderStates = useAppSelector((state) => state.slider);
   const dispatch = useDispatch();
   const sliderRow = useRef();
   const theme = useTheme();
@@ -23,6 +23,7 @@ const Slider = () => {
   if (sliderStates.translateX) {
     sliderRow.current.style.transform = `translate3d(-${sliderStates.translateX}%,0,0)`;
   }
+
   const sliderConfig = () => {
     if (min1400) {
       return {
@@ -52,14 +53,15 @@ const Slider = () => {
   };
 
   useEffect(() => {
+    const { rowItems, itemWidth } = sliderConfig();
     dispatch(
       sliderActions.setfilteredItems({
-        rowItems: sliderConfig().rowItems,
-        itemWidth: sliderConfig().itemWidth,
+        rowItems,
+        itemWidth,
       })
     );
     if (sliderStates.moved) {
-      let { rowItems, itemWidth } = sliderConfig();
+      const { rowItems, itemWidth } = sliderConfig();
       let translateX = rowItems * itemWidth + itemWidth;
 
       sliderRow.current.style.transform = `translate3d(-${translateX}%,0,0)`;
@@ -169,12 +171,14 @@ const Slider = () => {
                 ></li>
               ))}
           </ul>
-          {sliderStates.items.length && (
+          {sliderStates.items.length ? (
             <div className={classes.slider__mask}>
               <div ref={sliderRow} className={classNames}>
                 {result}
               </div>
             </div>
+          ) : (
+            <div></div>
           )}
           {sliderStates.moved ? (
             <span onClick={handlePrevSlide} className={classes.slider__prev}>
