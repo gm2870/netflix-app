@@ -9,9 +9,9 @@ import CustomButton from '../../src/components/CustomButton/CustomButton';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 import { loginUser } from '../../src/store/redux/auth/auth-actions';
-import { useAppDispatch } from '../../hooks/hooks';
+import { useAppDispatch, useAppSelector } from '../../src/hooks';
+
 const CustomInput = styled(TextField)({
   '& label': {
     color: '#8c8c8c',
@@ -43,7 +43,7 @@ const validationSchema = Yup.object().shape({
 
 const login = () => {
   const ref = useRef();
-  const invalidMessage = useSelector((state) => state.auth.invalidMessage);
+  const invalidMessage = useAppSelector((state) => state.auth.invalidMessage);
   const dispatch = useAppDispatch();
   const [showLearnMore, setShowLearnMore] = useState({});
   const handleLearnMore = () => {
@@ -60,7 +60,8 @@ const login = () => {
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
-  const loading = useSelector((state) => state.ui.loading);
+
+  const loading = useAppSelector((state) => state.ui.loading);
   const loginHandler = (data) => {
     dispatch(loginUser(data));
   };

@@ -1,3 +1,5 @@
+@use '../../../../styles/abstracts' as *;
+
 .pulsate {
   animation-name: pulsateAnimation;
   animation-duration: 3.6s;
@@ -47,8 +49,12 @@
   }
 }
 
-.loading-title {
+.loader {
+  display: inline-block;
   width: 50%;
+  border-left: 2px solid #141414;
+  border-right: 2px solid #141414;
+  box-sizing: border-box;
   @include respond(phone) {
     width: 33.333333%;
   }
@@ -61,4 +67,8 @@
   @include respond(normal-desktop) {
     width: 16.66666666666667%;
   }
+}
+.loader .ratio-16x9 {
+  border-radius: 4px;
+  padding: 27.25% 0;
 }

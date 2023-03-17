@@ -1,20 +1,32 @@
 import { Modal } from '@mui/material';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import classes from './MediaItem.module.scss';
 import PreviewModal from '../PreviewModal/PreviewModal';
+import { Media } from '../../store/redux/media/model';
 
-const MediaItem = ({ item, underIndicator, isFirst, isLast }) => {
+const MediaItem = ({
+  item,
+  underIndicator,
+  isFirst,
+  isLast,
+}: {
+  item: Media;
+  underIndicator: boolean;
+  isFirst: boolean;
+  isLast: boolean;
+}) => {
   const [open, setOpen] = useState(false);
   const [closedModal, setClosedModal] = useState(false);
 
-  const boxRef = useRef();
-  let timeout = null;
+  const boxRef = useRef<HTMLDivElement>(null);
+  let timeout: ReturnType<typeof setTimeout>;
 
   useEffect(() => {
-    const divNode = boxRef.current;
+    const divNode = boxRef.current!;
 
-    const openModal = (event) => {
+    const openModal = (event: any) => {
+      console.log(divNode);
       if (divNode && divNode.contains(event.target)) {
         timeout = setTimeout(() => {
           if (!closedModal) {
@@ -41,10 +53,14 @@ const MediaItem = ({ item, underIndicator, isFirst, isLast }) => {
     const position = {
       position: 'absolute',
       outline: 'none',
+      width: '0px',
+      top: '0px',
+      left: '0px',
     };
-    const offsetWidth = boxRef.current.offsetWidth;
-    const left = boxRef.current.getBoundingClientRect().left;
-    const top = boxRef.current.getBoundingClientRect().top;
+    const box = boxRef.current!;
+    const offsetWidth = box.offsetWidth;
+    const left = box.getBoundingClientRect().left;
+    const top = box.getBoundingClientRect().top;
     position.width = `${offsetWidth * 1.5}px`;
     position.top = `${top - offsetWidth * 0.4}px`;
     if (isFirst) {

@@ -8,16 +8,17 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Fragment, useEffect, useState } from 'react';
 import Slider from '../../src/components/Slider/Slider';
 
-import { useDispatch, useSelector } from 'react-redux';
 import { getMediaItems } from '../../src/store/redux/media/media-actions';
 
 import Billboard from './Billboard/Billboard';
+import { useAppDispatch, useAppSelector } from '../../src/hooks';
 
 const browse = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [showNavigationLinks, setNavigationLinks] = useState(false);
   const [stickyHeader, setStickyHeader] = useState(false);
-  const items = useSelector((state) => state.slider.items);
+  const items = useAppSelector((state) => state.slider.items);
+  console.log(items);
   const navigationToggleHandler = () =>
     setNavigationLinks(!showNavigationLinks);
   useEffect(() => {
@@ -131,12 +132,10 @@ const browse = () => {
           </div>
         </header>
       </div>
-      {items.length && (
-        <Fragment>
-          <Billboard item={items[19]} />
-          <Slider items={items} />
-        </Fragment>
-      )}
+      <Fragment>
+        {/* <Billboard item={items[19]} /> */}
+        <Slider items={items} />
+      </Fragment>
     </section>
   );
 };
