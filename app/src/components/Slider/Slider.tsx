@@ -4,23 +4,24 @@ import { useTheme } from '@mui/material/styles';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import MediaItem from '../MediaItem/MediaItem';
-import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { sliderActions } from '../../store/redux/slider/slider';
 import { useRef } from 'react';
 import { Link } from '@mui/material';
+import { useAppSelector, useAppDispatch } from '../../hooks';
+import LoadingTitle from '../loader/Loading-title/Loading-title';
 
 const Slider = () => {
   const sliderStates = useAppSelector((state) => state.slider);
-  const dispatch = useDispatch();
-  const sliderRow = useRef();
+  const dispatch = useAppDispatch();
+  const sliderRow = useRef<HTMLDivElement>(null);
   const theme = useTheme();
   const min600 = useMediaQuery(theme.breakpoints.up('sm'));
   const min900 = useMediaQuery(theme.breakpoints.up('md'));
   const min1200 = useMediaQuery(theme.breakpoints.up('lg'));
   const min1400 = useMediaQuery('(min-width:1400px)');
 
-  if (sliderStates.translateX) {
+  if (sliderStates.translateX && sliderRow?.current) {
     sliderRow.current.style.transform = `translate3d(-${sliderStates.translateX}%,0,0)`;
   }
 
@@ -63,8 +64,8 @@ const Slider = () => {
     if (sliderStates.moved) {
       const { rowItems, itemWidth } = sliderConfig();
       let translateX = rowItems * itemWidth + itemWidth;
-
-      sliderRow.current.style.transform = `translate3d(-${translateX}%,0,0)`;
+      const div = sliderRow.current!;
+      div.style.transform = `translate3d(-${translateX}%,0,0)`;
     }
   }, [min600, min900, min1200, min1400]);
 
@@ -102,45 +103,73 @@ const Slider = () => {
       );
     }, 750);
   };
-  const leftItems = sliderStates.filteredItems.left.map((itemIndex) => (
-    <div
-      key={sliderStates.items[itemIndex].id}
-      className={`${classes.slider__item} slider__item--`}
-    >
-      <MediaItem item={sliderStates.items[itemIndex]} />
-    </div>
-  ));
-  const visibleItems = sliderStates.filteredItems.middle.map((itemIndex, i) => {
-    const key =
-      itemIndex !== -1 ? sliderStates.items[itemIndex].id : Math.random();
-    const item = itemIndex !== -1 ? sliderStates.items[itemIndex] : null; // itemIndex can be 0 which means mediaItem should be empty;
-    return (
-      <div key={key} className={`${classes.slider__item} slider__item--${i}`}>
+  let leftItems: JSX.Element[] = [];
+  let middleItems: JSX.Element[] = [];
+  let rightItems: JSX.Element[] = [];
+  const sliderItems = sliderStates.items;
+  if (sliderItems.length) {
+    leftItems = sliderStates.filteredRow.left.map((itemIndex) => (
+      <div
+        key={sliderItems[itemIndex].id}
+        className={`${classes.slider__item} slider__item--`}
+      >
         <MediaItem
-          isFirst={
-            (sliderStates.moved && i === 1) || (!sliderStates.moved && i === 0)
-          }
-          isLast={i === sliderStates.filteredItems.middle.length - 2}
-          underIndicator={
-            (i === 0 && sliderStates.filteredItems.left.length) ||
-            i === sliderStates.filteredItems.middle.length - 1
-          }
-          item={item}
+          underIndicator={false}
+          isFirst={false}
+          isLast={false}
+          item={sliderItems[itemIndex]}
         />
       </div>
-    );
-  });
-  const rightItems = sliderStates.filteredItems.right.map((itemIndex, i) => {
-    const key = sliderStates.items[itemIndex].id;
-    const item = sliderStates.items[itemIndex];
-    return (
-      <div key={key} className={`${classes.slider__item} slider__item--`}>
-        <MediaItem item={item} />
-      </div>
-    );
-  });
+    ));
+    middleItems = sliderStates.filteredRow.middle.map((itemIndex, i) => {
+      const key = sliderItems[itemIndex].id;
+      const item = sliderItems[itemIndex];
+      return (
+        <div key={key} className={`${classes.slider__item} slider__item--${i}`}>
+          <MediaItem
+            isFirst={
+              (sliderStates.moved && i === 1) ||
+              (!sliderStates.moved && i === 0)
+            }
+            isLast={i === sliderStates.filteredRow.middle.length - 2}
+            underIndicator={
+              (i === 0 && sliderStates.filteredRow.left.length > 0) ||
+              i === sliderStates.filteredRow.middle.length - 1
+            }
+            item={item}
+          />
+        </div>
+      );
+    });
 
-  const result = [...leftItems, ...visibleItems, ...rightItems];
+    rightItems = sliderStates.filteredRow.right.map((itemIndex, i) => {
+      const key = sliderItems[itemIndex].id;
+      const item = sliderItems[itemIndex];
+      return (
+        <div key={key} className={`${classes.slider__item} slider__item--`}>
+          <MediaItem
+            underIndicator={false}
+            isFirst={false}
+            isLast={false}
+            item={item}
+          />
+        </div>
+      );
+    });
+  }
+  const result = [...leftItems, ...middleItems, ...rightItems];
+
+  const emptyBoxes = new Array(sliderConfig().rowItems + 1)
+    .fill(0)
+    .map((_, i) => {
+      const animationDelay = i * 0.2 + 's';
+
+      return (
+        <LoadingTitle key={i} animationDelay={animationDelay}></LoadingTitle>
+      );
+    });
+  console.log(sliderStates.filteredRow);
+
   const classNames = sliderStates.animating
     ? `${classes.slider__content} ${classes.animating}`
     : `${classes.slider__content}`;
@@ -153,32 +182,35 @@ const Slider = () => {
       </Link>
       <div className={classes.rowContent}>
         <div className={classes.slider}>
-          <span onClick={handleNextSlide} className={classes.slider__next}>
-            <ArrowForwardIosIcon className={classes.slider__indicatorIcon} />
-          </span>
-
-          <ul className={classes.slider__pagination}>
-            {new Array(
-              Math.ceil(sliderStates.items.length / sliderConfig().rowItems)
-            )
-              .fill(0)
-              .map((x, i) => (
-                <li
-                  key={i}
-                  className={
-                    i === sliderStates.activeIndex ? classes.active : ''
-                  }
-                ></li>
-              ))}
-          </ul>
-          {sliderStates.items.length ? (
+          {sliderItems.length ? (
+            <span onClick={handleNextSlide} className={classes.slider__next}>
+              <ArrowForwardIosIcon className={classes.slider__indicatorIcon} />
+            </span>
+          ) : null}
+          {sliderItems.length ? (
+            <ul className={classes.slider__pagination}>
+              {new Array(
+                Math.ceil(sliderItems.length / sliderConfig().rowItems)
+              )
+                .fill(0)
+                .map((x, i) => (
+                  <li
+                    key={i}
+                    className={
+                      i === sliderStates.activeIndex ? classes.active : ''
+                    }
+                  ></li>
+                ))}
+            </ul>
+          ) : null}
+          {sliderItems.length ? (
             <div className={classes.slider__mask}>
               <div ref={sliderRow} className={classNames}>
                 {result}
               </div>
             </div>
           ) : (
-            <div></div>
+            <div className={classes.slider__content}>{emptyBoxes}</div>
           )}
           {sliderStates.moved ? (
             <span onClick={handlePrevSlide} className={classes.slider__prev}>

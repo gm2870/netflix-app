@@ -1,5 +1,5 @@
 import { sendRequest } from '../../../services/api';
-import { sliderActions } from '../slider/slider.js';
+import { sliderActions } from '../slider/slider';
 import { mediaActions } from './media';
 import { AppDispatch } from '../../redux/index';
 import { Media } from './model';

@@ -1,4 +1,5 @@
 import { createSlice, current } from '@reduxjs/toolkit';
+import { Media } from '../media/model';
 type SliderState = {
   moved: boolean;
   animating: boolean;
@@ -6,7 +7,7 @@ type SliderState = {
   cardOpen: boolean;
   showNext: boolean;
   translateX: number;
-  items: [];
+  items: Media[];
   filteredRow: SliderRow;
 };
 
@@ -131,6 +132,7 @@ const sliderSlice = createSlice({
           false
         );
       }
+      console.log(state.filteredRow);
     },
   },
 });
