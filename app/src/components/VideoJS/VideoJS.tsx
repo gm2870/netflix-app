@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import videojs from 'video.js';
 import classes from './VideoJS.module.scss';
 
-export const VideoJS = (props) => {
-  const videoRef = useRef();
-  const playerRef = useRef();
+export const VideoJS = (props: any) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const playerRef = useRef<videojs.Player>(null);
   const { options, onReady } = props;
 
   useEffect(() => {
@@ -35,14 +35,13 @@ export const VideoJS = (props) => {
           } else if (cropSize < 10) {
             cropSize = 0;
           }
-          videoRef.current.style.top = `-${cropSize}px`;
-          videoRef.current.style.height = `calc(100% + ${cropSize * 2}px)`;
+          const vid = videoRef.current!;
+          vid.style.top = `-${cropSize}px`;
+          vid.style.height = `calc(100% + ${cropSize * 2}px)`;
         }
         onReady && onReady(player);
       });
-      player.on('play', function () {
-        console.log(this.options().componentName);
-      });
+
       player.on('mouseenter', function () {
         player.userActive(false);
       });
@@ -56,7 +55,6 @@ export const VideoJS = (props) => {
     return () => {
       if (player && !player.isDisposed()) {
         player.dispose();
-        playerRef.current = null;
       }
     };
   }, [playerRef]);

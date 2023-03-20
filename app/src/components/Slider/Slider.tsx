@@ -168,7 +168,6 @@ const Slider = () => {
         <LoadingTitle key={i} animationDelay={animationDelay}></LoadingTitle>
       );
     });
-  console.log(sliderStates.filteredRow);
 
   const classNames = sliderStates.animating
     ? `${classes.slider__content} ${classes.animating}`

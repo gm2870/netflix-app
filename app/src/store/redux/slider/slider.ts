@@ -132,7 +132,6 @@ const sliderSlice = createSlice({
           false
         );
       }
-      console.log(state.filteredRow);
     },
   },
 });

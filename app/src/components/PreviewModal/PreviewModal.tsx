@@ -2,25 +2,30 @@ import CircleButton from '../CircleButton/CircleButton';
 import classes from './PreviewModal.module.scss';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { useEffect, useState } from 'react';
-import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
-import { styled } from '@mui/material/styles';
 import { useRef } from 'react';
 import { Fade } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
 import VideoJS from '../VideoJS/VideoJS';
+import videojs from 'video.js';
 import {
   getCropSize,
   resetCropSize,
 } from '../../store/redux/media/media-actions';
-import { uiActions } from '../../store/redux/ui/ui.ts';
-
-const PreviewModal = (props) => {
-  const dispatch = useDispatch();
-  const playerRef = useRef(null);
-  const cardRef = useRef();
-  const imageRef = useRef();
-  const videoContainer = useRef();
-  const cropSize = useSelector((state) => state.media.cropSize);
+import { uiActions } from '../../store/redux/ui/ui';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { Media } from '../../store/redux/media/model';
+import { LightTooltip } from '../Tooltip/Tooltip';
+type PreviewProps = {
+  item: Media;
+  hideModal: () => void;
+  show: boolean;
+};
+const PreviewModal = (props: PreviewProps) => {
+  const dispatch = useAppDispatch();
+  const playerRef = useRef<videojs.Player>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const videoContainer = useRef<HTMLDivElement>(null);
+  const cropSize = useAppSelector((state) => state.media.cropSize);
 
   const [playing, setPlaying] = useState(false);
   const [imageOpacity, setImageOpacity] = useState(1);
@@ -45,22 +50,23 @@ const PreviewModal = (props) => {
     dispatch(getCropSize(props.item.id));
     return () => {
       dispatch(resetCropSize());
-      dispatch(uiActions.toggleBillnoardPlaying(true));
+      dispatch(uiActions.toggleBillnoardPlaying());
     };
   }, []);
 
   const toggleSound = () => {
     setSoundOn((prev) => {
-      playerRef.current.muted(prev);
+      const ref = playerRef.current!;
+      ref.muted(prev);
       return !prev;
     });
   };
 
-  const handlePlayerReady = (player) => {
-    playerRef.current = player;
+  const handlePlayerReady = (player: videojs.Player) => {
+    // playerRef.current = player;
     player.on('play', () => {
       setImageOpacity(0);
-      dispatch(uiActions.toggleBillnoardPlaying(false));
+      dispatch(uiActions.toggleBillnoardPlaying());
     });
     player.on('ended', () => setImageOpacity(1));
   };
@@ -69,27 +75,13 @@ const PreviewModal = (props) => {
     setPlaying(true);
   };
 
-  const LightTooltip = styled(({ className, ...props }) => (
-    <Tooltip {...props} classes={{ popper: className }} />
-  ))(({ theme }) => ({
-    [`& .${tooltipClasses.arrow}`]: {
-      color: theme.palette.common.white,
-    },
-    [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: theme.palette.common.white,
-      color: 'rgba(0, 0, 0, 0.87)',
-      boxShadow: theme.shadows[1],
-      fontSize: 21,
-      padding: '0.5rem 1.5rem',
-    },
-  }));
-
   const [showMiniModel, setShowMiniModal] = useState(false);
   const onLikeHover = () => setShowMiniModal(true);
   const onHideModal = props.hideModal;
   const onMiniModalMouseLeave = () => setShowMiniModal(false);
   const onTrailerStartPlaying = () => {
-    playerRef?.current.muted(false);
+    const ref = playerRef.current!;
+    ref.muted(false);
   };
 
   return (

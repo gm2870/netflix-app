@@ -46,7 +46,8 @@ const MediaItem = ({
     divNode.addEventListener('mouseleave', hideModal);
 
     return () => {
-      document.removeEventListener('mouseleave', openModal);
+      document.removeEventListener('mouseleave', hideModal);
+      document.removeEventListener('mouseenter', openModal);
     };
   }, [boxRef]);
   const modalPosition = () => {
