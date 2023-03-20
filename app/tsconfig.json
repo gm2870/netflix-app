@@ -4,16 +4,15 @@
   "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
     "target": "ES2022",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "ES2022"
-    ],
+    "lib": ["dom", "dom.iterable", "es6"],
     "plugins": [
       {
         "name": "typescript-plugin-css-modules"
       }
     ],
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -27,15 +26,9 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    "typeRoots": [
-      "src/@types"
-    ],
+    "typeRoots": ["src/@types"],
     "incremental": true
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src", "pages"],
+  "exclude": ["node_modules"]
 }

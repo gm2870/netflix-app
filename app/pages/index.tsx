@@ -1,17 +1,16 @@
 import Link from 'next/link';
 import classes from './index.module.scss';
-// import * as authActions from '../src/store/redux/auth/auth-actions.js';
 import { Button, TextField } from '@mui/material';
 import AnimationCardComponent from '../src/components/animation-card/animation-card';
-import { Fragment } from 'react';
+import { Fragment, useCallback } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useDispatch, useSelector } from 'react-redux';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CustomButton from '../src/components/CustomButton/CustomButton';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
-
+import { FieldValues, useForm } from 'react-hook-form';
+import { useAppDispatch, useAppSelector } from '../src/hooks';
+import { checkEmail, logout } from '../src/store/redux/auth/auth-actions';
 const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email('Please enter a valid email address.')
@@ -19,8 +18,8 @@ const validationSchema = Yup.object().shape({
 });
 
 export default function Home() {
-  const dispatch = useDispatch();
-  const loading = useSelector((state) => state.ui.loading);
+  const dispatch = useAppDispatch();
+  const loading = useAppSelector((state) => state.ui.loading);
   const {
     register,
     handleSubmit,
@@ -28,13 +27,13 @@ export default function Home() {
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
-  const sendEmail = ({ email }) => {
-    // dispatch(authActions.checkEmail(email));
+  const sendEmail = (e: FieldValues) => {
+    dispatch(checkEmail(e.email));
   };
 
-  // const logOut = useCallback(() => {
-  //   dispatch(authActions.logout());
-  // }, [dispatch]);
+  const logOut = useCallback(() => {
+    dispatch(logout());
+  }, [dispatch]);
 
   return (
     <Fragment>
@@ -58,7 +57,7 @@ export default function Home() {
               </select>
               <div className={classes['header__select-icon']}>
                 <ArrowDropDownIcon
-                  size="small"
+                  fontSize="small"
                   style={{
                     color: 'white',
                   }}
@@ -86,7 +85,10 @@ export default function Home() {
                 Watch anywhere. Cancel anytime.
               </h4>
             </div>
-            <form className={classes.form} onSubmit={handleSubmit(sendEmail)}>
+            <form
+              className={classes.form}
+              onSubmit={handleSubmit((e) => sendEmail(e))}
+            >
               <h4>
                 Ready to watch? Enter your email to create or restart your
                 membership.
@@ -121,7 +123,9 @@ export default function Home() {
                 </div>
               </div>
               {errors.email && (
-                <p className={classes.form__error}>{errors.email.message}</p>
+                <p
+                  className={classes.form__error}
+                >{`${errors.email.message}`}</p>
               )}
             </form>
           </div>

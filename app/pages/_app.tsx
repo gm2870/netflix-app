@@ -1,21 +1,9 @@
 import '../styles/styles.scss';
-import { createTheme, ThemeOptions, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { store } from '../src/store/redux/index';
 import { Provider } from 'react-redux';
 import type { AppProps } from 'next/app';
 import React from 'react';
-
-// const themeOptions: ThemeOptions = {
-//   palette: {
-//     error: {
-//       main: '#f40612',
-//     },
-//     red: {
-//       main: '#64748B',
-//       contrastText: '#fff',
-//     },
-//   },
-// };
 
 const theme = createTheme({
   palette: {
