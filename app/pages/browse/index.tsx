@@ -15,12 +15,15 @@ import { useAppDispatch, useAppSelector } from '../../src/hooks';
 
 const browse = () => {
   const dispatch = useAppDispatch();
+
   const [showNavigationLinks, setNavigationLinks] = useState(false);
   const [stickyHeader, setStickyHeader] = useState(false);
+
   const items = useAppSelector((state) => state.slider.items);
-  console.log(items);
+
   const navigationToggleHandler = () =>
     setNavigationLinks(!showNavigationLinks);
+
   useEffect(() => {
     if (!items.length) {
       dispatch(getMediaItems());
@@ -87,7 +90,7 @@ const browse = () => {
             >
               <span>Browse</span>
               <ArrowDropDownIcon
-                size="small"
+                fontSize="small"
                 className={classes.account__icon}
               />
             </ListItem>
@@ -117,7 +120,7 @@ const browse = () => {
                 className={classes.account__image}
               />
               <ArrowDropDownIcon
-                size="small"
+                fontSize="small"
                 className={classes.account__icon}
               />
             </div>
@@ -134,7 +137,7 @@ const browse = () => {
       </div>
       <Fragment>
         {/* <Billboard item={items[19]} /> */}
-        <Slider items={items} />
+        <Slider />
       </Fragment>
     </section>
   );

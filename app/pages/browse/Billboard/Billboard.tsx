@@ -3,14 +3,18 @@ import { useState } from 'react';
 import { useRef } from 'react';
 import CircleButton from '../../../src/components/CircleButton/CircleButton';
 import VideoJS from '../../../src/components/VideoJS/VideoJS';
+import videojs from 'video.js';
 
 import classes from './Billboard.module.scss';
-import { useSelector } from 'react-redux';
-const Billboard = ({ item }) => {
-  const playerRef = useRef(null);
+import { Media } from '../../../src/store/redux/media/model';
+import { useAppSelector } from '../../../src/hooks';
+
+const Billboard = ({ item }: { item: Media }) => {
+  const playerRef = useRef<videojs.Player>(null);
   const [playing, setPlaying] = useState(true);
   const [volume, setVolume] = useState(false);
-  const shouldPlay = useSelector((state) => state.ui.billboardPlaying);
+  const shouldPlay = useAppSelector((state) => state.ui.billboardPlaying);
+
   const videoOptions = {
     autoplay: true,
     muted: true,
@@ -25,20 +29,21 @@ const Billboard = ({ item }) => {
     ],
   };
 
-  const handlePlayerReady = (player) => {
-    playerRef.current = player;
+  const handlePlayerReady = (player: videojs.Player) => {
+    // playerRef.current = player;
+
     player.on('ended', () => {
       setPlaying(false);
     });
   };
 
   const reloadVideoHandler = () => {
-    playerRef.current.load();
+    playerRef.current?.load();
     setPlaying(true);
   };
   const toggleSoundHandler = () =>
     setVolume((prev) => {
-      playerRef.current.muted(prev);
+      playerRef.current?.muted(prev);
       return !prev;
     });
 
