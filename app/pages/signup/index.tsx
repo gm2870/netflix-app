@@ -1,12 +1,15 @@
 import classes from './signup.module.scss';
 import Link from 'next/link';
 import { Button, TextField, styled } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { signupUser } from '../../src/store/redux/auth/auth-actions';
-
+import { useAppDispatch, useAppSelector } from '../../src/hooks';
+type SignupCredentials = {
+  password: string;
+  email: string;
+};
 const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email('Please enter a valid email address.')
@@ -15,8 +18,8 @@ const validationSchema = Yup.object().shape({
 });
 
 const signup = () => {
-  const email = useSelector((state) => state.auth.email);
-  const dispatch = useDispatch();
+  const email = useAppSelector((state) => state.auth.email);
+  const dispatch = useAppDispatch();
 
   const {
     register,
@@ -26,9 +29,10 @@ const signup = () => {
     resolver: yupResolver(validationSchema),
     defaultValues: {
       email,
+      password: '',
     },
   });
-  const registerUser = (data) => {
+  const registerUser = (data: SignupCredentials) => {
     dispatch(signupUser(data));
   };
   const CustomInput = styled(TextField)({
@@ -64,7 +68,7 @@ const signup = () => {
               className={classes.form__input}
               label="Email"
               variant="filled"
-              size="large"
+              size="medium"
               id="email"
               autoComplete="on"
             />
@@ -78,7 +82,7 @@ const signup = () => {
               id="password"
               type="password"
               variant="filled"
-              size="large"
+              size="medium"
               autoComplete="on"
             />
             {errors.password && (

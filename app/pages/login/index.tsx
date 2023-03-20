@@ -8,7 +8,7 @@ import { useRef, useState } from 'react';
 import CustomButton from '../../src/components/CustomButton/CustomButton';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
+import { FieldValues, useForm } from 'react-hook-form';
 import { loginUser } from '../../src/store/redux/auth/auth-actions';
 import { useAppDispatch, useAppSelector } from '../../src/hooks';
 
@@ -42,10 +42,13 @@ const validationSchema = Yup.object().shape({
 });
 
 const login = () => {
-  const ref = useRef();
+  const ref = useRef<HTMLDivElement>(null);
   const invalidMessage = useAppSelector((state) => state.auth.invalidMessage);
   const dispatch = useAppDispatch();
-  const [showLearnMore, setShowLearnMore] = useState({});
+  const [showLearnMore, setShowLearnMore] = useState({
+    opacity: 0,
+    visibility: '',
+  });
   const handleLearnMore = () => {
     setShowLearnMore({
       opacity: 1,
@@ -62,8 +65,14 @@ const login = () => {
   });
 
   const loading = useAppSelector((state) => state.ui.loading);
-  const loginHandler = (data) => {
-    dispatch(loginUser(data));
+  const loginHandler = (credentials: FieldValues) => {
+    console.log(credentials);
+    dispatch(
+      loginUser({
+        email: credentials.email,
+        password: credentials.password,
+      })
+    );
   };
   return (
     <div className={classes.login}>
@@ -87,7 +96,7 @@ const login = () => {
           <h1 className={classes.form__header}>Sign In</h1>
           <form
             className={classes.form__body}
-            onSubmit={handleSubmit(loginHandler)}
+            onSubmit={handleSubmit((e) => loginHandler(e))}
           >
             <div className={classes['form__input-container']}>
               <CustomInput
@@ -105,7 +114,7 @@ const login = () => {
               />
             </div>
             {errors.email && (
-              <p className={classes.form__error}>{errors.email.message}</p>
+              <p className={classes.form__error}>{`${errors.email.message}`}</p>
             )}
             <div className={classes['form__input-container']}>
               <CustomInput
@@ -124,7 +133,9 @@ const login = () => {
               />
             </div>
             {errors.password && (
-              <p className={classes.form__error}>{errors.password.message}</p>
+              <p
+                className={classes.form__error}
+              >{`${errors.password.message}`}</p>
             )}
             {invalidMessage && (
               <p className={classes.form__error}>{invalidMessage}</p>
@@ -163,11 +174,7 @@ const login = () => {
             )}
           </p>
 
-          <div
-            ref={ref}
-            className={classes.captcha__learnMore}
-            style={showLearnMore}
-          >
+          <div ref={ref} className={classes.captcha__learnMore}>
             <p>
               The information collected by Google reCAPTCHA is subject to the
               Google Privacy Policy and Terms of Service, and is used for
