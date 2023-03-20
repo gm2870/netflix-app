@@ -26,7 +26,6 @@ const MediaItem = ({
     const divNode = boxRef.current!;
 
     const openModal = (event: any) => {
-      console.log(divNode);
       if (divNode && divNode.contains(event.target)) {
         timeout = setTimeout(() => {
           if (!closedModal) {

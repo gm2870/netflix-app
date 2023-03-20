@@ -65,7 +65,11 @@ export default function Home() {
               </div>
             </div>
             <div>
-              <CustomButton dynamicSize color="error" variant="contained">
+              <CustomButton
+                dynamicSize={true}
+                color="error"
+                variant="contained"
+              >
                 <Link href="login" className="btn btn__red">
                   Sign In
                 </Link>

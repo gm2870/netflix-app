@@ -1,6 +1,6 @@
 import classes from './CircleButton.module.scss';
 type CircleButton = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   white?: boolean;
   onClick?: () => void;
   onMouseEnter?: () => void;

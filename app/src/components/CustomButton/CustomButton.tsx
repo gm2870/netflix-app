@@ -3,9 +3,9 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 type CustomButton = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   variant: 'contained' | 'outlined' | 'text';
-  type: 'submit' | 'button';
+  type?: 'submit' | 'button';
   color:
     | 'inherit'
     | 'primary'
@@ -15,7 +15,7 @@ type CustomButton = {
     | 'info'
     | 'warning';
   dynamicSize?: boolean;
-  className: string;
+  className?: string;
 };
 
 const CustomButton = ({
