@@ -68,6 +68,4 @@ export const authenticateAndRedirect = (path: string) => {
   Router.push(path);
 };
 
-export const logout = () => {
-  authActions.logoutUser();
-};
+export const logout = () => authActions.logoutUser();
