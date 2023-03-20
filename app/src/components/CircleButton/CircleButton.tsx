@@ -1,17 +1,17 @@
+import { PropsWithChildren } from 'react';
 import classes from './CircleButton.module.scss';
-type CircleButton = {
-  children?: React.ReactNode;
+type CircleButtonProps = PropsWithChildren<{
   white?: boolean;
   onClick?: () => void;
   onMouseEnter?: () => void;
-};
+}>;
 
 const CircleButton = ({
   children,
   white,
   onClick,
   onMouseEnter,
-}: CircleButton) => {
+}: CircleButtonProps) => {
   return (
     <button
       type="button"

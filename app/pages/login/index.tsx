@@ -5,7 +5,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import classes from './login.module.scss';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
-import CustomButton from '../../src/components/CustomButton/CustomButton';
+import CustomButtonProps from '../../src/components/CustomButton/CustomButton';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FieldValues, useForm } from 'react-hook-form';

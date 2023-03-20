@@ -5,7 +5,7 @@ import AnimationCardComponent from '../src/components/animation-card/animation-c
 import { Fragment, useCallback } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import CustomButton from '../src/components/CustomButton/CustomButton';
+import CustomButtonProps from '../src/components/CustomButton/CustomButton';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FieldValues, useForm } from 'react-hook-form';
