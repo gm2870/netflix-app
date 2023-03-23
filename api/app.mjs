@@ -8,7 +8,7 @@ import globalErrorHandler from './controllers/errorController.mjs';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { emptyAssets } from './controllers/mediaController.mjs';
-import { createProxyMiddleware } from 'http-proxy-middleware';
+// import { createProxyMiddleware } from 'http-proxy-middleware';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';

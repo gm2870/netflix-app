@@ -11,6 +11,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FieldValues, useForm } from 'react-hook-form';
 import { loginUser } from '../../src/store/redux/auth/auth-actions';
 import { useAppDispatch, useAppSelector } from '../../src/hooks';
+import CustomButton from '../../src/components/CustomButton/CustomButton';
 
 const CustomInput = styled(TextField)({
   '& label': {
@@ -77,14 +78,12 @@ const login = () => {
   return (
     <div className={classes.login}>
       <header className={classes.header}>
-        <Link href="/">
-          <a className={classes.header__link}>
-            <img
-              src="/images/netflix-logo.svg"
-              alt="Netflix logo"
-              className={classes.header__logo}
-            />
-          </a>
+        <Link href="/" className={classes.header__link}>
+          <img
+            src="/images/netflix-logo.svg"
+            alt="Netflix logo"
+            className={classes.header__logo}
+          />
         </Link>
       </header>
       <div className={classes.login__imageContainer}>
@@ -145,6 +144,7 @@ const login = () => {
               color="error"
               variant="contained"
               type="submit"
+              dynamicSize={false}
             >
               {loading ? <CircularProgress color="inherit" /> : 'Sign In'}
             </CustomButton>

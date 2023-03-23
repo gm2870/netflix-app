@@ -45,13 +45,11 @@ const signup = () => {
   return (
     <div>
       <header className={classes.header}>
-        <Link href="/">
-          <a className={classes.header__logo}>
-            <img src="/images/netflix-logo.svg" alt="Netflix logo" />
-          </a>
+        <Link href="/" className={classes.header__logo}>
+          <img src="/images/netflix-logo.svg" alt="Netflix logo" />
         </Link>
-        <Link href="/login">
-          <a className={classes.header__signin}>Sign In</a>
+        <Link href="/login" className={classes.header__signin}>
+          Sign In
         </Link>
       </header>
       <div className={classes.signup}>

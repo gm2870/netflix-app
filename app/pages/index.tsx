@@ -11,6 +11,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FieldValues, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '../src/hooks';
 import { checkEmail, logout } from '../src/store/redux/auth/auth-actions';
+import CustomButton from '../src/components/CustomButton/CustomButton';
 const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email('Please enter a valid email address.')
@@ -39,14 +40,12 @@ export default function Home() {
     <Fragment>
       <div className={classes.story}>
         <header className={classes.header}>
-          <Link href="/">
-            <a className={classes.header__link}>
-              <img
-                src="/images/netflix-logo.svg"
-                alt="Netflix logo"
-                className={classes.header__logo}
-              />
-            </a>
+          <Link href="/" className={classes.header__link}>
+            <img
+              src="/images/netflix-logo.svg"
+              alt="Netflix logo"
+              className={classes.header__logo}
+            />
           </Link>
 
           <div className={classes['header__language']}>

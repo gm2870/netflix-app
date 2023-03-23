@@ -63,7 +63,7 @@ const browse = () => {
       link: '/',
     },
   ];
-
+  console.log(items);
   return (
     <section className={classes.browse}>
       <div
@@ -73,14 +73,12 @@ const browse = () => {
       >
         <header className={classes.header}>
           <div className={classes['header__logo-box']}>
-            <Link href="/">
-              <a className={classes.header__link}>
-                <img
-                  className={classes.header__logo}
-                  src="/images/netflix-logo.svg"
-                  alt="Netflix logo"
-                />
-              </a>
+            <Link href="/" className={classes.header__link}>
+              <img
+                className={classes.header__logo}
+                src="/images/netflix-logo.svg"
+                alt="Netflix logo"
+              />
             </Link>
           </div>
           <List className={classes.navigation}>
@@ -136,7 +134,7 @@ const browse = () => {
         </header>
       </div>
       <Fragment>
-        {items.length && <Billboard item={items[19]} />}
+        {items.length && <Billboard item={items[23]} />}
         <Slider />
       </Fragment>
     </section>
