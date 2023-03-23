@@ -41,7 +41,49 @@
     width: 100%;
   }
 }
-
+.info {
+  position: absolute;
+  top: 15rem;
+  left: 60px;
+  z-index: 3;
+  width: 36%;
+  color: white;
+  font-size: 24px;
+  font-weight: 500;
+  &__fantcyTitle {
+    font-size: 48px;
+    font-weight: 900;
+    width: 250px;
+    font-family: Dank Mono;
+  }
+  &__icon {
+    margin-right: 1rem;
+    font-size: 2.8rem;
+  }
+  &__actions {
+    margin-top: 1.5vw;
+  }
+}
+.colorPrimary {
+  color: #000;
+  background-color: #fff;
+  font-size: 1.6rem;
+  font-weight: 500;
+  line-height: 2.4rem;
+  margin-right: 1rem;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.75);
+  }
+}
+.gray {
+  font-size: 1.6rem;
+  font-weight: 500;
+  line-height: 2.4rem;
+  background-color: rgba(109, 109, 110, 0.7);
+  &:hover {
+    background-color: rgba(109, 109, 110, 0.4);
+  }
+}
 .actions {
   position: absolute;
   display: flex;

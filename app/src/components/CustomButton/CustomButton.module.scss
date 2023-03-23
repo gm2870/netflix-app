@@ -1,0 +1,8 @@
+@use '../../../styles/abstracts' as *;
+
+.button {
+  border-radius: $primary-border-radius;
+  &--white {
+    background-color: #fff;
+  }
+}
