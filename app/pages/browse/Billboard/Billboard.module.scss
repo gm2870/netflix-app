@@ -57,8 +57,8 @@
     font-family: Dank Mono;
   }
   &__icon {
-    margin-right: 1rem;
-    font-size: 2.8rem;
+    margin-right: 0.5rem;
+    font-size: 3rem;
   }
   &__actions {
     margin-top: 1.5vw;
@@ -68,9 +68,12 @@
   color: #000;
   background-color: #fff;
   font-size: 1.6rem;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 2.4rem;
   margin-right: 1rem;
+  padding: 0.5rem;
+  padding-left: 1.5rem;
+  padding-right: 2.4rem;
   &:hover {
     background-color: rgba(255, 255, 255, 0.75);
   }
@@ -79,9 +82,12 @@
   font-size: 1.6rem;
   font-weight: 500;
   line-height: 2.4rem;
+  padding: 0.5rem;
+  padding-left: 1.5rem;
+  padding-right: 2.4rem;
   background-color: rgba(109, 109, 110, 0.7);
   &:hover {
-    background-color: rgba(109, 109, 110, 0.4);
+    background-color: rgba(109, 109, 110, 0.2);
   }
 }
 .actions {

@@ -5,8 +5,17 @@
   display: grid;
 }
 .headerWrapper {
-  grid-area: 1 / 1 / span 1 / span 3;
-  z-index: 2;
+  position: absolute;
+  width: 100%;
+
+  top: 0;
+  z-index: 5;
+}
+.headerWrapper.sticky {
+  position: fixed;
+  background: rgb(20, 20, 20);
+  top: 0;
+  left: 0;
 }
 .header {
   display: flex;
@@ -39,13 +48,7 @@
     padding: 0 60px;
   }
 }
-.sticky {
-  width: 100%;
-  position: fixed;
-  background: rgb(20, 20, 20);
-  top: 0;
-  left: 0;
-}
+
 .billboard {
   grid-area: 1 / 1 / span 3 / span 3;
 }

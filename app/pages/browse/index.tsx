@@ -134,7 +134,7 @@ const browse = () => {
         </header>
       </div>
       <Fragment>
-        {items.length && <Billboard item={items[23]} />}
+        {items.length && <Billboard item={items[0]} />}
         <Slider />
       </Fragment>
     </section>
