@@ -12,7 +12,6 @@ import { useAppSelector, useAppDispatch } from '../../hooks';
 import LoadingTitle from '../loader/Loading-title/Loading-title';
 
 const Slider = () => {
-  const sliderStates = useAppSelector((state) => state.slider);
   const dispatch = useAppDispatch();
   const sliderRow = useRef<HTMLDivElement>(null);
   const theme = useTheme();
@@ -20,10 +19,6 @@ const Slider = () => {
   const min900 = useMediaQuery(theme.breakpoints.up('md'));
   const min1200 = useMediaQuery(theme.breakpoints.up('lg'));
   const min1400 = useMediaQuery('(min-width:1400px)');
-
-  if (sliderStates.translateX && sliderRow?.current) {
-    sliderRow.current.style.transform = `translate3d(-${sliderStates.translateX}%,0,0)`;
-  }
 
   const sliderConfig = () => {
     if (min1400) {
@@ -53,14 +48,32 @@ const Slider = () => {
     };
   };
 
+  const sliderStates = useAppSelector((state) => state.slider);
+  const sliderItems = sliderStates.items;
+  const { rowItems, itemWidth } = sliderConfig();
+
+  if (sliderStates.translateX && sliderRow?.current) {
+    sliderRow.current.style.transform = `translate3d(-${sliderStates.translateX}%,0,0)`;
+  }
   useEffect(() => {
-    const { rowItems, itemWidth } = sliderConfig();
-    dispatch(
-      sliderActions.setfilteredItems({
-        rowItems,
-        itemWidth,
-      })
-    );
+    if (sliderItems.length) {
+      dispatch(
+        sliderActions.setfilteredItems({
+          rowItems,
+          itemWidth,
+        })
+      );
+    }
+  }, [sliderItems]);
+  useEffect(() => {
+    if (sliderItems.length) {
+      dispatch(
+        sliderActions.setfilteredItems({
+          rowItems,
+          itemWidth,
+        })
+      );
+    }
     if (sliderStates.moved) {
       const { rowItems, itemWidth } = sliderConfig();
       let translateX = rowItems * itemWidth + itemWidth;
@@ -106,7 +119,6 @@ const Slider = () => {
   let leftItems: JSX.Element[] = [];
   let middleItems: JSX.Element[] = [];
   let rightItems: JSX.Element[] = [];
-  const sliderItems = sliderStates.items;
   if (sliderItems.length) {
     leftItems = sliderStates.filteredRow.left.map((itemIndex) => (
       <div

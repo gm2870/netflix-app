@@ -72,6 +72,7 @@ const sliderSlice = createSlice({
         rowItems,
         state.items.length
       );
+
       state.translateX = calculateTranslateX(
         current(state).translateX,
         'right',
@@ -114,7 +115,7 @@ const sliderSlice = createSlice({
       }
       state.filteredRow = filterItems(
         current(state).filteredRow,
-        'right',
+        null,
         ai,
         action.payload.rowItems,
         state.items.length,
@@ -138,7 +139,7 @@ const sliderSlice = createSlice({
 
 const filterItems = (
   currentItems: SliderRow,
-  direction: string,
+  direction: string | null,
   activeIndex: number,
   rowItems: number,
   itemsLength: number,
@@ -148,8 +149,6 @@ const filterItems = (
   const count = !moved ? rowItems * 2 + indicatorItemsCount : itemsLength;
   const itemsIndexes = Array.from(Array(count).keys());
   const currMidFirstIndex = currentItems.middle[0];
-  const currMidLastIndex = currentItems.middle[currentItems.middle.length - 1];
-
   const middleItems = () => {
     if (!moved) {
       return itemsIndexes.slice(0, rowItems + 1);
@@ -163,22 +162,22 @@ const filterItems = (
       ];
       return visItems;
     }
-    // this is for the case when browser size changes without having direction
-    if (!direction) {
-      return itemsIndexes
-        .slice(activeIndex * rowItems - 1)
-        .slice(0, rowItems + 2);
+    if (activeIndex === 0) {
+      return [
+        ...itemsIndexes.slice(-1),
+        ...itemsIndexes.slice(0, rowItems + 1),
+      ];
     }
+    // this is for the case when browser size changes without having direction
 
-    if (direction === 'right') {
-      if (currMidLastIndex === 0) {
-        return itemsIndexes.slice(-(rowItems + 2));
-      }
-      if (currMidLastIndex === itemsLength - 1) {
+    if (direction === 'right' || !direction) {
+      if (activeIndex === itemsLength - 1) {
         return itemsIndexes.slice(0, rowItems + 2);
       }
 
-      return itemsIndexes.slice(currMidLastIndex - 1).slice(0, rowItems + 2);
+      return itemsIndexes
+        .slice(activeIndex * rowItems - 1)
+        .slice(0, rowItems + 2);
     }
 
     if (direction === 'left') {
