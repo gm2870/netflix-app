@@ -138,6 +138,7 @@
   }
   &__menu {
     cursor: pointer;
+    position: relative;
     .account__icon {
       display: none;
       @include respond(tablet) {
@@ -158,4 +159,10 @@
   @include respond(tablet) {
     display: block !important;
   }
+}
+
+.userDropdown {
+  position: absolute;
+  top: 3.5rem;
+  right: 60px;
 }

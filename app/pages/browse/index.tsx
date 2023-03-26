@@ -12,31 +12,38 @@ import { getMediaItems } from '../../src/store/redux/media/media-actions';
 
 import Billboard from './Billboard/Billboard';
 import { useAppDispatch, useAppSelector } from '../../src/hooks';
+import { Media } from '../../src/store/redux/media/model';
+import { logout } from '../../src/store/redux/auth/auth-actions';
 
 const browse = () => {
   const dispatch = useAppDispatch();
 
   const [showNavigationLinks, setNavigationLinks] = useState(false);
   const [stickyHeader, setStickyHeader] = useState(false);
-
   const items = useAppSelector((state) => state.slider.items);
-
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
   const navigationToggleHandler = () =>
     setNavigationLinks(!showNavigationLinks);
 
   useEffect(() => {
+    console.log('useEffect');
+
     if (!items.length) {
       dispatch(getMediaItems());
     }
-  }, [items]);
-
-  useEffect(() => {
-    window.addEventListener('scroll', () => {
-      if (window.scrollY !== 0) {
-        setStickyHeader(true);
-      } else setStickyHeader(false);
-    });
   }, []);
+
+  // useEffect(() => {
+  //   console.log(items);
+
+  //   window.addEventListener('scroll', () => {
+  //     if (window.scrollY !== 0) {
+  //       setStickyHeader(true);
+  //     } else setStickyHeader(false);
+  //   });
+  // }, []);
+
+  const handleLogout = () => dispatch(logout());
   const navigations = [
     {
       name: 'Home',
@@ -63,7 +70,6 @@ const browse = () => {
       link: '/',
     },
   ];
-  console.log(items);
   return (
     <section className={classes.browse}>
       <div
@@ -112,7 +118,10 @@ const browse = () => {
           </List>
 
           <div className={classes.account}>
-            <div className={classes.account__menu}>
+            <div
+              className={classes.account__menu}
+              onMouseEnter={() => setShowUserDropdown(true)}
+            >
               <img
                 src="images/user-icon.png"
                 className={classes.account__image}
@@ -131,10 +140,18 @@ const browse = () => {
               <SearchIcon className={classes.account__icon} />
             </div>
           </div>
+          {showUserDropdown && (
+            <div
+              className={classes.userDropdown}
+              onMouseLeave={() => setShowUserDropdown(false)}
+            >
+              <button onClick={handleLogout}>Logout</button>
+            </div>
+          )}
         </header>
       </div>
       <Fragment>
-        {items.length && <Billboard item={items[0]} />}
+        {/* {items.length && <Billboard item={items[19]} />} */}
         <Slider />
       </Fragment>
     </section>

@@ -12,11 +12,11 @@ import CustomButton from '../../../src/components/CustomButton/CustomButton';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
 const Billboard = ({ item }: { item: Media }) => {
-  const playerRef = useRef<videojs.Player>(null);
-  const [playing, setPlaying] = useState(true);
-  const [volume, setVolume] = useState(false);
+  const playerRef = useRef<videojs.Player | null>(null);
+  const [playing, setPlaying] = useState<boolean>(true);
+  const [toggleVolumeOn, setToggleVolumeOn] = useState<boolean>(false);
   const shouldPlay = useAppSelector((state) => state.ui.billboardPlaying);
-
+  console.log(shouldPlay);
   const videoOptions = {
     autoplay: true,
     muted: true,
@@ -32,7 +32,7 @@ const Billboard = ({ item }: { item: Media }) => {
   };
 
   const handlePlayerReady = (player: videojs.Player) => {
-    // playerRef.current = player;
+    playerRef.current = player;
 
     player.on('ended', () => {
       setPlaying(false);
@@ -44,9 +44,9 @@ const Billboard = ({ item }: { item: Media }) => {
     setPlaying(true);
   };
   const toggleSoundHandler = () =>
-    setVolume((prev) => {
-      playerRef.current?.muted(prev);
-      return !prev;
+    setToggleVolumeOn((volOn) => {
+      playerRef.current?.muted(volOn);
+      return !volOn;
     });
 
   const handleScroll = () => {
@@ -63,13 +63,6 @@ const Billboard = ({ item }: { item: Media }) => {
   const fancyTextGenerator = (text: string): string => {
     const words = text.split('-');
     const withoutDash = words.join(' ');
-    console.log(withoutDash);
-    const breaksLength = words.length;
-    let numOfSpans = 1;
-
-    if (breaksLength > 1) {
-      numOfSpans = Math.ceil(breaksLength / 2);
-    }
     return withoutDash;
   };
   useEffect(() => {
@@ -125,7 +118,9 @@ const Billboard = ({ item }: { item: Media }) => {
         <div className={classes.actions}>
           {playing ? (
             <CircleButton onClick={toggleSoundHandler}>
-              <img src={`/images/volume-${volume ? 'on' : 'off'}.png`} />
+              <img
+                src={`/images/volume-${toggleVolumeOn ? 'on' : 'off'}.png`}
+              />
             </CircleButton>
           ) : (
             <CircleButton onClick={reloadVideoHandler}>

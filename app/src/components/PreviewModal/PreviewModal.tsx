@@ -21,7 +21,7 @@ type PreviewProps = {
 };
 const PreviewModal = (props: PreviewProps) => {
   const dispatch = useAppDispatch();
-  const playerRef = useRef<videojs.Player>(null);
+  const playerRef = useRef<videojs.Player | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const videoContainer = useRef<HTMLDivElement>(null);
@@ -63,7 +63,7 @@ const PreviewModal = (props: PreviewProps) => {
   };
 
   const handlePlayerReady = (player: videojs.Player) => {
-    // playerRef.current = player;
+    playerRef.current = player;
     player.on('play', () => {
       setImageOpacity(0);
       dispatch(uiActions.toggleBillnoardPlaying());
