@@ -1,0 +1,19 @@
+.notifications {
+  padding: 50px 0;
+  width: 400px;
+  background-color: rgba(0, 0, 0, 0.9);
+  border: 1px solid hsla(0, 0%, 100%, 0.15);
+  text-align: center;
+  max-height: 80vh;
+  max-height: calc(100vh - 280px);
+  &__text {
+    margin: 0;
+  }
+}
+.arrow {
+  position: absolute;
+  right: 0rem;
+  top: -1.3rem;
+  color: #fff;
+  display: inline-block;
+}

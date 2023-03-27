@@ -5,12 +5,11 @@ import AnimationCardComponent from '../src/components/animation-card/animation-c
 import { Fragment, useCallback } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import CustomButtonProps from '../src/components/CustomButton/CustomButton';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FieldValues, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '../src/hooks';
-import { checkEmail, logout } from '../src/store/redux/auth/auth-actions';
+import { checkEmail } from '../src/store/redux/auth/auth-actions';
 import CustomButton from '../src/components/CustomButton/CustomButton';
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -32,9 +31,9 @@ export default function Home() {
     dispatch(checkEmail(e.email));
   };
 
-  const logOut = useCallback(() => {
-    dispatch(logout());
-  }, [dispatch]);
+  // const logOut = useCallback(() => {
+  //   dispatch(logout());
+  // }, [dispatch]);
 
   return (
     <Fragment>

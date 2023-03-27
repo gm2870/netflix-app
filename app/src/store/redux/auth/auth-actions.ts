@@ -67,18 +67,3 @@ export const authenticateAndRedirect = (path: string) => {
   authActions.authenticate();
   Router.push(path);
 };
-
-export const logout = () => async (dispatch: AppDispatch) => {
-  const config = {
-    url: '/auth/logout',
-    method: 'GET',
-  };
-  const handleError = (err: any) => {
-    console.log(err);
-  };
-  const redirectUser = () => {
-    dispatch(authActions.logoutUser());
-    Router.push('/login');
-  };
-  sendRequest(config, dispatch, redirectUser, handleError);
-};

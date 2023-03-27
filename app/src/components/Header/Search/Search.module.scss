@@ -1,0 +1,22 @@
+.search {
+  width: 300px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  &__icon {
+    fill: #fff;
+    position: absolute;
+    left: 2px;
+  }
+  &__input {
+    border: 1px solid #fff;
+    padding: 5px;
+    width: 100%;
+    background-color: #000;
+    padding-left: 2rem;
+    color: white;
+    &:focus {
+      outline: none;
+    }
+  }
+}
