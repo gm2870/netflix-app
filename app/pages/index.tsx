@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import classes from './index.module.scss';
-import { Button, TextField } from '@mui/material';
+import { Button, styled, TextField } from '@mui/material';
 import AnimationCardComponent from '../src/components/animation-card/animation-card';
 import { Fragment, useCallback } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -15,6 +15,39 @@ const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email('Please enter a valid email address.')
     .required('Email is required.'),
+});
+const EmailTextField = styled(TextField)({
+  '&': {
+    zIndex: '1',
+  },
+  '& .MuiInputBase-input:focus': {
+    border: '2px solid #fff',
+    'border-radius': '4px',
+  },
+  '& label': {
+    color: '#ccc',
+  },
+  '& label.Mui-focused': {
+    color: '#8c8c8c',
+  },
+
+  '& .MuiInputBase-input': {
+    color: 'white',
+    // width: '314px',
+  },
+
+  '& .MuiFilledInput-root': {
+    backgroundColor: 'unset',
+  },
+  '& .MuiFilledInput-root::after': {
+    borderBottom: 'none',
+  },
+  '.css-ahj2mt-MuiTypography-root': {
+    color: 'white',
+  },
+  '& .MuiInput-underline::after': {
+    display: 'none',
+  },
 });
 
 export default function Home() {
@@ -51,7 +84,6 @@ export default function Home() {
             <div className={`${classes['select-container']} select-arrow`}>
               <select className={`${classes.header__select} ui-select mr-1`}>
                 <option value="">English</option>
-                <option value="">Persian</option>
               </select>
               <div className={classes['header__select-icon']}>
                 <ArrowDropDownIcon
@@ -68,9 +100,7 @@ export default function Home() {
                 color="error"
                 variant="contained"
               >
-                <Link href="login" className="btn btn__red">
-                  Sign In
-                </Link>
+                <Link href="login">Sign In</Link>
               </CustomButton>
             </div>
           </div>
@@ -81,7 +111,7 @@ export default function Home() {
           <div className={classes.hero__text}>
             <div className={classes.description}>
               <h1 className={classes.description__title}>
-                Unlimited films, TV programmes and more.
+                Unlimited movies, TV shows, and more.
               </h1>
               <h4 className={classes.description__subtitle}>
                 Watch anywhere. Cancel anytime.
@@ -91,38 +121,38 @@ export default function Home() {
               className={classes.form}
               onSubmit={handleSubmit((e) => sendEmail(e))}
             >
-              <h4>
+              <h4 className={classes.description__email}>
                 Ready to watch? Enter your email to create or restart your
                 membership.
               </h4>
 
-              <div className={classes.form__email}>
-                <div className={classes.input}>
-                  <TextField
+              <div className={classes.email}>
+                <div className={classes.email__inputContainer}>
+                  <EmailTextField
+                    className={classes.email__input}
                     label="Email address"
                     variant="filled"
                     id="email"
                     type="email"
                     {...register('email')}
                   />
+                  <div className={classes.email__inputStyler}></div>
                 </div>
-                <div className={classes.cta}>
-                  <Button
-                    className={classes.form__button}
-                    type="submit"
-                    size="large"
-                    color="error"
-                    variant="contained"
-                  >
-                    {loading ? (
-                      <CircularProgress color="inherit" />
-                    ) : (
-                      <span style={{ width: '100%' }}>
-                        Get Started <i className="right-arrow"></i>
-                      </span>
-                    )}
-                  </Button>
-                </div>
+                <Button
+                  className={classes.email__button}
+                  type="submit"
+                  size="large"
+                  color="error"
+                  variant="contained"
+                >
+                  {loading ? (
+                    <CircularProgress color="inherit" />
+                  ) : (
+                    <span style={{ width: '100%' }}>
+                      Get Started<i className="right-arrow"></i>
+                    </span>
+                  )}
+                </Button>
               </div>
               {errors.email && (
                 <p

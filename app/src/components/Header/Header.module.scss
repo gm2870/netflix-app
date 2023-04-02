@@ -32,13 +32,15 @@
     width: 5rem;
     height: 100%;
     margin-top: 3px;
+    font-size: 1.2rem;
     @include respond(tablet) {
       width: 7rem;
+      font-size: 14px;
     }
   }
   @include respond(tablet) {
     height: 68px;
-    padding: 0 2%;
+    padding: 0 4%;
   }
   @include respond(normal-desktop) {
     padding: 0 60px;
@@ -156,15 +158,11 @@
 }
 
 .search {
-  display: none;
   position: relative;
   &__container {
     position: absolute;
     top: 0;
     right: 1.3rem;
-  }
-  @include respond(tablet) {
-    display: block !important;
   }
 }
 

@@ -13,7 +13,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
 const Billboard = ({ item }: { item: Media }) => {
   const playerRef = useRef<videojs.Player | null>(null);
-  const [playing, setPlaying] = useState<boolean>(true);
+  const [playing, setPlaying] = useState<boolean>(false);
   const [toggleVolumeOn, setToggleVolumeOn] = useState<boolean>(false);
   const shouldPlay = useAppSelector((state) => state.ui.billboardPlaying);
   console.log(shouldPlay);
@@ -72,7 +72,7 @@ const Billboard = ({ item }: { item: Media }) => {
     if (!shouldPlay) {
       playerRef.current?.pause();
     } else {
-      playerRef.current?.play();
+      // playerRef.current?.play();
     }
   }, [shouldPlay]);
 
@@ -92,14 +92,13 @@ const Billboard = ({ item }: { item: Media }) => {
         )}
         <div className={classes.info}>
           <div className={classes.info__fantcyTitle}>
-            {fancyTextGenerator(item.title)}
+            <img src="/images/fancy.webp" />
           </div>
           <div className={classes.info__description}>{item.overview}</div>
           <div className={classes.info__actions}>
             <CustomButton
               variant="contained"
               white={true}
-              size="medium"
               className={classes.colorPrimary}
             >
               <PlayArrowIcon

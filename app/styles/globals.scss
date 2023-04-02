@@ -1,15 +1,9 @@
 @use './abstracts' as *;
 html {
-  font-size: 62.5%;
-  // @include respond(tab-land) {
-  //     font-size: 56.25% // 1 rem = 9px ; 9px/16px = 56.25%
-  // }
-  @include respond(tablet) {
-    font-size: 75%;
-  }
+  font-size: 87.5%;
 
   @include respond(small-desktop) {
-    font-size: 87.5%;
+    font-size: 100%;
   }
 }
 
@@ -93,11 +87,13 @@ ul {
 }
 .right-arrow {
   border: solid white;
-  border-width: 2px 0 0 2px;
+  border-width: 3px 0 0 3px;
   display: inline-block;
-  padding: 3px;
+  padding: 5px;
   transform: rotate(135deg);
   -webkit-transform: rotate(135deg);
+  margin-bottom: 1px;
+  margin-left: 2px;
 }
 img {
   max-width: 100%;
@@ -109,5 +105,12 @@ img {
 .vjs-controls-disabled .vjs-control,
 .vjs-controls-disabled .vjs-slider,
 .vjs-controls-disabled .vjs-fullscreen-control {
+  display: none;
+}
+
+.MuiInputLabel-root::after {
+  border-bottom: none !important;
+}
+.MuiInputBase-root::before {
   display: none;
 }

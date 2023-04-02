@@ -23,6 +23,7 @@ const CustomInput = styled(TextField)({
 
   '& .MuiInputBase-input': {
     color: 'white',
+    borderRadius: '4px',
     // width: '314px',
   },
 
@@ -38,8 +39,11 @@ const CustomInput = styled(TextField)({
 });
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string().required('Email or phone number is required.'),
-  password: Yup.string().required('Password is required.'),
+  email: Yup.string().required('Please enter a valid email or phone number.'),
+  password: Yup.string()
+    .min(4)
+    .max(60)
+    .required('Your password must contain between 4 and 60 characters.'),
 });
 
 const login = () => {
@@ -67,7 +71,6 @@ const login = () => {
 
   const loading = useAppSelector((state) => state.ui.loading);
   const loginHandler = (credentials: FieldValues) => {
-    console.log(credentials);
     dispatch(
       loginUser({
         email: credentials.email,
@@ -146,11 +149,22 @@ const login = () => {
               type="submit"
               dynamicSize={false}
             >
-              {loading ? <CircularProgress color="inherit" /> : 'Sign In'}
+              {loading ? (
+                <CircularProgress thickness={5} size={17} color="inherit" />
+              ) : (
+                'Sign In'
+              )}
             </CustomButton>
             <div className={classes.rememberme}>
               <FormControlLabel
-                control={<Checkbox defaultChecked />}
+                control={
+                  <Checkbox
+                    sx={{
+                      color: '#1976d2',
+                    }}
+                    defaultChecked
+                  />
+                }
                 label={
                   <Typography className={classes.rememberme__text}>
                     Remember Me

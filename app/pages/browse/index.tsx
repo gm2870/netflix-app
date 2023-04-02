@@ -27,7 +27,7 @@ const browse = () => {
     <section className={classes.browse}>
       <Header></Header>
       <Fragment>
-        {/* {items.length && <Billboard item={items[19]} />} */}
+        {items.length && <Billboard item={items[19]} />}
         <Slider />
       </Fragment>
     </section>

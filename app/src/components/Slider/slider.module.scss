@@ -8,6 +8,7 @@
 .rowContent {
   padding: 0;
   width: 100vw; // this is for preventing width change on y scroll bar toggle
+  overflow: hidden;
 }
 .title {
   color: #e5e5e5;
@@ -23,9 +24,12 @@
   &__header {
     color: #fff;
     display: table-cell;
-    font-size: 1.4vw;
+    font-size: 1rem;
     line-height: 1.25vw;
     vertical-align: bottom;
+    @include respond(tablet) {
+      font-size: 1.6rem;
+    }
   }
 }
 .slider {

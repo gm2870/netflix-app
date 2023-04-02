@@ -16,11 +16,21 @@ const CustomButton = ({
 }: CustomButtonProps) => {
   const theme = useTheme();
   const min600 = useMediaQuery(theme.breakpoints.up('sm'));
+  const min900 = useMediaQuery(theme.breakpoints.up('md'));
+  const min1200 = useMediaQuery(theme.breakpoints.up('lg'));
+
   const getSize = () => {
-    if (!dynamicSize || min600) {
+    if (min1200) {
       return 'large';
     }
-    return 'small';
+
+    if (min900) {
+      return 'medium';
+    }
+    if (min600) {
+      return 'small';
+    }
+    return 'large';
   };
   return (
     <Button
