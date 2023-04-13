@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const MediaSchema = new mongoose.Schema({
+const MovieSchema = new mongoose.Schema({
   id: Number,
   imdb_id: String,
   title: String,
@@ -17,6 +17,7 @@ const MediaSchema = new mongoose.Schema({
   media_type: String,
   original_language: String,
   backdrop_path: String,
+  last_air_date: String,
   belongs_to_collection: null | Object,
   genre_ids: [Number],
   genres: [
@@ -88,9 +89,9 @@ const MediaSchema = new mongoose.Schema({
   },
 });
 
-const Media = mongoose.model('Media', MediaSchema);
-MediaSchema.pre(/^find/, function (next) {
+const Movie = mongoose.model('Movie', MovieSchema);
+MovieSchema.pre(/^find/, function (next) {
   this.find().select('-__v');
   next();
 });
-export default Media;
+export default Movie;

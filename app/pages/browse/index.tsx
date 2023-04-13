@@ -16,8 +16,6 @@ const browse = () => {
   const items = useAppSelector((state) => state.slider.items);
 
   useEffect(() => {
-    console.log('useEffect');
-
     if (!items.length) {
       dispatch(getMediaItems());
     }

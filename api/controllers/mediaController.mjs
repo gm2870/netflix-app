@@ -4,7 +4,7 @@ import got from 'got';
 // import path from 'path';
 import catchAsync from '../utils/catchAsync.mjs';
 import util from 'util';
-import Media from '../models/mediaModel.mjs';
+import Movie from '../models/media/movieModel.mjs';
 import { getSrcWithVideoId, getVideoSrc } from '../utils/urlGrabber.mjs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -24,7 +24,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export const getMediaItems = catchAsync(async (req, res, next) => {
-  const media = await Media.find();
+  const media = await Movie.find();
   if (!media) {
     return next(new Error('No document found with that ID'), 404);
   }
@@ -36,7 +36,7 @@ export const getMediaItems = catchAsync(async (req, res, next) => {
 });
 
 export const getMedia = catchAsync(async (req, res, next) => {
-  const media = await Media.findOne({ id: req.params.id });
+  const media = await Movie.findOne({ id: req.params.id });
   if (!media) {
     return next(new Error('No document found with that ID'), 404);
   }
@@ -51,13 +51,13 @@ export const getMedia = catchAsync(async (req, res, next) => {
 export const searchMedia = catchAsync(async (req, res) => {
   const name = normalizeText(req.params.name);
 
-  const items = await Media.find({
+  const items = await Movie.find({
     title: { $regex: `${name}`, $options: 'i' },
   });
 
   if (!items.length) {
     const { firstResult, allResults } = await searchMediaByName(name);
-    await Media.create(firstResult);
+    await Movie.create(firstResult);
     updateVideoSrc(firstResult);
     res.status(200).json({
       status: 'success',
@@ -99,6 +99,7 @@ export const searchMediaByName = async (name) => {
     )
       return;
     if (!mediaTitleId.data.d[0].id.startsWith('tt')) return;
+    console.log(mediaData.data);
     const result = mediaData.data.results[0];
     const title = result.title || result.name;
     return {
@@ -135,7 +136,7 @@ export const updateVideoSrc = catchAsync(async (media) => {
       videoData = await getVideoSrc(media.title_id, 1080);
     }
     if (videoData) {
-      await Media.findOneAndUpdate(
+      await Movie.findOneAndUpdate(
         { id: media.id },
         {
           video_src: {
@@ -169,7 +170,7 @@ export const emptyAssets = (req, res, next) => {
 };
 
 export const mediaStream = catchAsync(async (req, res) => {
-  const media = await Media.findOne({ id: req.params.mediaId });
+  const media = await Movie.findOne({ id: req.params.mediaId });
   const src = media.video_src.SD;
   const fileName = `${normalizeText(media.title)}.mp4`;
   const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);
@@ -210,7 +211,7 @@ export const mediaStream = catchAsync(async (req, res) => {
 });
 
 export const getVideoCropSize = catchAsync(async (req, res) => {
-  const media = await Media.findOne({ id: req.params.id });
+  const media = await Movie.findOne({ id: req.params.id });
   const src = media.video_src.SD;
   const fileName = `${normalizeText(media.title)}-temp.mp4`;
   const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);
@@ -249,7 +250,7 @@ export const getVideoCropSize = catchAsync(async (req, res) => {
 });
 
 export const imageStream = catchAsync(async (req, res) => {
-  const media = await Media.findOne({ id: +req.params.id });
+  const media = await Movie.findOne({ id: +req.params.id });
   const localPath = path.join(
     __dirname,
     '..',
