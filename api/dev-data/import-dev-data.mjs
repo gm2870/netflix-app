@@ -1,4 +1,4 @@
-import Media from '../models/mediaModel.mjs';
+import Movie from '../models/media/movieModel.mjs';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { getSrcWithVideoId, getVideoSrc } from '../utils/urlGrabber.mjs';
@@ -8,6 +8,7 @@ import {
 } from '../controllers/mediaController.mjs';
 import catchAsync from '../utils/catchAsync.mjs';
 import AppError from '../utils/appError.mjs';
+import TV from '../models/media/tvModel.mjs';
 dotenv.config({ path: '../config.env' });
 
 const DB = process.env.DATABASE.replace(
@@ -27,26 +28,24 @@ const mediaNames = [
   // 'the-lost-city',
   // 'bullet-train',
   // 'joker',
-  // 'breaking-bad',
-  // 'money-heist',
-  // 'better-call-saul',
-  // 'dark',
-  // 'house-of-dragons',
-  // 'blindspot',
-  // 'ted-lasso',
-  // 'see',
+  'breaking-bad',
+  'better-call-saul',
+  'dark',
+  'house-of-dragons',
+  'blindspot',
+  'ted-lasso',
+  'see',
   // 'inception',
-  // 'money-heist',
-  // 'the-unforgivable',
-  // '1899',
-  // 'undercover',
-  // 'glass-onion',
-  // 'my-name-is-vendetta',
-  // 'wednesday',
+  'money-heist',
+  'the-unforgivable',
+  '1899',
+  'undercover',
+  'glass-onion',
+  'wednesday',
+  'my-name-is-vendetta',
   'narcos',
   'army-of-thieves',
   'sttranger-things',
-  'all-quiet-on-the-western-front',
   'elchapo',
   'troll',
   'all-of-us-are-dead',
@@ -54,20 +53,21 @@ const mediaNames = [
   'virgin-river',
   'treason',
   'the-sandman',
-  'he-recruit',
+  'the-recruit',
 ];
 
-const importMedia = async () => {
+const importTVMedia = async () => {
   for (const name of mediaNames) {
     const { firstResult } = await searchMediaByName(name);
-    await Media.create(firstResult);
+    console.log(firstResult);
+    await TV.create(firstResult);
   }
   process.exit();
 };
 
 const deleteAllMedia = async () => {
   try {
-    await Media.deleteMany();
+    await Movie.deleteMany();
   } catch (error) {
     return new AppError(error.message || 'Something went wrong.', 500);
   }
@@ -75,7 +75,7 @@ const deleteAllMedia = async () => {
 };
 
 export const checkAndUpdateSrc = async () => {
-  const items = await Media.find();
+  const items = await Movie.find();
   for (const media of items) {
     if (
       !media.video_src.HD ||
@@ -90,7 +90,7 @@ export const checkAndUpdateSrc = async () => {
 };
 
 export const forceSrcUpdate = catchAsync(async () => {
-  const items = await Media.find();
+  const items = await Movie.find();
   let i = 0;
   for (const media of items) {
     await updateSrc(media);
@@ -117,7 +117,7 @@ export const updateSrc = async (media) => {
     console.log(`${media.title} failed`);
     return;
   }
-  return await Media.findOneAndUpdate(
+  return await Movie.findOneAndUpdate(
     { id: media.id },
     {
       video_src: {
@@ -130,13 +130,13 @@ export const updateSrc = async (media) => {
 };
 
 const updateMedia = async (id) => {
-  const item = await Media.findOne({ id });
+  const item = await Movie.findOne({ id });
   await updateSrc(item);
   process.exit();
 };
 
-if (process.argv[2] === '--import') {
-  importMedia();
+if (process.argv[2] === '--import-tv') {
+  importTVMedia();
 } else if (process.argv[2] === '--delete') {
   deleteAllMedia();
 } else if (process.argv[2] === '--update-src') {
