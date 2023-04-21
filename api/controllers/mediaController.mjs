@@ -20,6 +20,7 @@ import {
   normalizeText,
 } from '../utils/helpers.mjs';
 import AppError from '../utils/appError.mjs';
+import TV from '../models/media/tvModel.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -40,6 +41,7 @@ export const getMedia = catchAsync(async (req, res, next) => {
   if (!media) {
     return next(new Error('No document found with that ID'), 404);
   }
+
   updateVideoSrc(media);
 
   res.status(200).json({
@@ -49,26 +51,20 @@ export const getMedia = catchAsync(async (req, res, next) => {
 });
 
 export const searchMedia = catchAsync(async (req, res) => {
-  const name = normalizeText(req.params.name);
+  // const name = normalizeText(req.params.name);
 
-  const items = await Movie.find({
-    title: { $regex: `${name}`, $options: 'i' },
+  // const items = await Movie.find({
+  //   title: { $regex: `${name}`, $options: 'i' },
+  // });
+
+  const { firstResult, allResults } = await searchMediaByName(req.params.name);
+  const model = firstResult.media_type === 'movie' ? Movie : TV;
+  // await model.create(firstResult);
+  updateVideoSrc(firstResult, model);
+  res.status(200).json({
+    status: 'success',
+    data: allResults,
   });
-
-  if (!items.length) {
-    const { firstResult, allResults } = await searchMediaByName(name);
-    await Movie.create(firstResult);
-    updateVideoSrc(firstResult);
-    res.status(200).json({
-      status: 'success',
-      data: allResults,
-    });
-  } else {
-    res.status(200).json({
-      status: 'success',
-      data: items,
-    });
-  }
 });
 
 export const searchMediaByName = async (name) => {
@@ -113,7 +109,7 @@ export const searchMediaByName = async (name) => {
     return new AppError(error.message || 'Something went wrong.', 500);
   }
 };
-export const updateVideoSrc = catchAsync(async (media) => {
+export const updateVideoSrc = catchAsync(async (media, model) => {
   if (
     !media.video_src ||
     !media.video_src.SD ||
@@ -134,21 +130,24 @@ export const updateVideoSrc = catchAsync(async (media) => {
     } else {
       videoData = await getVideoSrc(media.title_id, 1080);
     }
-    if (videoData) {
-      await Movie.findOneAndUpdate(
-        { id: media.id },
-        {
-          video_src: {
-            SD: videoData.SD,
-            HD: videoData.HD,
-          },
-          title_video_id: videoData.videoId,
-        }
-      );
-      console.log(`${media.title} src updated.`);
-    }
+    if (!videoData) throw 'videoData not found.';
+    updateTitleMedia(model, media.id, videoData);
   } else console.log('no need to update');
 });
+
+export const updateTitleMedia = async (model, id, videoData) => {
+  await model.findOneAndUpdate(
+    { id },
+    {
+      video_src: {
+        SD: videoData.SD,
+        HD: videoData.HD,
+      },
+      title_video_id: videoData.videoId,
+    }
+  );
+  console.log(`${media.title} src updated.`);
+};
 
 export const needsSrcUpdate = (src) => {
   const expireTime = src
