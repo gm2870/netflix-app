@@ -75,7 +75,7 @@ export const searchMediaByName = async (name) => {
   try {
     const [mediaData, mediaTitleId] = await Promise.all([
       axios({
-        url: 'https://api.themoviedb.org/3/search/multi',
+        url: 'https://api.themoviedb.org/3/search/tv',
         method: 'GET',
         params: {
           api_key: process.env.MOVIEDB_API_KEY,
@@ -99,7 +99,6 @@ export const searchMediaByName = async (name) => {
     )
       return;
     if (!mediaTitleId.data.d[0].id.startsWith('tt')) return;
-    console.log(mediaData.data);
     const result = mediaData.data.results[0];
     const title = result.title || result.name;
     return {

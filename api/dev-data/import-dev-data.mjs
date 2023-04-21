@@ -29,37 +29,37 @@ const mediaNames = [
   // 'bullet-train',
   // 'joker',
   'breaking-bad',
-  'better-call-saul',
-  'dark',
-  'house-of-dragons',
-  'blindspot',
-  'ted-lasso',
-  'see',
-  // 'inception',
-  'money-heist',
-  'the-unforgivable',
-  '1899',
-  'undercover',
-  'glass-onion',
-  'wednesday',
-  'my-name-is-vendetta',
-  'narcos',
-  'army-of-thieves',
-  'sttranger-things',
-  'elchapo',
-  'troll',
-  'all-of-us-are-dead',
-  'me-time',
-  'virgin-river',
-  'treason',
-  'the-sandman',
-  'the-recruit',
+  // 'better-call-saul',
+  // 'dark',
+  // 'house-of-dragons',
+  // 'blindspot',
+  // 'ted-lasso',
+  // 'see',
+  // 'money-heist',
+  // 'the-unforgivable',
+  // '1899',
+  // 'undercover',
+  // 'glass-onion',
+  // 'wednesday',
+  // 'my-name-is-vendetta',
+  // 'narcos',
+  // 'army-of-thieves',
+  // 'sttranger-things',
+  // 'elchapo',
+  // 'troll',
+  // 'all-of-us-are-dead',
+  // 'me-time',
+  // 'virgin-river',
+  // 'treason',
+  // 'the-sandman',
+  // 'the-recruit',
 ];
 
 const importTVMedia = async () => {
   for (const name of mediaNames) {
     const { firstResult } = await searchMediaByName(name);
-    console.log(firstResult);
+    console.log('62 ==>', firstResult);
+    console.log('------------------------------');
     await TV.create(firstResult);
   }
   process.exit();
