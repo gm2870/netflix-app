@@ -146,7 +146,6 @@ export const updateTitleMedia = async (model, id, videoData) => {
       title_video_id: videoData.videoId,
     }
   );
-  console.log(`${media.title} src updated.`);
 };
 
 export const needsSrcUpdate = (src) => {

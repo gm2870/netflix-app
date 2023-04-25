@@ -9,6 +9,7 @@ import {
 import catchAsync from '../utils/catchAsync.mjs';
 import AppError from '../utils/appError.mjs';
 import TV from '../models/media/tvModel.mjs';
+import { importGenres } from '../controllers/genre/genreController.mjs';
 dotenv.config({ path: '../config.env' });
 
 const DB = process.env.DATABASE.replace(
@@ -127,7 +128,6 @@ export const updateSrc = async (media) => {
     }
   );
 };
-
 const updateMedia = async (id) => {
   const item = await Movie.findOne({ id });
   await updateSrc(item);
@@ -142,4 +142,6 @@ if (process.argv[2] === '--import-tv') {
   forceSrcUpdate();
 } else if (process.argv[2] === '--update') {
   updateMedia(512195);
+} else if (process.argv[2] === '--import-genres') {
+  importGenres();
 }

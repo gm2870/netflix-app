@@ -89,7 +89,7 @@ const MovieSchema = new mongoose.Schema({
   },
 });
 
-const Movie = mongoose.model('Movie', MovieSchema);
+const Movie = mongoose.model('Movies', MovieSchema);
 MovieSchema.pre(/^find/, function (next) {
   this.find().select('-__v');
   next();
