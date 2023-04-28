@@ -112,7 +112,7 @@ const TVSchema = new mongoose.Schema({
   },
 });
 
-const TV = mongoose.model('TV', TVSchema);
+const TV = mongoose.model('TV_shows', TVSchema);
 TVSchema.pre(/^find/, function (next) {
   this.find().select('-__v');
   next();
