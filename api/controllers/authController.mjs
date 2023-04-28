@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken';
 import AppError from '../utils/appError.mjs';
 import Token from '../models/tokenModel.mjs';
 import dayjs from 'dayjs';
-
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
@@ -139,6 +138,7 @@ export const authorizedRedirect = catchAsync(async (req, res, next) => {
       res.redirect('/browse');
     }
   }
+
   next();
 });
 

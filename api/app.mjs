@@ -8,7 +8,6 @@ import globalErrorHandler from './controllers/errorController.mjs';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import { emptyAssets } from './controllers/mediaController.mjs';
-// import { createProxyMiddleware } from 'http-proxy-middleware';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
@@ -16,11 +15,6 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 dotenv.config({ path: `${__dirname}/config.env` });
-// import schedule from 'node-schedule';
-// import Media from './models/mediaModel.mjs';
-// import { getVideoSrc } from './utils/urlGrabber.mjs';
-// import catchAsync from './utils/catchAsync.mjs';
-
 const app = express();
 const DB = process.env.DATABASE.replace(
   '<PASSWORD>',
@@ -28,6 +22,8 @@ const DB = process.env.DATABASE.replace(
 );
 
 mongoose.connect(DB);
+
+app.set('trust proxy', true);
 
 app.use(bodyParser.json());
 
@@ -43,16 +39,10 @@ app.use(
     credentials: true,
   })
 );
-// if you don't want to use cors package
-
-// app.use(
-//   '/api',
-//   createProxyMiddleware({
-//     target: 'http://localhost:3000',
-//     changeOrigin: true,
-//   })
-// );
 if (process.env.NODE_ENV === 'production') app.use('/', emptyAssets);
+// app.get('/', async (req, res) => {
+//   res.send(await run(req.ip));
+// });
 
 app.use('/', viewRoutes);
 
