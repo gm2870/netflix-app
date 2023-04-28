@@ -2,7 +2,8 @@ import next from 'next';
 import server from '../api/app.mjs';
 const port = process.env.PORT || 3000;
 const dev = process.env.NODE_ENV !== 'production';
-const app = next({ dev });
+const hostname = 'localhost';
+const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
@@ -10,7 +11,6 @@ app.prepare().then(() => {
   //   req.url = req.originalUrl.replace('/http://localhost:3000/_next', '/_next');
   //   next(); // be sure to let the next middleware handle the modified request.
   // });
-
   server.all('*', (req, res) => {
     return handle(req, res);
   });
