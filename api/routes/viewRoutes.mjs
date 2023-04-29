@@ -6,10 +6,10 @@ import {
 } from '../controllers/authController.mjs';
 
 const router = Router();
+router.get('/browse', unauthorizedRedirect);
 
 router.get('/', authorizedRedirect);
 router.get('/login', authorizedRedirect);
 router.get('/signup', authorizedRedirect);
-router.get('/browse', unauthorizedRedirect);
-router.get('/logout', logout);
+router.get('/logout', unauthorizedRedirect, logout);
 export default router;

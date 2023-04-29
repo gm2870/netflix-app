@@ -138,7 +138,6 @@ export const authorizedRedirect = catchAsync(async (req, res, next) => {
       res.redirect('/browse');
     }
   }
-
   next();
 });
 

@@ -5,11 +5,7 @@ const nextConfig = {
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
-  i18n: {
-    locales: ['default', 'en-US', 'de', 'fr'],
-    defaultLocale: 'default',
-    localeDetection: true,
-  },
-  trailingSlash: false,
+
+  trailingSlash: true,
 };
 module.exports = nextConfig;

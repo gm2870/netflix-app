@@ -29,6 +29,6 @@
     "typeRoots": ["src/@types"],
     "incremental": true
   },
-  "include": ["src", "pages", "middleware.ts"],
+  "include": ["src", "pages", "pages/_app.tsx"],
   "exclude": ["node_modules"]
 }

@@ -12,6 +12,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { getCountryInfo } from './controllers/language/languageController.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 dotenv.config({ path: `${__dirname}/config.env` });
@@ -45,7 +46,9 @@ if (process.env.NODE_ENV === 'production') app.use('/', emptyAssets);
 // });
 
 app.use('/', viewRoutes);
-
+app.use('/api/v1/lang', async (req, res) => {
+  res.send(await getCountryInfo('162.19.208.190'));
+});
 app.use('/api/v1/auth', authRoutes);
 
 app.use('/api/v1/users', userRoutes);
