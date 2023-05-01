@@ -40,7 +40,7 @@ const MovieSchema = new mongoose.Schema({
       origin_country: String,
     },
   ],
-  releaseDate: Date,
+  release_date: String,
   revenue: Number,
   poster_path: String,
   tagline: String,

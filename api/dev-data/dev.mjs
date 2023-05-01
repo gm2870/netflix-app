@@ -5,11 +5,11 @@ import { getSrcWithVideoId, getVideoSrc } from '../utils/urlGrabber.mjs';
 import {
   needsSrcUpdate,
   searchMediaByName,
-} from '../controllers/mediaController.mjs';
+} from '../controllers/streamController.mjs';
 import catchAsync from '../utils/catchAsync.mjs';
 import AppError from '../utils/appError.mjs';
 import TV from '../models/media/tvModel.mjs';
-import { importGenres } from '../controllers/genre/genreController.mjs';
+import { importGenres } from '../dev-data/genre.mjs';
 dotenv.config({ path: '../config.env' });
 
 const DB = process.env.DATABASE.replace(

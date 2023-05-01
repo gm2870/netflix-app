@@ -1,21 +1,23 @@
 import express from 'express';
 import cors from 'cors';
 import userRoutes from './routes/userRoutes.mjs';
-import mediaRoutes from './routes/mediaRoutes.mjs';
+import streamRoutes from './routes/streamRoutes.mjs';
 import authRoutes from './routes/authRoutes.mjs';
 import viewRoutes from './routes/viewRoutes.mjs';
+import genreRoutes from './routes/genreRoutes.mjs';
+import mediaRoutes from './routes/mediaRoutes.mjs';
 import globalErrorHandler from './controllers/errorController.mjs';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-import { emptyAssets } from './controllers/mediaController.mjs';
+import { emptyAssets } from './controllers/streamController.mjs';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { getCountryInfo } from './controllers/language/languageController.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 dotenv.config({ path: `${__dirname}/config.env` });
+
 const app = express();
 const DB = process.env.DATABASE.replace(
   '<PASSWORD>',
@@ -41,19 +43,15 @@ app.use(
   })
 );
 if (process.env.NODE_ENV === 'production') app.use('/', emptyAssets);
-// app.get('/', async (req, res) => {
-//   res.send(await run(req.ip));
-// });
 
 app.use('/', viewRoutes);
-app.use('/api/v1/lang', async (req, res) => {
-  res.send(await getCountryInfo('162.19.208.190'));
-});
+
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/genre', genreRoutes);
 
 app.use('/api/v1/users', userRoutes);
-
 app.use('/api/v1/media', mediaRoutes);
+app.use('/api/v1/stream', streamRoutes);
 // app.use(express.static(join(__dirname, 'public')));
 
 app.use(globalErrorHandler);

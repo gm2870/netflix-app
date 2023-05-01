@@ -64,7 +64,6 @@ const TVSchema = new mongoose.Schema({
       origin_country: String,
     },
   ],
-  releaseDate: Date,
   revenue: Number,
   poster_path: String,
   tagline: String,
