@@ -83,7 +83,7 @@ const MediaItem = ({
           <div ref={boxRef} className={classes.boxArt}>
             <img
               className={classes.boxArt__image}
-              src={`http://localhost:8001/api/v1/media/image/${item.id}`}
+              src={`http://localhost:8001/api/v1/stream/image${item.backdrop_path}`}
             />
           </div>
           <Modal hideBackdrop open={open && !underIndicator}>

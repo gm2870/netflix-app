@@ -11,7 +11,7 @@ import { Link } from '@mui/material';
 import { useAppSelector, useAppDispatch } from '../../hooks';
 import LoadingTitle from '../loader/Loading-title/Loading-title';
 
-const Slider = () => {
+const Slider = (props: any) => {
   const dispatch = useAppDispatch();
   const sliderRow = useRef<HTMLDivElement>(null);
   const theme = useTheme();
@@ -49,7 +49,7 @@ const Slider = () => {
   };
 
   const sliderStates = useAppSelector((state) => state.slider);
-  const sliderItems = sliderStates.items;
+  const sliderItems = props.items;
   const { rowItems, itemWidth } = sliderConfig();
 
   if (sliderStates.translateX && sliderRow?.current) {
@@ -120,6 +120,7 @@ const Slider = () => {
   let middleItems: JSX.Element[] = [];
   let rightItems: JSX.Element[] = [];
   if (sliderItems.length) {
+    // console.log(sliderItems);
     leftItems = sliderStates.filteredRow.left.map((itemIndex) => (
       <div
         key={sliderItems[itemIndex].id}
@@ -134,6 +135,9 @@ const Slider = () => {
       </div>
     ));
     middleItems = sliderStates.filteredRow.middle.map((itemIndex, i) => {
+      if (!sliderItems[itemIndex]) {
+        return <div key={i}></div>;
+      }
       const key = sliderItems[itemIndex].id;
       const item = sliderItems[itemIndex];
       return (
@@ -155,6 +159,9 @@ const Slider = () => {
     });
 
     rightItems = sliderStates.filteredRow.right.map((itemIndex, i) => {
+      if (!sliderItems[itemIndex]) {
+        return <div key={i}></div>;
+      }
       const key = sliderItems[itemIndex].id;
       const item = sliderItems[itemIndex];
       return (
@@ -187,9 +194,7 @@ const Slider = () => {
   return (
     <section className={classes.sliderContainer}>
       <Link href="/" className={classes.title}>
-        <h2 className={classes.title__header}>
-          Suspenseful European TV Thrillers
-        </h2>
+        <h2 className={classes.title__header}>{props.title}</h2>
       </Link>
       <div className={classes.rowContent}>
         <div className={classes.slider}>
