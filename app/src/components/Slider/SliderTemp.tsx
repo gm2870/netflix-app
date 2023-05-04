@@ -128,15 +128,16 @@ const SliderTemp = (props: any) => {
           ) {
             newState.activeIndex = 0;
           } else newState.activeIndex += 1;
+          newState.filteredRow = filterItems(
+            newState.filteredRow,
+            'right',
+            newState.activeIndex,
+            rowItems,
+            props.items.length,
+            newState.moved
+          );
         }
-        newState.filteredRow = filterItems(
-          newState.filteredRow,
-          'right',
-          newState.activeIndex,
-          rowItems,
-          props.items.length,
-          newState.moved
-        );
+
         newState.translateX = calculateTranslateX(
           newState.translateX,
           'right',
@@ -150,7 +151,6 @@ const SliderTemp = (props: any) => {
         break;
       case 'LEFT':
         newState.animating = action.animating;
-        console.log(newState.filteredRow);
         if (!newState.animating) {
           if (newState.activeIndex === 0) {
             newState.activeIndex = Math.ceil(props.items.length / rowItems) - 1;
@@ -181,7 +181,6 @@ const SliderTemp = (props: any) => {
     return newState;
   };
   const [sliderState, dispatch] = useReducer(reducer, initialState);
-  // const sliderStates = useAppSelector((state) => state.slider);
   const sliderItems = props.items;
   if (sliderRow?.current) {
     sliderRow.current.style.transform = `translate3d(-${sliderState.translateX}%,0,0)`;
@@ -189,22 +188,11 @@ const SliderTemp = (props: any) => {
   useEffect(() => {
     dispatch({ type: 'INITIAL', animating: false });
   }, [props.items]);
-  // useEffect(() => {
-  //   if (sliderItems.length) {
-  //     dispatch(
-  //       sliderActions.setfilteredItems({
-  //         rowItems,
-  //         itemWidth,
-  //       })
-  //     );
-  //   }
-  //   if (sliderStates.moved) {
-  //     const { rowItems, itemWidth } = sliderConfig();
-  //     let translateX = rowItems * itemWidth + itemWidth;
-  //     const div = sliderRow.current!;
-  //     div.style.transform = `translate3d(-${translateX}%,0,0)`;
-  //   }
-  // }, [min600, min900, min1200, min1400]);
+  useEffect(() => {
+    if (sliderState.moved) {
+      dispatch({ type: 'RIGHT', animating: false });
+    }
+  }, [min600, min900, min1200, min1400]);
 
   const handleNextSlide = () => {
     dispatch({ type: 'RIGHT', animating: true });
@@ -218,20 +206,6 @@ const SliderTemp = (props: any) => {
     setTimeout(() => {
       dispatch({ type: 'LEFT', animating: false });
     }, 750);
-    // let { itemWidth } = sliderConfig();
-    // dispatch(
-    //   sliderActions.toggleAnimating({
-    //     direction: 'left',
-    //     itemWidth: itemWidth,
-    //   })
-    // );
-    // setTimeout(() => {
-    //   dispatch(
-    //     sliderActions.handlePrevious({
-    //       sliderConfig: sliderConfig(),
-    //     })
-    //   );
-    // }, 750);
   };
   let leftItems: JSX.Element[] = [];
   let middleItems: JSX.Element[] = [];
@@ -240,7 +214,7 @@ const SliderTemp = (props: any) => {
     console.log(sliderState.filteredRow);
     leftItems = sliderState.filteredRow.left.map((itemIndex) => (
       <div
-        key={sliderItems[itemIndex].id}
+        key={Math.random()}
         className={`${classes.slider__item} slider__item--`}
       >
         <MediaItem

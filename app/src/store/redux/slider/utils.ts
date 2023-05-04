@@ -49,14 +49,13 @@ export const filterItems = (
     return itemsIndexes
       .slice(activeIndex * rowItems - 1)
       .slice(0, rowItems + 2);
-    // const lastItem = itemsIndexes.slice(-1);
-    // return [...lastItem, ...itemsIndexes.slice(0, rowItems + 1)];
   };
 
   const leftItems = (middle: number[]) => {
     if (!moved) {
       return [];
     }
+
     let midItemsFirstIndex = middle[0];
     if (midItemsFirstIndex === 0) {
       midItemsFirstIndex = itemsLength;
@@ -64,29 +63,27 @@ export const filterItems = (
     let left = itemsIndexes
       .filter((x) => x < midItemsFirstIndex)
       .slice(-rowItems);
-
+    if (activeIndex === 1) {
+      left.unshift(...itemsIndexes.slice(-1));
+    }
     return left;
   };
 
   const rightItems = (middle: number[]) => {
     let midItemsLastIndex = [...middle].pop() || 0;
     if (midItemsLastIndex === itemsLength - 1) {
-      midItemsLastIndex = 0;
+      midItemsLastIndex = 1;
     }
     let rightItems = itemsIndexes
-      .filter((x) => x >= midItemsLastIndex)
+      .filter((x) => x > midItemsLastIndex)
       .slice(0, rowItems);
-
+    if (activeIndex === Math.ceil(itemsLength / rowItems - 1) - 1) {
+      rightItems.push(itemsIndexes[0]);
+    }
     return rightItems;
   };
   const middle = middleItems();
-
-  // itemsIndexes = allIndexes.filter((x) => !middle.includes(x));
-
   const right = rightItems(middle);
-  // itemsIndexes = allIndexes.filter(
-  //   (x) => !right.includes(x) && !middle.includes(x)
-  // );
   const left = leftItems(middle);
   return {
     left,
@@ -104,39 +101,19 @@ export const calculateTranslateX = (
   moved: boolean,
   animating: boolean
 ) => {
-  let w = rowItems * itemWidth;
-  let leftDiff = 0;
-  let rightDiff = 0;
-  let diff = 0;
-
-  if (items.right.length < rowItems) {
-    rightDiff = rowItems - items.right.length;
-  }
-  if (items.left.length < rowItems) {
-    leftDiff = rowItems - items.left.length;
-  }
   if (!moved) {
     return items.right.length * itemWidth;
   }
-  //   diff = Math.abs(leftDiff - rightDiff);
   if (direction === 'left') {
-    console.log(translateX);
-    if (!leftDiff) {
-      return translateX - items.left.length * itemWidth;
-    }
     if (animating) {
-      return translateX - (items.left.length + 1) * itemWidth;
+      return translateX - items.left.length * itemWidth;
     } else {
       return (items.left.length + 1) * itemWidth;
     }
   }
-  // we need to use previous translateX because in prev state we could have had diff value
-  // which means w + itemWidth would not be correct all the time
+
   if (animating) {
-    if (!rightDiff) {
-      return translateX + items.right.length * itemWidth;
-    }
-    return translateX + (items.right.length + 1) * itemWidth;
+    return translateX + items.right.length * itemWidth;
   } else {
     return (items.left.length + 1) * itemWidth;
   }
