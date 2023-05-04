@@ -98,7 +98,7 @@ const PreviewModal = (props: PreviewProps) => {
           <img
             onMouseEnter={onTrailerStart}
             className={classes.card__image}
-            src={`http://localhost:8001/api/v1/media/image/${props.item.id}`}
+            src={`http://localhost:8001/api/v1/stream/image${props.item.backdrop_path}`}
           />
         </div>
         {playing && cropSize && (

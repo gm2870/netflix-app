@@ -233,7 +233,7 @@ const calculateTranslateX = (
   animating: boolean
 ) => {
   let w = rowItems * itemWidth;
-
+  console.log(items.right.length, rowItems);
   if (direction === 'left') {
     let diff = 0;
     if (items.left.length < rowItems) {
@@ -248,11 +248,12 @@ const calculateTranslateX = (
   let diff = 0;
   if (items.right.length < rowItems) {
     diff = rowItems - items.right.length - 1;
+    console.log(diff);
   }
   // we need to use previous translateX because in prev state we could have had diff value
   // which means w + itemWidth would not be correct all the time
   if (animating) {
-    return !moved ? w : translateX + w - diff * itemWidth;
+    return !moved ? w : translateX + w;
   } else {
     return w + itemWidth;
   }

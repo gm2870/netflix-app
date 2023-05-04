@@ -102,6 +102,7 @@ dist
 # TernJS port file
 .tern-port
 
-api/media-files
+api/media-files/
 
-api/config.env
+
+media_files/
