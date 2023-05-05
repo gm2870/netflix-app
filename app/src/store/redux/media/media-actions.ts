@@ -1,20 +1,20 @@
 import { sendRequest } from '../../../services/api';
-import { sliderActions } from '../slider/slider';
+// import { sliderActions } from '../slider/slider';
 import { mediaActions } from './media';
 import { AppDispatch } from '../../redux/index';
 import { Media } from './model';
 
-export const getMediaItems = () => (dispatch: AppDispatch) => {
-  const config = {
-    url: '/media/all',
-  };
+// export const getMediaItems = () => (dispatch: AppDispatch) => {
+//   const config = {
+//     url: '/media/all',
+//   };
 
-  const handleError = (err: string) => console.log(err);
-  const setMediaItems = (mediaItems: Media[]) => {
-    dispatch(sliderActions.getAllItems(mediaItems));
-  };
-  sendRequest(config, dispatch, setMediaItems, handleError);
-};
+//   const handleError = (err: string) => console.log(err);
+//   const setMediaItems = (mediaItems: Media[]) => {
+//     dispatch(sliderActions.getAllItems(mediaItems));
+//   };
+//   sendRequest(config, dispatch, setMediaItems, handleError);
+// };
 
 export const getMedia = (id: number) => (dispatch: AppDispatch) => {
   const config = {

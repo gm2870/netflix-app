@@ -4,22 +4,53 @@ import { useTheme } from '@mui/material/styles';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import MediaItem from '../MediaItem/MediaItem';
-import { useEffect } from 'react';
-import { sliderActions } from '../../store/redux/slider/slider';
+import { useEffect, useReducer } from 'react';
 import { useRef } from 'react';
 import { Link } from '@mui/material';
-import { useAppSelector, useAppDispatch } from '../../hooks';
 import LoadingTitle from '../loader/Loading-title/Loading-title';
+import { calculateTranslateX, filterItems } from './utils';
+
+type SliderRow = {
+  left: number[];
+  middle: number[];
+  right: number[];
+};
+type Direction = 'INITIAL' | 'LEFT' | 'RIGHT';
+
+type SliderState = {
+  moved: boolean;
+  animating: boolean;
+  activeIndex: number;
+  cardOpen: boolean;
+  showNext: boolean;
+  translateX: number;
+  itemsLength: number;
+  filteredRow: SliderRow;
+};
+
+const initialState: SliderState = {
+  moved: false,
+  animating: false,
+  activeIndex: 0,
+  cardOpen: false,
+  showNext: false,
+  translateX: 0,
+  itemsLength: 0,
+  filteredRow: {
+    left: [],
+    middle: [],
+    right: [],
+  },
+};
 
 const Slider = (props: any) => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const sliderRow = useRef<HTMLDivElement>(null);
   const theme = useTheme();
   const min600 = useMediaQuery(theme.breakpoints.up('sm'));
   const min900 = useMediaQuery(theme.breakpoints.up('md'));
   const min1200 = useMediaQuery(theme.breakpoints.up('lg'));
   const min1400 = useMediaQuery('(min-width:1400px)');
-
   const sliderConfig = () => {
     if (min1400) {
       return {
@@ -47,85 +78,139 @@ const Slider = (props: any) => {
       itemWidth: 50,
     };
   };
-
-  const sliderStates = useAppSelector((state) => state.slider);
-  const sliderItems = props.items;
   const { rowItems, itemWidth } = sliderConfig();
 
-  if (sliderStates.translateX && sliderRow?.current) {
-    sliderRow.current.style.transform = `translate3d(-${sliderStates.translateX}%,0,0)`;
+  const reducer = (
+    state: SliderState,
+    action: { type: Direction; animating: boolean }
+  ) => {
+    const newState = {
+      ...state,
+    };
+    switch (action.type) {
+      case 'INITIAL':
+        newState.filteredRow = filterItems(
+          newState.filteredRow,
+          null,
+          newState.activeIndex,
+          rowItems,
+          props.items.length,
+          false
+        );
+
+        if (newState.moved) {
+          newState.translateX = calculateTranslateX(
+            newState.translateX,
+            'right',
+            newState.filteredRow,
+            itemWidth,
+            newState.moved,
+            false
+          );
+        }
+
+        break;
+
+      case 'RIGHT':
+        newState.animating = action.animating;
+
+        if (!newState.animating) {
+          if (
+            newState.activeIndex >=
+            Math.ceil(props.items.length / rowItems) - 1
+          ) {
+            newState.activeIndex = 0;
+          } else newState.activeIndex += 1;
+          newState.filteredRow = filterItems(
+            newState.filteredRow,
+            'right',
+            newState.activeIndex,
+            rowItems,
+            props.items.length,
+            newState.moved
+          );
+        }
+
+        newState.translateX = calculateTranslateX(
+          newState.translateX,
+          'right',
+          newState.filteredRow,
+          itemWidth,
+          newState.moved,
+          newState.animating
+        );
+        newState.moved = true;
+        break;
+
+      case 'LEFT':
+        newState.animating = action.animating;
+        if (!newState.animating) {
+          if (newState.activeIndex === 0) {
+            newState.activeIndex = Math.ceil(props.items.length / rowItems) - 1;
+          } else newState.activeIndex -= 1;
+
+          newState.filteredRow = filterItems(
+            newState.filteredRow,
+            'left',
+            newState.activeIndex,
+            rowItems,
+            props.items.length,
+            newState.moved
+          );
+        }
+
+        newState.translateX = calculateTranslateX(
+          newState.translateX,
+          'left',
+          newState.filteredRow,
+          itemWidth,
+          newState.moved,
+          newState.animating
+        );
+        break;
+    }
+    return newState;
+  };
+
+  const [sliderState, dispatch] = useReducer(reducer, initialState);
+  const sliderItems = props.items;
+
+  if (sliderRow?.current) {
+    sliderRow.current.style.transform = `translate3d(-${sliderState.translateX}%,0,0)`;
   }
+
   useEffect(() => {
-    if (sliderItems.length) {
-      dispatch(
-        sliderActions.setfilteredItems({
-          rowItems,
-          itemWidth,
-        })
-      );
-    }
-  }, [sliderItems]);
+    dispatch({ type: 'INITIAL', animating: false });
+  }, [props.items]);
+
   useEffect(() => {
-    if (sliderItems.length) {
-      dispatch(
-        sliderActions.setfilteredItems({
-          rowItems,
-          itemWidth,
-        })
-      );
-    }
-    if (sliderStates.moved) {
-      const { rowItems, itemWidth } = sliderConfig();
-      let translateX = rowItems * itemWidth + itemWidth;
-      const div = sliderRow.current!;
-      div.style.transform = `translate3d(-${translateX}%,0,0)`;
+    if (sliderState.moved) {
+      dispatch({ type: 'RIGHT', animating: false });
     }
   }, [min600, min900, min1200, min1400]);
 
   const handleNextSlide = () => {
-    let { rowItems, itemWidth } = sliderConfig();
-    dispatch(
-      sliderActions.toggleAnimating({
-        direction: 'right',
-        rowItems,
-        itemWidth,
-      })
-    );
+    dispatch({ type: 'RIGHT', animating: true });
     setTimeout(() => {
-      dispatch(
-        sliderActions.handleNext({
-          sliderConfig: sliderConfig(),
-        })
-      );
+      dispatch({ type: 'RIGHT', animating: false });
     }, 750);
   };
 
   const handlePrevSlide = () => {
-    let { itemWidth } = sliderConfig();
-    dispatch(
-      sliderActions.toggleAnimating({
-        direction: 'left',
-        itemWidth: itemWidth,
-      })
-    );
+    dispatch({ type: 'LEFT', animating: true });
     setTimeout(() => {
-      dispatch(
-        sliderActions.handlePrevious({
-          sliderConfig: sliderConfig(),
-        })
-      );
+      dispatch({ type: 'LEFT', animating: false });
     }, 750);
   };
+
   let leftItems: JSX.Element[] = [];
   let middleItems: JSX.Element[] = [];
   let rightItems: JSX.Element[] = [];
-  if (sliderItems.length) {
-    // console.log(sliderItems);
-    leftItems = sliderStates.filteredRow.left.map((itemIndex) => (
-      <div
-        key={sliderItems[itemIndex].id}
-        className={`${classes.slider__item} slider__item--`}
-      >
+
+  leftItems = sliderState.filteredRow.left.map((itemIndex, i) => {
+    const key = sliderItems[itemIndex].id * Math.random();
+    return (
+      <div key={key} className={`${classes.slider__item} slider__item--`}>
         <MediaItem
           underIndicator={false}
           isFirst={false}
@@ -133,49 +218,50 @@ const Slider = (props: any) => {
           item={sliderItems[itemIndex]}
         />
       </div>
-    ));
-    middleItems = sliderStates.filteredRow.middle.map((itemIndex, i) => {
-      if (!sliderItems[itemIndex]) {
-        return <div key={i}></div>;
-      }
-      const key = sliderItems[itemIndex].id;
-      const item = sliderItems[itemIndex];
-      return (
-        <div key={key} className={`${classes.slider__item} slider__item--${i}`}>
-          <MediaItem
-            isFirst={
-              (sliderStates.moved && i === 1) ||
-              (!sliderStates.moved && i === 0)
-            }
-            isLast={i === sliderStates.filteredRow.middle.length - 2}
-            underIndicator={
-              (i === 0 && sliderStates.filteredRow.left.length > 0) ||
-              i === sliderStates.filteredRow.middle.length - 1
-            }
-            item={item}
-          />
-        </div>
-      );
-    });
+    );
+  });
 
-    rightItems = sliderStates.filteredRow.right.map((itemIndex, i) => {
-      if (!sliderItems[itemIndex]) {
-        return <div key={i}></div>;
-      }
-      const key = sliderItems[itemIndex].id;
-      const item = sliderItems[itemIndex];
-      return (
-        <div key={key} className={`${classes.slider__item} slider__item--`}>
-          <MediaItem
-            underIndicator={false}
-            isFirst={false}
-            isLast={false}
-            item={item}
-          />
-        </div>
-      );
-    });
-  }
+  middleItems = sliderState.filteredRow.middle.map((itemIndex, i) => {
+    if (!sliderItems[itemIndex]) {
+      return <div key={i}></div>;
+    }
+    const key = sliderItems[itemIndex].id * Math.random();
+    const item = sliderItems[itemIndex];
+    return (
+      <div key={key} className={`${classes.slider__item} slider__item--${i}`}>
+        <MediaItem
+          isFirst={
+            (sliderState.moved && i === 1) || (!sliderState.moved && i === 0)
+          }
+          isLast={i === sliderState.filteredRow.middle.length - 2}
+          underIndicator={
+            (i === 0 && sliderState.filteredRow.left.length > 0) ||
+            i === sliderState.filteredRow.middle.length - 1
+          }
+          item={item}
+        />
+      </div>
+    );
+  });
+
+  rightItems = sliderState.filteredRow.right.map((itemIndex, i) => {
+    if (!sliderItems[itemIndex]) {
+      return <div key={i}></div>;
+    }
+    const key = sliderItems[itemIndex].id * Math.random();
+    const item = sliderItems[itemIndex];
+    return (
+      <div key={key} className={`${classes.slider__item} slider__item--`}>
+        <MediaItem
+          underIndicator={false}
+          isFirst={false}
+          isLast={false}
+          item={item}
+        />
+      </div>
+    );
+  });
+
   const result = [...leftItems, ...middleItems, ...rightItems];
 
   const emptyBoxes = new Array(sliderConfig().rowItems + 1)
@@ -188,7 +274,7 @@ const Slider = (props: any) => {
       );
     });
 
-  const classNames = sliderStates.animating
+  const classNames = sliderState.animating
     ? `${classes.slider__content} ${classes.animating}`
     : `${classes.slider__content}`;
   return (
@@ -213,7 +299,7 @@ const Slider = (props: any) => {
                   <li
                     key={i}
                     className={
-                      i === sliderStates.activeIndex ? classes.active : ''
+                      i === sliderState.activeIndex ? classes.active : ''
                     }
                   ></li>
                 ))}
@@ -228,7 +314,7 @@ const Slider = (props: any) => {
           ) : (
             <div className={classes.slider__content}>{emptyBoxes}</div>
           )}
-          {sliderStates.moved ? (
+          {sliderState.moved ? (
             <span onClick={handlePrevSlide} className={classes.slider__prev}>
               <ArrowBackIosIcon className={classes.slider__indicatorIcon} />
             </span>
