@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import MediaItem from '../MediaItem/MediaItem';
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { useRef } from 'react';
 import { Link } from '@mui/material';
 import LoadingTitle from '../loader/Loading-title/Loading-title';
@@ -173,6 +173,7 @@ const Slider = (props: any) => {
   };
 
   const [sliderState, dispatch] = useReducer(reducer, initialState);
+  const [showButtons, setShowButtons] = useState(false);
   const sliderItems = props.items;
 
   if (sliderRow?.current) {
@@ -190,6 +191,9 @@ const Slider = (props: any) => {
   }, [min600, min900, min1200, min1400]);
 
   const handleNextSlide = () => {
+    if (sliderState.animating) {
+      return;
+    }
     dispatch({ type: 'RIGHT', animating: true });
     setTimeout(() => {
       dispatch({ type: 'RIGHT', animating: false });
@@ -197,12 +201,20 @@ const Slider = (props: any) => {
   };
 
   const handlePrevSlide = () => {
+    if (sliderState.animating) {
+      return;
+    }
     dispatch({ type: 'LEFT', animating: true });
     setTimeout(() => {
       dispatch({ type: 'LEFT', animating: false });
     }, 750);
   };
-
+  const handleSliderHover = () => {
+    setShowButtons(true);
+  };
+  const handleSliderMouseleave = () => {
+    setShowButtons(false);
+  };
   let leftItems: JSX.Element[] = [];
   let middleItems: JSX.Element[] = [];
   let rightItems: JSX.Element[] = [];
@@ -282,13 +294,17 @@ const Slider = (props: any) => {
       <Link href="/" className={classes.title}>
         <h2 className={classes.title__header}>{props.title}</h2>
       </Link>
-      <div className={classes.rowContent}>
+      <div
+        className={classes.rowContent}
+        onMouseEnter={handleSliderHover}
+        onMouseLeave={handleSliderMouseleave}
+      >
         <div className={classes.slider}>
-          {sliderItems.length ? (
+          {showButtons && (
             <span onClick={handleNextSlide} className={classes.slider__next}>
               <ArrowForwardIosIcon className={classes.slider__indicatorIcon} />
             </span>
-          ) : null}
+          )}
           {sliderItems.length ? (
             <ul className={classes.slider__pagination}>
               {new Array(
@@ -314,11 +330,11 @@ const Slider = (props: any) => {
           ) : (
             <div className={classes.slider__content}>{emptyBoxes}</div>
           )}
-          {sliderState.moved ? (
+          {sliderState.moved && showButtons && (
             <span onClick={handlePrevSlide} className={classes.slider__prev}>
               <ArrowBackIosIcon className={classes.slider__indicatorIcon} />
             </span>
-          ) : null}
+          )}
         </div>
       </div>
     </section>
