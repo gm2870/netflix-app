@@ -72,13 +72,11 @@ export default function Home() {
     <Fragment>
       <div className={classes.story}>
         <header className={classes.header}>
-          <Link href="/" className={classes.header__link}>
-            <img
-              src="/images/netflix-logo.svg"
-              alt="Netflix logo"
-              className={classes.header__logo}
-            />
-          </Link>
+          <img
+            src="/images/netflix-logo.svg"
+            alt="Netflix logo"
+            className={classes.header__logo}
+          />
 
           <div className={classes['header__language']}>
             <div className={`${classes['select-container']} select-arrow`}>

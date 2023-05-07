@@ -51,60 +51,47 @@ export const getMedia = catchAsync(async (req, res, next) => {
 });
 
 export const searchMedia = catchAsync(async (req, res) => {
-  // const name = normalizeText(req.params.name);
+  const name = normalizeText(req.params.name);
 
   // const items = await Movie.find({
   //   title: { $regex: `${name}`, $options: 'i' },
   // });
-
-  const { firstResult, allResults } = await searchMediaByName(req.params.name);
-  const model = firstResult.media_type === 'movie' ? Movie : TV;
-  // await model.create(firstResult);
-  updateVideoSrc(firstResult, model);
+  const data = await searchMediaByName(name);
+  let type = data.movie_results.length ? 'movie' : 'tv';
+  // const model = type === 'movie' ? Movie : TV;
+  const result = data[`${type}_results`];
+  // await model.create(result);
+  // updateVideoSrc(result, model);
   res.status(200).json({
     status: 'success',
-    data: allResults,
+    data: result,
   });
 });
 
 export const searchMediaByName = async (name) => {
   try {
-    const [mediaData, mediaTitleId] = await Promise.all([
-      axios({
-        url: 'https://api.themoviedb.org/3/search/tv',
-        method: 'GET',
-        params: {
-          api_key: process.env.MOVIEDB_API_KEY,
-          query: name,
-        },
-      }),
-      axios({
-        url: 'https://imdb8.p.rapidapi.com/auto-complete',
-        method: 'GET',
-        params: { q: name },
-        headers: {
-          'X-RapidAPI-Key': process.env.RAPID_API_KEY,
-          'X-RapidAPI-Host': 'imdb8.p.rapidapi.com',
-        },
-      }),
-    ]);
-    if (
-      !mediaTitleId.data.d ||
-      !mediaTitleId.data.d[0] ||
-      !mediaData.data.results
-    )
-      return;
-    if (!mediaTitleId.data.d[0].id.startsWith('tt')) return;
-    const result = mediaData.data.results[0];
-    const title = result.title || result.name;
-    return {
-      firstResult: {
-        ...mediaData.data.results[0],
-        title: normalizeText(title),
-        title_id: mediaTitleId.data.d[0].id,
+    const mediaData = await axios({
+      url: 'https://imdb8.p.rapidapi.com/auto-complete',
+      method: 'GET',
+      params: { q: name },
+      headers: {
+        'X-RapidAPI-Key': process.env.RAPID_API_KEY,
+        'X-RapidAPI-Host': 'imdb8.p.rapidapi.com',
       },
-      allResults: mediaData.data.results.slice(0, 4),
-    };
+    });
+
+    if (!mediaData.data.d) return;
+    const result = mediaData.data.d[0];
+    const res = await axios({
+      url: `https://api.themoviedb.org/3/find/${result.id}`,
+      method: 'GET',
+      params: {
+        api_key: process.env.MOVIEDB_API_KEY,
+        external_source: 'imdb_id',
+      },
+    });
+
+    return res.data;
   } catch (error) {
     return new AppError(error.message || 'Something went wrong.', 500);
   }
@@ -220,7 +207,6 @@ export const getVideoCropSize = catchAsync(async (req, res) => {
 
   downloadStream
     .on('downloadProgress', async (progress) => {
-      // console.log('percent', response);
       downloaded = progress.percent;
       if (downloaded >= 0.1) {
         downloadStream.destroy();
@@ -247,7 +233,6 @@ export const getVideoCropSize = catchAsync(async (req, res) => {
 });
 
 export const imageStream = catchAsync(async (req, res, next) => {
-  // console.log(req.params.backdropPath);
   const backdrop_path = req.params.backdropPath;
   const resolvedPath = path.join(
     __dirname,

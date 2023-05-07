@@ -62,3 +62,26 @@ export const sendRequest = async (
   }
   dispatch(uiActions.toggleLoader());
 };
+
+export const sendReq = async (
+  requestConfig: RequestConfig,
+  handleSuccess: (data: any) => void,
+  handleError: (error: any) => void
+) => {
+  try {
+    const res = await instance({
+      url: API_URL + requestConfig.url,
+      method: requestConfig.method || 'GET',
+      headers: requestConfig.headers,
+      params: requestConfig.params,
+      data: requestConfig.data,
+      withCredentials: true,
+    });
+    if (res.data.status === 'success') {
+      handleSuccess(res.data.data);
+    }
+  } catch (error: any) {
+    const err = error.response?.data?.message || error.message || error;
+    handleError(err);
+  }
+};

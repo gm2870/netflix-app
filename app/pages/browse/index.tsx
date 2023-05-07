@@ -9,7 +9,6 @@ import SlidersContainer from '../../src/components/Slider/SlidersContainer';
 const browse = (props: any) => {
   return (
     <section className={classes.browse}>
-      <Header></Header>
       <Fragment>
         {/* {items.length && <Billboard item={items[19]} />} */}
         <SlidersContainer items={props.titles} />
@@ -19,10 +18,10 @@ const browse = (props: any) => {
 };
 export default browse;
 export async function getServerSideProps() {
-  const titles = await getAllTitles();
+  // const titles = await getAllTitles();
   return {
     props: {
-      titles: JSON.parse(JSON.stringify(titles)),
+      titles: {},
     },
   };
 }

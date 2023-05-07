@@ -12,9 +12,9 @@ const MediaItem = ({
   isLast,
 }: {
   item: Media;
-  underIndicator: boolean;
-  isFirst: boolean;
-  isLast: boolean;
+  underIndicator?: boolean;
+  isFirst?: boolean;
+  isLast?: boolean;
 }) => {
   const [open, setOpen] = useState(false);
   const [closedModal, setClosedModal] = useState(false);

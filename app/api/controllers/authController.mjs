@@ -161,15 +161,6 @@ const getToken = (req) => {
 };
 
 export const logout = (req, res) => {
-  const token = getToken(req);
-
-  if (!token) {
-    return res.status(401).json({
-      status: 'error',
-      data: 'Unauthorized',
-    });
-  }
-
   res.clearCookie('jwt');
 
   res.redirect('/login');

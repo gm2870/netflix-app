@@ -4,6 +4,7 @@ import { store } from '../src/store/redux/index';
 import { Provider } from 'react-redux';
 import type { AppProps } from 'next/app';
 import React from 'react';
+import Header from '../src/components/Header/Header';
 
 const theme = createTheme({
   palette: {
@@ -17,6 +18,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
+        <Header />
         <Component {...pageProps} />
       </Provider>
     </ThemeProvider>

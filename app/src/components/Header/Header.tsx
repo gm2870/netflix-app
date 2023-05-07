@@ -4,12 +4,12 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import SearchIcon from '@mui/icons-material/Search';
-import CustomButtonProps from '../CustomButton/CustomButton';
 import { useEffect, useState, useRef } from 'react';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import Menu from './Menu/Menu';
 import Notifications from './Notifications/Notifications';
 import Search from './Search/Search';
+import { useRouter } from 'next/router';
 
 const Header = () => {
   const [stickyHeader, setStickyHeader] = useState(false);
@@ -17,11 +17,21 @@ const Header = () => {
   const [showNavigationLinks, setNavigationLinks] = useState(false);
   const [showNotifications, setShowNotification] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+
   const userDropdown = useRef<HTMLDivElement>(null);
   const notiDropdown = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
   const navigationToggleHandler = () =>
     setNavigationLinks(!showNavigationLinks);
+
+  useEffect(() => {
+    if (router.query.q) {
+      setShowSearch(true);
+    }
+  }, [router.isReady]);
+
   useEffect(() => {
     window.addEventListener('scroll', () => {
       if (window.scrollY !== 0) {
@@ -99,7 +109,7 @@ const Header = () => {
     >
       <header className={classes.header}>
         <div className={classes['header__logo-box']}>
-          <Link href="/" className={classes.header__link}>
+          <Link href="/browse" className={classes.header__link}>
             <img
               className={classes.header__logo}
               src="/images/netflix-logo.svg"
@@ -144,7 +154,7 @@ const Header = () => {
             onMouseLeave={() => setShowUserDropdown(false)}
           >
             <img
-              src="images/user-icon.png"
+              src="/images/user-icon.png"
               className={classes.account__image}
             />
             {dropdownIcon}
