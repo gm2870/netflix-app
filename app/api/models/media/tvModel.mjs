@@ -115,6 +115,5 @@ TVSchema.pre(/^find/, function (next) {
   this.find().select('-__v');
   next();
 });
-console.log(mongoose.model.TV_shows);
 const TV = mongoose.models.TV_shows || mongoose.model('TV_shows', TVSchema);
 export default TV;

@@ -52,6 +52,7 @@ export const sendRequest = async (
       params: requestConfig.params,
       data: requestConfig.data,
       withCredentials: true,
+      responseType: requestConfig.responeType || 'json',
     });
     if (res.data.status === 'success') {
       handleSuccess(res.data.data);

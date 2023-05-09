@@ -4,4 +4,6 @@ export type RequestConfig = {
   method?: string;
   params?: any;
   headers?: any;
+  withCredentials?: boolean;
+  responeType?: 'json' | 'stream';
 };

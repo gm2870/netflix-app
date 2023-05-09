@@ -43,7 +43,7 @@ const Header = () => {
   const navigations = [
     {
       name: 'Home',
-      link: '/',
+      link: '/browse',
     },
     {
       name: 'TVShows',

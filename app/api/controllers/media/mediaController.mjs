@@ -3,42 +3,70 @@ import Movie from '../../models/media/movieModel.mjs';
 import TV from '../../models/media/tvModel.mjs';
 import catchAsync from '../../utils/catchAsync.mjs';
 
-export const getAllTitles = async () => {
-  const genres = await Genre.find();
-  let movies = await Movie.find();
-  let tvShows = await TV.find();
+export const getAllTitles = async (req, res) => {
+  const genres = await Genre.aggregate([
+    {
+      $lookup: {
+        from: 'tv_shows',
+        let: {
+          genreId: '$id',
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: [
+                  {
+                    $arrayElemAt: ['$genre_ids', 0],
+                  },
+                  '$$genreId',
+                ],
+              },
+            },
+          },
+          { $limit: 21 },
+        ],
+        as: 'tv_shows',
+      },
+    },
 
-  let movieList = [];
-  let tvList = [];
-  const collection = {};
-  for (const genre of genres) {
-    movieList = movies
-      .filter((m) => {
-        if (m.genre_ids.includes(genre.id)) {
-          movies = movies.filter((x) => x.id !== m.id);
-        }
-        return m.genre_ids.includes(genre.id);
-      })
-      .slice(0, 15);
-    tvList = tvShows
-      .filter((m) => {
-        if (m.genre_ids.includes(genre.id)) {
-          tvShows = tvShows.filter((x) => x.id !== m.id);
-        }
-        return m.genre_ids.includes(genre.id);
-      })
-      .slice(0, 15);
-    const list = [...movieList, ...tvList];
-    if (list.length < 6) {
-      continue;
-    }
-    collection[genre.name] = [...movieList, ...tvList];
-  }
-  return collection;
-  // res.status(200).json({
-  //   status: 'success',
-  //   data: [...movieList, ...tvList],
-  // });
+    {
+      $lookup: {
+        from: 'movies',
+        let: {
+          genreId: '$id',
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: [
+                  {
+                    $arrayElemAt: ['$genre_ids', 0],
+                  },
+                  '$$genreId',
+                ],
+              },
+            },
+          },
+          { $limit: 21 },
+        ],
+        as: 'movies',
+      },
+    },
+    {
+      $project: {
+        id: 1,
+        name: 1,
+        titles: { $concatArrays: ['$tv_shows', '$movies'] },
+      },
+    },
+  ]);
+
+  res.status(200).json({
+    status: 'success',
+    data: genres,
+  });
 };
 
 export const getAllMovies = catchAsync(async (req, res) => {

@@ -4,7 +4,7 @@ import { mediaActions } from './media';
 import { AppDispatch } from '../../redux/index';
 import { Media } from './model';
 
-export const searchTitle = (name: string) => {
+export const searchTitle = (name: string) => (dispatch: AppDispatch) => {
   const config = {
     url: `/stream/search/${name}`,
   };
@@ -12,7 +12,17 @@ export const searchTitle = (name: string) => {
   const setMedia = (media: Media[]) => {
     return media;
   };
-  sendReq(config, setMedia, handleError);
+  sendRequest(config, dispatch, setMedia, handleError);
+};
+export const getAllTitles = () => (dispatch: AppDispatch) => {
+  const config = {
+    url: `/media/all`,
+  };
+  const handleError = (err: string) => console.log(err);
+  const setMedia = (res: any) => {
+    dispatch(mediaActions.getMediaItems(res));
+  };
+  sendRequest(config, dispatch, setMedia, handleError);
 };
 
 export const getMedia = (id: number) => (dispatch: AppDispatch) => {

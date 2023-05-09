@@ -63,7 +63,6 @@ const mediaNames = [
 const importTVMedia = async () => {
   for (const name of mediaNames) {
     const { firstResult } = await searchMediaByName(name);
-    console.log('62 ==>', firstResult);
     console.log('------------------------------');
     await TV.create(firstResult);
   }

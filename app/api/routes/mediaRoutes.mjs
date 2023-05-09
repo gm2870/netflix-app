@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import * as mediaController from '../controllers/media/mediaController.mjs';
 const router = Router();
-// router.get('/titles/all', mediaController.getAllTitles);
+router.get('/all', mediaController.getAllTitles);
 router.get('/movies', mediaController.getAllMovies);
 router.get('/movies/:genreId', mediaController.getAllMoviesByGenre);
 

@@ -19,3 +19,9 @@ type Src = {
   SD: string;
   HD: string;
 };
+
+export type GenreWithMedia = {
+  id: number;
+  name: string;
+  titles: Media[];
+};

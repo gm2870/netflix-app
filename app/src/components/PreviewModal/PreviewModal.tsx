@@ -14,6 +14,7 @@ import { uiActions } from '../../store/redux/ui/ui';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { Media } from '../../store/redux/media/model';
 import { LightTooltip } from '../Tooltip/Tooltip';
+import Image from 'next/image';
 type PreviewProps = {
   item: Media;
   hideModal: () => void;
@@ -95,11 +96,19 @@ const PreviewModal = (props: PreviewProps) => {
           className={classes.imageContainer}
           style={{ opacity: imageOpacity }}
         >
-          <img
+          <Image
+            onMouseEnter={onTrailerStart}
+            className={classes.card__image}
+            src={`/images${props.item.backdrop_path}`}
+            alt="media image"
+            width={400}
+            height={250}
+          />
+          {/* <img
             onMouseEnter={onTrailerStart}
             className={classes.card__image}
             src={`http://localhost:8001/api/v1/stream/image${props.item.backdrop_path}`}
-          />
+          /> */}
         </div>
         {playing && cropSize && (
           <div ref={videoContainer} className={classes.video}>

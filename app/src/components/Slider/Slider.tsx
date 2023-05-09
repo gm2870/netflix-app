@@ -9,6 +9,8 @@ import { useRef } from 'react';
 import { Link } from '@mui/material';
 import LoadingTitle from '../loader/Loading-title/Loading-title';
 import { calculateTranslateX, filterItems } from './utils';
+import { GenreWithMedia } from '../../store/redux/media/model';
+// import { Genre } from '../../models/genre.model';
 
 type SliderRow = {
   left: number[];
@@ -43,7 +45,7 @@ const initialState: SliderState = {
   },
 };
 
-const Slider = (props: any) => {
+const Slider = ({ genre }: { genre: GenreWithMedia }) => {
   // const dispatch = useAppDispatch();
   const sliderRow = useRef<HTMLDivElement>(null);
   const theme = useTheme();
@@ -94,7 +96,7 @@ const Slider = (props: any) => {
           null,
           newState.activeIndex,
           rowItems,
-          props.items.length,
+          genre.titles.length,
           false
         );
 
@@ -117,7 +119,7 @@ const Slider = (props: any) => {
         if (!newState.animating) {
           if (
             newState.activeIndex >=
-            Math.ceil(props.items.length / rowItems) - 1
+            Math.ceil(genre.titles.length / rowItems) - 1
           ) {
             newState.activeIndex = 0;
           } else newState.activeIndex += 1;
@@ -126,7 +128,7 @@ const Slider = (props: any) => {
             'right',
             newState.activeIndex,
             rowItems,
-            props.items.length,
+            genre.titles.length,
             newState.moved
           );
         }
@@ -146,7 +148,8 @@ const Slider = (props: any) => {
         newState.animating = action.animating;
         if (!newState.animating) {
           if (newState.activeIndex === 0) {
-            newState.activeIndex = Math.ceil(props.items.length / rowItems) - 1;
+            newState.activeIndex =
+              Math.ceil(genre.titles.length / rowItems) - 1;
           } else newState.activeIndex -= 1;
 
           newState.filteredRow = filterItems(
@@ -154,7 +157,7 @@ const Slider = (props: any) => {
             'left',
             newState.activeIndex,
             rowItems,
-            props.items.length,
+            genre.titles.length,
             newState.moved
           );
         }
@@ -174,7 +177,7 @@ const Slider = (props: any) => {
 
   const [sliderState, dispatch] = useReducer(reducer, initialState);
   const [showButtons, setShowButtons] = useState(false);
-  const sliderItems = props.items;
+  const sliderItems = genre.titles;
 
   if (sliderRow?.current) {
     sliderRow.current.style.transform = `translate3d(-${sliderState.translateX}%,0,0)`;
@@ -182,7 +185,7 @@ const Slider = (props: any) => {
 
   useEffect(() => {
     dispatch({ type: 'INITIAL', animating: false });
-  }, [props.items]);
+  }, [genre.titles]);
 
   useEffect(() => {
     if (sliderState.moved) {
@@ -292,7 +295,7 @@ const Slider = (props: any) => {
   return (
     <section className={classes.sliderContainer}>
       <Link href="/" className={classes.title}>
-        <h2 className={classes.title__header}>{props.title}</h2>
+        <h2 className={classes.title__header}>{genre.name}</h2>
       </Link>
       <div
         className={classes.rowContent}

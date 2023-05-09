@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import classes from './MediaItem.module.scss';
 import PreviewModal from '../PreviewModal/PreviewModal';
 import { Media } from '../../store/redux/media/model';
+import Image from 'next/image';
 
 const MediaItem = ({
   item,
@@ -81,10 +82,17 @@ const MediaItem = ({
       {item && (
         <div className={classes.mediaItem}>
           <div ref={boxRef} className={classes.boxArt}>
-            <img
+            <Image
+              alt="item image"
               className={classes.boxArt__image}
-              src={`http://localhost:8001/api/v1/stream/image${item.backdrop_path}`}
+              src={`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`}
+              width={320}
+              height={180}
             />
+            {/* <img
+              className={classes.boxArt__image}
+              src={`/api/v1/stream/image${item.backdrop_path}`}
+            /> */}
           </div>
           <Modal hideBackdrop open={open && !underIndicator}>
             <Box sx={modalPosition}>

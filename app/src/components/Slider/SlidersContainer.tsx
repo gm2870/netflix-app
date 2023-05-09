@@ -1,11 +1,14 @@
 import { Fragment } from 'react';
 import Slider from './Slider';
-const SlidersContainer = ({ items }: { items: any }) => {
-  const genres = Object.keys(items);
-
-  const sliders = genres.map((g, i) => (
-    <div key={g}>
-      <Slider title={g} items={items[g]} />
+import { GenreWithMedia } from '../../store/redux/media/model';
+const SlidersContainer = ({
+  genresWithTitles,
+}: {
+  genresWithTitles: GenreWithMedia[];
+}) => {
+  const sliders = genresWithTitles.map((g, i) => (
+    <div key={i}>
+      <Slider genre={g} />
     </div>
   ));
   return <Fragment>{sliders}</Fragment>;

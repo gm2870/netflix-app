@@ -16,22 +16,22 @@
 .mediaItem {
   position: relative;
   padding: 0 0.2vw;
-  width: 50%;
-  display: inline-block;
-  position: relative;
-  vertical-align: top;
-  @include respond(phone) {
-    width: 33.333333%;
-  }
-  @include respond(tablet) {
-    width: 25%;
-  }
-  @include respond(small-desktop) {
-    width: 20%;
-  }
-  @include respond(normal-desktop) {
-    width: 16.66666666666667%;
-  }
+  // width: 50%;
+  // display: inline-block;
+  // position: relative;
+  // vertical-align: top;
+  // @include respond(phone) {
+  //   width: 33.333333%;
+  // }
+  // @include respond(tablet) {
+  //   width: 25%;
+  // }
+  // @include respond(small-desktop) {
+  //   width: 20%;
+  // }
+  // @include respond(normal-desktop) {
+  //   width: 16.66666666666667%;
+  // }
   color: #fff;
   &:first-child {
     padding-left: 0;

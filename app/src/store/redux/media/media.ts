@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { Media } from './model';
+import { GenreWithMedia, Media } from './model';
 type MediaState = {
   error: string;
   loading: boolean;
-  mediaItems: Media[];
+  mediaItems: GenreWithMedia[];
   billboardMedia: Media | null;
   playingBillboardTrailer: boolean;
   cropSize: number;
