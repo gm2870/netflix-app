@@ -70,17 +70,43 @@ export const getAllTitles = async (req, res) => {
 };
 
 export const getAllMovies = catchAsync(async (req, res) => {
-  const genres = await Genre.find();
-  const movieGenres = genres.filter((g) => g.types.includes('movie'));
-  const movies = await Movie.find();
-  const collection = {};
-  for (const genre of movieGenres) {
-    collection[genre.name] = movies.filter((m) => m.genre_ids[0] === genre.id);
-  }
+  const genres = await Genre.aggregate([
+    {
+      $lookup: {
+        from: 'movies',
+        let: {
+          genreId: '$id',
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: [
+                  {
+                    $arrayElemAt: ['$genre_ids', 0],
+                  },
+                  '$$genreId',
+                ],
+              },
+            },
+          },
+          { $limit: 42 },
+        ],
+        as: 'titles',
+      },
+    },
+    {
+      $project: {
+        id: 1,
+        name: 1,
+        titles: 1,
+      },
+    },
+  ]);
 
   res.status(200).json({
     status: 'success',
-    data: collection,
+    data: genres,
   });
 });
 export const getAllMoviesByGenre = catchAsync(async (req, res) => {
@@ -95,18 +121,43 @@ export const getAllMoviesByGenre = catchAsync(async (req, res) => {
   });
 });
 export const getAllTVShows = catchAsync(async (req, res) => {
-  const genres = await Genre.find();
-  const tvGenres = genres.filter((g) => g.types.includes('tv'));
-
-  const tvShows = await TV.find();
-  const collection = {};
-  for (const genre of tvGenres) {
-    collection[genre.name] = tvShows.filter((m) => m.genre_ids[0] === genre.id);
-  }
+  const genres = await Genre.aggregate([
+    {
+      $lookup: {
+        from: 'tv_shows',
+        let: {
+          genreId: '$id',
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: [
+                  {
+                    $arrayElemAt: ['$genre_ids', 0],
+                  },
+                  '$$genreId',
+                ],
+              },
+            },
+          },
+          { $limit: 42 },
+        ],
+        as: 'titles',
+      },
+    },
+    {
+      $project: {
+        id: 1,
+        name: 1,
+        titles: 1,
+      },
+    },
+  ]);
 
   res.status(200).json({
     status: 'success',
-    data: collection,
+    data: genres,
   });
 });
 

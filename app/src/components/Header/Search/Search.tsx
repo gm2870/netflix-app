@@ -23,7 +23,7 @@ const search = (props: SearchProps) => {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      console.log(router);
+      if (!searchParam) return;
       router.push({
         pathname: '/search',
         query: { q: searchParam },

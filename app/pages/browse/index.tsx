@@ -3,14 +3,16 @@ import { Fragment, useEffect } from 'react';
 import Head from 'next/head';
 import Billboard from './Billboard/Billboard';
 import Header from '../../src/components/Header/Header';
-// import { getAllTitles } from '../../api/controllers/media/mediaController.mjs';
 import SlidersContainer from '../../src/components/Slider/SlidersContainer';
 import { useAppDispatch, useAppSelector } from '../../src/hooks';
 import { getAllTitles } from '../../src/store/redux/media/media-actions';
-import Genre from '../../api/models/genreModel.mjs';
-const browse = (props: any) => {
+import SliderLoader from '../../src/components/loader/SliderLoader';
+import NoSsr from '@mui/base/NoSsr';
+
+const browse = () => {
   const dispatch = useAppDispatch();
   const genresWithMedia = useAppSelector((state) => state.media.mediaItems);
+
   useEffect(() => {
     dispatch(getAllTitles());
   }, []);
@@ -23,19 +25,22 @@ const browse = (props: any) => {
       <Header />
       <Fragment>
         {/* {items.length && <Billboard item={items[19]} />} */}
-        <SlidersContainer genresWithTitles={genresWithMedia} />
+        {genresWithMedia.length && (
+          <SlidersContainer genresWithTitles={genresWithMedia} />
+        )}
+        <NoSsr>{!genresWithMedia.length && <SliderLoader />}</NoSsr>
       </Fragment>
     </section>
   );
 };
 export default browse;
 
-export async function getServerSideProps() {
-  const genres = await Genre.find();
+// export async function getServerSideProps() {
+//   const genres = await Genre.find();
 
-  return {
-    props: {
-      genres: JSON.stringify(genres),
-    },
-  };
-}
+//   return {
+//     props: {
+//       genres: JSON.stringify(genres),
+//     },
+//   };
+// }

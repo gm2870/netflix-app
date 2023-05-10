@@ -1,34 +1,14 @@
 import classes from './slider.module.scss';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import MediaItem from '../MediaItem/MediaItem';
 import { useEffect, useReducer, useState } from 'react';
 import { useRef } from 'react';
 import { Link } from '@mui/material';
-import LoadingTitle from '../loader/Loading-title/Loading-title';
 import { calculateTranslateX, filterItems } from './utils';
 import { GenreWithMedia } from '../../store/redux/media/model';
-// import { Genre } from '../../models/genre.model';
-
-type SliderRow = {
-  left: number[];
-  middle: number[];
-  right: number[];
-};
-type Direction = 'INITIAL' | 'LEFT' | 'RIGHT';
-
-type SliderState = {
-  moved: boolean;
-  animating: boolean;
-  activeIndex: number;
-  cardOpen: boolean;
-  showNext: boolean;
-  translateX: number;
-  itemsLength: number;
-  filteredRow: SliderRow;
-};
+import useSliderConfig from '../../hooks/use-slider-config';
+import { Direction, SliderState } from './models';
 
 const initialState: SliderState = {
   moved: false,
@@ -46,42 +26,8 @@ const initialState: SliderState = {
 };
 
 const Slider = ({ genre }: { genre: GenreWithMedia }) => {
-  // const dispatch = useAppDispatch();
   const sliderRow = useRef<HTMLDivElement>(null);
-  const theme = useTheme();
-  const min600 = useMediaQuery(theme.breakpoints.up('sm'));
-  const min900 = useMediaQuery(theme.breakpoints.up('md'));
-  const min1200 = useMediaQuery(theme.breakpoints.up('lg'));
-  const min1400 = useMediaQuery('(min-width:1400px)');
-  const sliderConfig = () => {
-    if (min1400) {
-      return {
-        rowItems: 6,
-        itemWidth: 16.66666666666667,
-      };
-    }
-    if (min1200)
-      return {
-        rowItems: 5,
-        itemWidth: 20,
-      };
-    if (min900)
-      return {
-        rowItems: 4,
-        itemWidth: 25,
-      };
-    if (min600)
-      return {
-        rowItems: 3,
-        itemWidth: 33.333333,
-      };
-    return {
-      rowItems: 2,
-      itemWidth: 50,
-    };
-  };
-  const { rowItems, itemWidth } = sliderConfig();
-
+  const { rowItems, itemWidth } = useSliderConfig();
   const reducer = (
     state: SliderState,
     action: { type: Direction; animating: boolean }
@@ -191,7 +137,7 @@ const Slider = ({ genre }: { genre: GenreWithMedia }) => {
     if (sliderState.moved) {
       dispatch({ type: 'RIGHT', animating: false });
     }
-  }, [min600, min900, min1200, min1400]);
+  }, [rowItems]);
 
   const handleNextSlide = () => {
     if (sliderState.animating) {
@@ -279,16 +225,6 @@ const Slider = ({ genre }: { genre: GenreWithMedia }) => {
 
   const result = [...leftItems, ...middleItems, ...rightItems];
 
-  const emptyBoxes = new Array(sliderConfig().rowItems + 1)
-    .fill(0)
-    .map((_, i) => {
-      const animationDelay = i * 0.2 + 's';
-
-      return (
-        <LoadingTitle key={i} animationDelay={animationDelay}></LoadingTitle>
-      );
-    });
-
   const classNames = sliderState.animating
     ? `${classes.slider__content} ${classes.animating}`
     : `${classes.slider__content}`;
@@ -310,9 +246,7 @@ const Slider = ({ genre }: { genre: GenreWithMedia }) => {
           )}
           {sliderItems.length ? (
             <ul className={classes.slider__pagination}>
-              {new Array(
-                Math.ceil(sliderItems.length / sliderConfig().rowItems)
-              )
+              {new Array(Math.ceil(sliderItems.length / rowItems))
                 .fill(0)
                 .map((x, i) => (
                   <li
@@ -331,7 +265,9 @@ const Slider = ({ genre }: { genre: GenreWithMedia }) => {
               </div>
             </div>
           ) : (
-            <div className={classes.slider__content}>{emptyBoxes}</div>
+            <div className={classes.slider__content}>
+              {/* <SliderLoader /> */}
+            </div>
           )}
           {sliderState.moved && showButtons && (
             <span onClick={handlePrevSlide} className={classes.slider__prev}>
