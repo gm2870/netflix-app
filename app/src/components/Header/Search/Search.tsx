@@ -12,6 +12,7 @@ const search = (props: SearchProps) => {
   const router = useRouter();
 
   const handleOutsideClick = (event: any) => {
+    if (searchParam) return;
     if (searchRef.current && !searchRef.current.contains(event.target)) {
       props.hide(event);
     }
@@ -28,7 +29,7 @@ const search = (props: SearchProps) => {
         pathname: '/search',
         query: { q: searchParam },
       });
-    }, 1000);
+    }, 500);
 
     return () => {
       clearTimeout(timeout);
@@ -46,6 +47,7 @@ const search = (props: SearchProps) => {
     window.addEventListener('click', handleOutsideClick);
     return () => window.removeEventListener('click', handleOutsideClick);
   }, []);
+  const clearSearch = () => router.push('/browse');
   return (
     <div ref={searchRef} className={classes.search}>
       <SearchIcon className={classes.search__icon} />
@@ -56,6 +58,15 @@ const search = (props: SearchProps) => {
         placeholder="Title, people, genres"
         onChange={handleChange}
       />
+      {searchParam && (
+        <span
+          onClick={clearSearch}
+          className={classes.search__clear}
+          role="button"
+        >
+          x
+        </span>
+      )}
     </div>
   );
 };

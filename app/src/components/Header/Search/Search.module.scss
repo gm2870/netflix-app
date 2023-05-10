@@ -19,4 +19,12 @@
       outline: none;
     }
   }
+  &__clear {
+    position: absolute;
+    right: 0.2rem;
+    top: 0;
+    width: 15px;
+    color: #fff;
+    cursor: pointer;
+  }
 }
