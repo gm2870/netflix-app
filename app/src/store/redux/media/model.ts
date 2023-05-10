@@ -13,6 +13,7 @@ export type Media = {
   video: boolean;
   video_src: Src;
   adult: boolean;
+  name?: string;
 };
 
 type Src = {

@@ -6,7 +6,7 @@ import { useEffect, useReducer, useState } from 'react';
 import { useRef } from 'react';
 import { Link } from '@mui/material';
 import { calculateTranslateX, filterItems } from './utils';
-import { GenreWithMedia } from '../../store/redux/media/model';
+import { GenreWithMedia, Media } from '../../store/redux/media/model';
 import useSliderConfig from '../../hooks/use-slider-config';
 import { Direction, SliderState } from './models';
 
@@ -25,7 +25,7 @@ const initialState: SliderState = {
   },
 };
 
-const Slider = ({ genre }: { genre: GenreWithMedia }) => {
+const Slider = ({ titles }: { titles: Media[] }) => {
   const sliderRow = useRef<HTMLDivElement>(null);
   const { rowItems, itemWidth } = useSliderConfig();
   const reducer = (
@@ -42,7 +42,7 @@ const Slider = ({ genre }: { genre: GenreWithMedia }) => {
           null,
           newState.activeIndex,
           rowItems,
-          genre.titles.length,
+          titles.length,
           false
         );
 
@@ -63,10 +63,7 @@ const Slider = ({ genre }: { genre: GenreWithMedia }) => {
         newState.animating = action.animating;
 
         if (!newState.animating) {
-          if (
-            newState.activeIndex >=
-            Math.ceil(genre.titles.length / rowItems) - 1
-          ) {
+          if (newState.activeIndex >= Math.ceil(titles.length / rowItems) - 1) {
             newState.activeIndex = 0;
           } else newState.activeIndex += 1;
           newState.filteredRow = filterItems(
@@ -74,7 +71,7 @@ const Slider = ({ genre }: { genre: GenreWithMedia }) => {
             'right',
             newState.activeIndex,
             rowItems,
-            genre.titles.length,
+            titles.length,
             newState.moved
           );
         }
@@ -94,8 +91,7 @@ const Slider = ({ genre }: { genre: GenreWithMedia }) => {
         newState.animating = action.animating;
         if (!newState.animating) {
           if (newState.activeIndex === 0) {
-            newState.activeIndex =
-              Math.ceil(genre.titles.length / rowItems) - 1;
+            newState.activeIndex = Math.ceil(titles.length / rowItems) - 1;
           } else newState.activeIndex -= 1;
 
           newState.filteredRow = filterItems(
@@ -103,7 +99,7 @@ const Slider = ({ genre }: { genre: GenreWithMedia }) => {
             'left',
             newState.activeIndex,
             rowItems,
-            genre.titles.length,
+            titles.length,
             newState.moved
           );
         }
@@ -123,7 +119,7 @@ const Slider = ({ genre }: { genre: GenreWithMedia }) => {
 
   const [sliderState, dispatch] = useReducer(reducer, initialState);
   const [showButtons, setShowButtons] = useState(false);
-  const sliderItems = genre.titles;
+  const sliderItems = titles;
 
   if (sliderRow?.current) {
     sliderRow.current.style.transform = `translate3d(-${sliderState.translateX}%,0,0)`;
@@ -131,7 +127,7 @@ const Slider = ({ genre }: { genre: GenreWithMedia }) => {
 
   useEffect(() => {
     dispatch({ type: 'INITIAL', animating: false });
-  }, [genre.titles]);
+  }, [titles]);
 
   useEffect(() => {
     if (sliderState.moved) {
@@ -230,9 +226,6 @@ const Slider = ({ genre }: { genre: GenreWithMedia }) => {
     : `${classes.slider__content}`;
   return (
     <section className={classes.sliderContainer}>
-      <Link href="/" className={classes.title}>
-        <h2 className={classes.title__header}>{genre.name}</h2>
-      </Link>
       <div
         className={classes.rowContent}
         onMouseEnter={handleSliderHover}

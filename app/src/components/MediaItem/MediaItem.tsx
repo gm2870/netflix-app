@@ -50,6 +50,7 @@ const MediaItem = ({
       document.removeEventListener('mouseenter', openModal);
     };
   }, [boxRef]);
+
   const modalPosition = () => {
     const position = {
       position: 'absolute',
@@ -77,6 +78,7 @@ const MediaItem = ({
     clearTimeout(timeout);
     setOpen(false);
   };
+  console.log(item);
   return (
     <Fragment>
       {item && (
@@ -89,10 +91,7 @@ const MediaItem = ({
               width={320}
               height={180}
             />
-            {/* <img
-              className={classes.boxArt__image}
-              src={`/api/v1/stream/image${item.backdrop_path}`}
-            /> */}
+            <p className={classes.boxArt__title}>{item.title || item.name}</p>
           </div>
           <Modal hideBackdrop open={open && !underIndicator}>
             <Box sx={modalPosition}>

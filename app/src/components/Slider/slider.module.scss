@@ -1,14 +1,18 @@
 @use '../../../styles/abstracts' as *;
 .sliderContainer {
   padding: 0;
-  margin: 3vw 0;
   z-index: 3;
+}
+
+.row {
+  margin: 3vw 0;
 }
 .rowContent {
   padding: 0;
   width: 100vw; // this is for preventing width change on y scroll bar toggle
   overflow: hidden;
 }
+
 .title {
   color: #e5e5e5;
   display: inline-block;
