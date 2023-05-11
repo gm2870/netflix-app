@@ -9,11 +9,13 @@ const SlidersContainer = ({
   genresWithTitles: GenreWithMedia[];
 }) => {
   const sliders = genresWithTitles.map((g, i) => (
-    <div className={classes.row}>
-      <Link href="/" className={classes.title}>
-        <h2 className={classes.title__header}>{g.name}</h2>
-      </Link>
-      <Slider key={i} titles={g.titles} />
+    <div key={i} className={classes.row}>
+      {g.titles.length && (
+        <Link href="/" className={classes.title}>
+          <h2 className={classes.title__header}>{g.name}</h2>
+        </Link>
+      )}
+      <Slider titles={g.titles} />
     </div>
   ));
   return <Fragment>{sliders}</Fragment>;

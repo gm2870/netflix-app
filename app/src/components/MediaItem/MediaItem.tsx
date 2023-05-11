@@ -78,7 +78,6 @@ const MediaItem = ({
     clearTimeout(timeout);
     setOpen(false);
   };
-  console.log(item);
   return (
     <Fragment>
       {item && (

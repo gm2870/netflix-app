@@ -47,11 +47,11 @@ const Header = () => {
     },
     {
       name: 'TVShows',
-      link: '/',
+      link: '/browse/genre/1',
     },
     {
       name: 'Movies',
-      link: '/',
+      link: '/browse/genre/2',
     },
     {
       name: 'New & Popular',

@@ -1,7 +1,6 @@
 import classes from './index.module.scss';
 import { Fragment, useEffect } from 'react';
 import Head from 'next/head';
-import Billboard from './Billboard/Billboard';
 import Header from '../../src/components/Header/Header';
 import SlidersContainer from '../../src/components/Slider/SlidersContainer';
 import { useAppDispatch, useAppSelector } from '../../src/hooks';
@@ -23,13 +22,11 @@ const browse = () => {
         <title>Netflix - Home</title>
       </Head>
       <Header />
-      <Fragment>
-        {/* {items.length && <Billboard item={items[19]} />} */}
-        {genresWithMedia.length && (
-          <SlidersContainer genresWithTitles={genresWithMedia} />
-        )}
-        <NoSsr>{!genresWithMedia.length && <SliderLoader />}</NoSsr>
-      </Fragment>
+      {/* {items.length && <Billboard item={items[19]} />} */}
+      {genresWithMedia.length && (
+        <SlidersContainer genresWithTitles={genresWithMedia} />
+      )}
+      <NoSsr>{!genresWithMedia.length && <SliderLoader />}</NoSsr>
     </section>
   );
 };

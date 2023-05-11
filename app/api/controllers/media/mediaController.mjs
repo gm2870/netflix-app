@@ -71,6 +71,7 @@ export const getAllTitles = async (req, res) => {
 
 export const getAllMovies = catchAsync(async (req, res) => {
   const genres = await Genre.aggregate([
+    { $match: { types: { $ne: ['tv'] } } },
     {
       $lookup: {
         from: 'movies',
@@ -122,6 +123,7 @@ export const getAllMoviesByGenre = catchAsync(async (req, res) => {
 });
 export const getAllTVShows = catchAsync(async (req, res) => {
   const genres = await Genre.aggregate([
+    { $match: { types: { $ne: ['movie'] } } },
     {
       $lookup: {
         from: 'tv_shows',

@@ -25,6 +25,28 @@ export const getAllTitles = () => (dispatch: AppDispatch) => {
   sendRequest(config, dispatch, setMedia, handleError);
 };
 
+export const getTVTitles = () => (dispatch: AppDispatch) => {
+  const config = {
+    url: `/media/tv-shows`,
+  };
+  const handleError = (err: string) => console.log(err);
+  const setMedia = (res: any) => {
+    dispatch(mediaActions.getMediaItems(res));
+  };
+  sendRequest(config, dispatch, setMedia, handleError);
+};
+
+export const getMovieTitles = () => (dispatch: AppDispatch) => {
+  const config = {
+    url: `/media/movies`,
+  };
+  const handleError = (err: string) => console.log(err);
+  const setMedia = (res: any) => {
+    dispatch(mediaActions.getMediaItems(res));
+  };
+  sendRequest(config, dispatch, setMedia, handleError);
+};
+
 export const getMedia = (id: number) => (dispatch: AppDispatch) => {
   const config = {
     url: `/media/${id}`,
