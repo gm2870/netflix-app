@@ -3,13 +3,17 @@
 .headerWrapper {
   width: 100%;
   z-index: 5;
+  position: absolute;
+  top: 0;
 }
+
 .headerWrapper.sticky {
   position: fixed;
   background: rgb(20, 20, 20);
   top: 0;
   left: 0;
 }
+
 .header {
   display: flex;
   height: 41px;
@@ -35,6 +39,7 @@
       font-size: 14px;
     }
   }
+
   @include respond(tablet) {
     height: 68px;
     padding: 0 4%;
@@ -43,6 +48,7 @@
     padding: 0 60px;
   }
 }
+
 .navigation {
   color: #fff;
   display: flex;

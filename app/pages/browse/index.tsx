@@ -1,18 +1,25 @@
 import classes from './index.module.scss';
-import { Fragment, useEffect } from 'react';
+import { useEffect } from 'react';
 import Head from 'next/head';
 import Header from '../../src/components/Header/Header';
 import SlidersContainer from '../../src/components/Slider/SlidersContainer';
 import { useAppDispatch, useAppSelector } from '../../src/hooks';
-import { getAllTitles } from '../../src/store/redux/media/media-actions';
+import {
+  getAllTitles,
+  getGenralBillboard,
+} from '../../src/store/redux/media/media-actions';
 import SliderLoader from '../../src/components/loader/SliderLoader';
 import NoSsr from '@mui/base/NoSsr';
+import { getGeneralBillboard } from '../../api/controllers/media/mediaController.mjs';
+import Billboard from '../../src/components/Billboard/Billboard';
 
 const browse = () => {
   const dispatch = useAppDispatch();
-  const genresWithMedia = useAppSelector((state) => state.media.mediaItems);
-
+  const media = useAppSelector((state) => state.media);
+  const genresWithMedia = media.mediaItems;
+  const item = media.billboardMedia;
   useEffect(() => {
+    dispatch(getGenralBillboard());
     dispatch(getAllTitles());
   }, []);
 
@@ -22,7 +29,7 @@ const browse = () => {
         <title>Netflix - Home</title>
       </Head>
       <Header />
-      {/* {items.length && <Billboard item={items[19]} />} */}
+      {item && <Billboard item={item} />}
       {genresWithMedia.length && (
         <SlidersContainer genresWithTitles={genresWithMedia} />
       )}
@@ -33,11 +40,11 @@ const browse = () => {
 export default browse;
 
 // export async function getServerSideProps() {
-//   const genres = await Genre.find();
+//   const tv = await getGeneralBillboard();
 
 //   return {
 //     props: {
-//       genres: JSON.stringify(genres),
+//       billboardItem: JSON.stringify(tv),
 //     },
 //   };
 // }

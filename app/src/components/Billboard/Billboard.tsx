@@ -10,13 +10,14 @@ import { Media } from '../../../src/store/redux/media/model';
 import { useAppSelector } from '../../../src/hooks';
 import CustomButton from '../../../src/components/CustomButton/CustomButton';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import Image from 'next/image';
 
 const Billboard = ({ item }: { item: Media }) => {
   const playerRef = useRef<videojs.Player | null>(null);
   const [playing, setPlaying] = useState<boolean>(false);
   const [toggleVolumeOn, setToggleVolumeOn] = useState<boolean>(false);
   const shouldPlay = useAppSelector((state) => state.ui.billboardPlaying);
-  console.log(shouldPlay);
+
   const videoOptions = {
     autoplay: true,
     muted: true,
@@ -60,11 +61,7 @@ const Billboard = ({ item }: { item: Media }) => {
       playerRef.current?.play();
     }
   };
-  const fancyTextGenerator = (text: string): string => {
-    const words = text.split('-');
-    const withoutDash = words.join(' ');
-    return withoutDash;
-  };
+
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
   }, []);
@@ -84,15 +81,18 @@ const Billboard = ({ item }: { item: Media }) => {
             className={classes.imageWraper}
             style={{ opacity: playing ? 0 : 1 }}
           >
-            <img
+            <Image
+              alt="billboard image"
               className={classes.billboard__image}
-              src={`http://localhost:8001/api/v1/media/image/${item.id}`}
+              src={`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`}
+              width={1500}
+              height={1000}
             />
           </div>
         )}
         <div className={classes.info}>
           <div className={classes.info__fantcyTitle}>
-            <img src="/images/fancy.webp" />
+            <img src="/images/money-heist.webp" alt="title logo" />
           </div>
           <div className={classes.info__description}>{item.overview}</div>
           <div className={classes.info__actions}>

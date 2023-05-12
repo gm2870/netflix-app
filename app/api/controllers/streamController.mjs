@@ -96,6 +96,7 @@ export const searchMediaByName = async (name) => {
     return new AppError(error.message || 'Something went wrong.', 500);
   }
 };
+
 export const updateVideoSrc = catchAsync(async (media, model) => {
   if (
     !media.video_src ||

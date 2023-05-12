@@ -1,5 +1,4 @@
 import Movie from '../models/media/movieModel.mjs';
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { getSrcWithVideoId, getVideoSrc } from '../utils/urlGrabber.mjs';
 import {
@@ -15,14 +14,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-dotenv.config({ path: `${__dirname}/../../app/.env.local` });
-
-const DB = process.env.DATABASE.replace(
-  '<PASSWORD>',
-  process.env.DATABASE_PASSWORD
-);
-
-mongoose.connect(DB);
+dotenv.config({ path: `${__dirname}/../../.env.local` });
 
 const mediaNames = [
   // 'red-notice',
@@ -34,27 +26,14 @@ const mediaNames = [
   // 'the-lost-city',
   // 'bullet-train',
   // 'joker',
-  'breaking-bad',
-  'better-call-saul',
-  'dark',
+  // 'better-call-saul',
+  // 'dark',
   // 'blindspot',
   // 'ted-lasso',
   // 'see',
-  'money-heist',
-  'the-unforgivable',
-  '1899',
-  'undercover',
-  'glass-onion',
-  'wednesday',
-  'my-name-is-vendetta',
-  // 'narcos',
-  // 'army-of-thieves',
-  'sttranger-things',
-  // 'elchapo',
-  // 'troll',
-  'all-of-us-are-dead',
-  'me-time',
-  'virgin-river',
+  // 'money-heist',
+  // '1899',
+  'designated survier',
   // 'treason',
   // 'the-sandman',
   // 'the-recruit',
@@ -62,9 +41,12 @@ const mediaNames = [
 
 const importTVMedia = async () => {
   for (const name of mediaNames) {
-    const { firstResult } = await searchMediaByName(name);
-    console.log('------------------------------');
-    await TV.create(firstResult);
+    const res = await searchMediaByName(name);
+
+    res.tv_results.forEach(async (tv) => {
+      console.log('TV =>', tv);
+      await TV.create(tv);
+    });
   }
   process.exit();
 };

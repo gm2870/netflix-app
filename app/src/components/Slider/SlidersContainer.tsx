@@ -8,17 +8,20 @@ const SlidersContainer = ({
 }: {
   genresWithTitles: GenreWithMedia[];
 }) => {
-  const sliders = genresWithTitles.map((g, i) => (
-    <div key={i} className={classes.row}>
-      {g.titles.length && (
-        <Link href="/" className={classes.title}>
-          <h2 className={classes.title__header}>{g.name}</h2>
-        </Link>
-      )}
-      <Slider titles={g.titles} />
-    </div>
-  ));
-  return <Fragment>{sliders}</Fragment>;
+  const sliders = genresWithTitles.map((g, i) => {
+    if (g.titles.length < 6) return;
+    return (
+      <div key={i} className={classes.sliderContent}>
+        {g.titles.length && (
+          <Link href="/" className={classes.title}>
+            <h2 className={classes.title__header}>{g.name}</h2>
+          </Link>
+        )}
+        <Slider titles={g.titles} />
+      </div>
+    );
+  });
+  return <div className={classes.row}>{sliders}</div>;
 };
 
 export default SlidersContainer;

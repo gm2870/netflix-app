@@ -110,6 +110,7 @@ export const getAllMovies = catchAsync(async (req, res) => {
     data: genres,
   });
 });
+
 export const getAllMoviesByGenre = catchAsync(async (req, res) => {
   const genreId = req.params.genreId;
   const movies = await Movie.find();
@@ -121,6 +122,7 @@ export const getAllMoviesByGenre = catchAsync(async (req, res) => {
     data: movieList,
   });
 });
+
 export const getAllTVShows = catchAsync(async (req, res) => {
   const genres = await Genre.aggregate([
     { $match: { types: { $ne: ['movie'] } } },
@@ -174,3 +176,27 @@ export const getAllTVShowsByGenre = catchAsync(async (req, res) => {
     data: tvList,
   });
 });
+
+export const getGeneralBillboard = async (req, res) => {
+  const tv = await TV.findOne({ id: 67026 });
+  res.status(200).json({
+    status: 'success',
+    data: tv,
+  });
+};
+
+export const getTVBillboard = async (req, res) => {
+  const tv = await TV.findOne({ id: 90669 });
+  res.status(200).json({
+    status: 'success',
+    data: tv,
+  });
+};
+
+export const getMovieBillboard = async (req, res) => {
+  const movie = await Movie.findOne({ id: 475557 });
+  res.status(200).json({
+    status: 'success',
+    data: movie,
+  });
+};
