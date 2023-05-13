@@ -14,6 +14,7 @@ import { emptyAssets } from './controllers/streamController.mjs';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { importMovieMedia } from './dev-data/dev.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 dotenv.config({ path: `${__dirname}/../.env.local` });
@@ -69,4 +70,5 @@ app.use(globalErrorHandler);
 //     }
 //   })
 // );
+// importMovieMedia('red notice');
 export default app;

@@ -15,7 +15,7 @@
     top: 0;
   }
   &__title {
-    font-size: 20px;
+    font-size: 10px;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
@@ -28,6 +28,19 @@
     margin: 0;
     white-space: initial;
     text-align: center;
+    @include respond(tablet) {
+      display: block;
+      font-size: 12px;
+    }
+    @include respond(small-desktop) {
+      font-size: 14px;
+    }
+    @include respond(normal-desktop) {
+      font-size: 16px;
+    }
+    @include respond(big-desktop) {
+      font-size: 18px;
+    }
   }
 }
 .mediaItem {

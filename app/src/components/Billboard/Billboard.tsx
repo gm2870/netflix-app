@@ -17,7 +17,7 @@ const Billboard = ({ item }: { item: Media }) => {
   const [playing, setPlaying] = useState<boolean>(false);
   const [toggleVolumeOn, setToggleVolumeOn] = useState<boolean>(false);
   const shouldPlay = useAppSelector((state) => state.ui.billboardPlaying);
-
+  const name = item.name || item.title;
   const videoOptions = {
     autoplay: true,
     muted: true,
@@ -85,14 +85,13 @@ const Billboard = ({ item }: { item: Media }) => {
               alt="billboard image"
               className={classes.billboard__image}
               src={`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`}
-              width={1500}
-              height={1000}
+              fill={true}
             />
           </div>
         )}
         <div className={classes.info}>
           <div className={classes.info__fantcyTitle}>
-            <img src="/images/money-heist.webp" alt="title logo" />
+            <img src={`/images/${name}.webp`} alt="title logo" />
           </div>
           <div className={classes.info__description}>{item.overview}</div>
           <div className={classes.info__actions}>

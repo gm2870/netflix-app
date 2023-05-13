@@ -87,8 +87,7 @@ const MediaItem = ({
               alt="item image"
               className={classes.boxArt__image}
               src={`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`}
-              width={320}
-              height={180}
+              fill={true}
             />
             <p className={classes.boxArt__title}>{item.title || item.name}</p>
           </div>

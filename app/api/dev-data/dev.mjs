@@ -44,10 +44,17 @@ const importTVMedia = async () => {
     const res = await searchMediaByName(name);
 
     res.tv_results.forEach(async (tv) => {
-      console.log('TV =>', tv);
       await TV.create(tv);
     });
   }
+  process.exit();
+};
+
+export const importMovieMedia = async (name) => {
+  const res = await searchMediaByName(name);
+  console.log(res);
+  await Movie.create(res.movie_results[0]);
+
   process.exit();
 };
 
@@ -103,7 +110,7 @@ export const updateSrc = async (media) => {
     console.log(`${media.title} failed`);
     return;
   }
-  return await Movie.findOneAndUpdate(
+  return await TV.findOneAndUpdate(
     { id: media.id },
     {
       video_src: {
@@ -115,7 +122,7 @@ export const updateSrc = async (media) => {
   );
 };
 const updateMedia = async (id) => {
-  const item = await Movie.findOne({ id });
+  const item = await TV.findOne({ id });
   await updateSrc(item);
   process.exit();
 };
@@ -127,7 +134,9 @@ if (process.argv[2] === '--import-tv') {
 } else if (process.argv[2] === '--update-src') {
   forceSrcUpdate();
 } else if (process.argv[2] === '--update') {
-  updateMedia(512195);
+  updateMedia(67026);
 } else if (process.argv[2] === '--import-genres') {
   importGenres();
+} else if (process.argv[2] === '--import-movie') {
+  importMovieMedia('red notice');
 }

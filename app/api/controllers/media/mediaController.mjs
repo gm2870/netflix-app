@@ -186,7 +186,7 @@ export const getGeneralBillboard = async (req, res) => {
 };
 
 export const getTVBillboard = async (req, res) => {
-  const tv = await TV.findOne({ id: 90669 });
+  const tv = await TV.findOne({ id: 103768 });
   res.status(200).json({
     status: 'success',
     data: tv,
@@ -194,7 +194,7 @@ export const getTVBillboard = async (req, res) => {
 };
 
 export const getMovieBillboard = async (req, res) => {
-  const movie = await Movie.findOne({ id: 475557 });
+  const movie = await Movie.findOne({ id: 512195 });
   res.status(200).json({
     status: 'success',
     data: movie,

@@ -2,7 +2,7 @@
 
 .billboardRow {
   background-color: #000;
-  padding-bottom: 43%;
+  padding-bottom: 40%;
   margin-bottom: 20px;
 }
 
@@ -34,31 +34,38 @@
     background-repeat: repeat-x;
     background-size: 100% 100%;
     bottom: -1px;
-    height: 17.7vw;
+    height: 15.7vw;
     opacity: 1;
     top: auto;
     width: 100%;
   }
 }
 .info {
-  position: absolute;
-  top: 30px;
+  bottom: 35%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   left: 4%;
-  z-index: 3;
+  position: absolute;
+  top: 0;
   width: 36%;
-  color: white;
-  font-size: 24px;
-  font-weight: 500;
+  z-index: 4;
+  @include respond(small-desktop) {
+    bottom: 40%;
+  }
+
   &__description {
     color: #fff;
-    font-size: 0.6rem;
+    font-size: 1rem;
     font-weight: 400;
     line-height: normal;
     margin-top: 0.1vw;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.45);
     width: 100%;
+    // display: none;
     @include respond(tablet) {
-      font-size: 1rem;
+      display: block;
+      font-size: 1.2rem;
     }
     @include respond(small-desktop) {
       font-size: 1.6rem;
@@ -82,9 +89,6 @@
     @include respond(small-desktop) {
       font-size: 2rem;
     }
-    @include respond(normal-desktop) {
-      font-size: 3rem;
-    }
   }
   &__actions {
     margin-top: 1.5vw;
@@ -96,7 +100,6 @@
   background-color: #fff;
   font-size: 1rem;
   font-weight: 700;
-  line-height: 2.4rem;
   margin-right: 0.5rem;
   padding: 0rem;
   padding-left: 1.1rem;
@@ -104,10 +107,8 @@
   flex-shrink: 0;
   @include respond(small-desktop) {
     margin-right: 1rem;
-
     padding: 0.5rem;
     font-size: 1.6rem;
-
     padding-left: 1.5rem;
     padding-right: 2.4rem;
   }
@@ -119,8 +120,6 @@
 .gray {
   font-size: 1rem;
   font-weight: 500;
-  line-height: 2.4rem;
-  padding: 0 0.5rem;
   display: flex;
   flex-shrink: 0;
   padding-left: 1.1rem;
