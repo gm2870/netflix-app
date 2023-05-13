@@ -1,7 +1,9 @@
 import Movie from '../models/media/movieModel.mjs';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { getSrcWithVideoId, getVideoSrc } from '../utils/urlGrabber.mjs';
 import {
+  getTitleId,
   needsSrcUpdate,
   searchMediaByName,
 } from '../controllers/streamController.mjs';
@@ -15,7 +17,7 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 dotenv.config({ path: `${__dirname}/../../.env.local` });
-
+mongoose.connect(process.env.MONGODB_URI);
 const mediaNames = [
   // 'red-notice',
   // 'avengers-endgame',
@@ -44,15 +46,23 @@ const importTVMedia = async () => {
     const res = await searchMediaByName(name);
 
     res.tv_results.forEach(async (tv) => {
+      tv.media_type = 'tv';
       await TV.create(tv);
     });
   }
   process.exit();
 };
-
+const updateTVMedia = async () => {
+  const res = await Movie.updateMany(
+    {},
+    { media_type: 'movie' },
+    { upsert: true }
+  );
+  console.log(res);
+  process.exit();
+};
 export const importMovieMedia = async (name) => {
   const res = await searchMediaByName(name);
-  console.log(res);
   await Movie.create(res.movie_results[0]);
 
   process.exit();
@@ -95,6 +105,8 @@ export const forceSrcUpdate = catchAsync(async () => {
 
 export const updateSrc = async (media) => {
   let HDSrc, SDSrc, videoData;
+  const name = media.name || media.title;
+
   if (media.title_video_id) {
     SDSrc = await getSrcWithVideoId(media.title_video_id, 480);
     HDSrc = await getSrcWithVideoId(media.title_video_id, 1080);
@@ -104,10 +116,16 @@ export const updateSrc = async (media) => {
       HD: HDSrc,
     };
   } else {
-    videoData = await getVideoSrc(media.title_id, 1080);
+    let titleId = media.title_id;
+    if (!titleId) {
+      titleId = await getTitleId(name);
+      console.log(titleId);
+    }
+    videoData = await getVideoSrc(titleId, 1080);
   }
+
   if (!videoData || !videoData.SD) {
-    console.log(`${media.title} failed`);
+    console.log(`${name} failed`);
     return;
   }
   return await TV.findOneAndUpdate(
@@ -121,7 +139,7 @@ export const updateSrc = async (media) => {
     }
   );
 };
-const updateMedia = async (id) => {
+export const updateMedia = async (id) => {
   const item = await TV.findOne({ id });
   await updateSrc(item);
   process.exit();
@@ -139,4 +157,6 @@ if (process.argv[2] === '--import-tv') {
   importGenres();
 } else if (process.argv[2] === '--import-movie') {
   importMovieMedia('red notice');
+} else if (process.argv[2] === '--update-tv') {
+  updateTVMedia();
 }

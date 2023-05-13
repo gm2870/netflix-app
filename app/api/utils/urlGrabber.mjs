@@ -15,26 +15,29 @@ export const getVideoSrc = async (id, quality = 480) => {
     let videoId;
     await page.waitForSelector('#suggestion-search', { visible: true });
     await page.type('input[id="suggestion-search"]', `${id}`, { delay: 300 });
-    await page.waitForSelector('#react-autowhatever-1--item-1', {
-      visible: true,
-    });
+    await page.waitForSelector(
+      '#react-autowhatever-navSuggestionSearch--item-1',
+      {
+        visible: true,
+      }
+    );
     const href = await page.evaluate(() => {
       const firstLink =
         // eslint-disable-next-line no-undef
         document.querySelector(
-          '#react-autowhatever-1--item-1 a[data-testid="search-result--video"]'
+          '#react-autowhatever-navSuggestionSearch--item-1 a[data-testid="search-result--video"]'
         );
       // eslint-disable-next-line no-undef
       const secondLink = document.querySelector(
-        '#react-autowhatever-1--item-2 a[data-testid="search-result--video"]'
+        '#react-autowhatever-navSuggestionSearch--item-2 a[data-testid="search-result--video"]'
       );
       // eslint-disable-next-line no-undef
       const firstItem = document.querySelector(
-        '#react-autowhatever-1--item-1 a[data-testid="search-result--video"] .searchResult__videoTitle'
+        '#react-autowhatever-navSuggestionSearch--item-1 a[data-testid="search-result--video"] .searchResult__videoTitle'
       ).innerHTML;
       // eslint-disable-next-line no-undef
       const secondItem = document.querySelector(
-        '#react-autowhatever-1--item-2 a[data-testid="search-result--video"] .searchResult__videoTitle'
+        '#react-autowhatever-navSuggestionSearch--item-2 a[data-testid="search-result--video"] .searchResult__videoTitle'
       ).innerHTML;
       if (!firstLink) {
         return secondLink.getAttribute('href');

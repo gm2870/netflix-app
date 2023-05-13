@@ -13,4 +13,8 @@ router.get('/', authorizedRedirect);
 router.get('/logout', unauthorizedRedirect, logout);
 
 router.get('/search', unauthorizedRedirect);
+router.get('/browse', unauthorizedRedirect);
+router.get('/browse/genre/1', unauthorizedRedirect);
+router.get('/browse/genre/2', unauthorizedRedirect);
+
 export default router;

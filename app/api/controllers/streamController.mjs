@@ -70,6 +70,23 @@ export const searchMedia = catchAsync(async (req, res) => {
 
 export const searchMediaByName = async (name) => {
   try {
+    const id = await getTitleId(name);
+    const res = await axios({
+      url: `https://api.themoviedb.org/3/find/${id}`,
+      method: 'GET',
+      params: {
+        api_key: process.env.MOVIEDB_API_KEY,
+        external_source: 'imdb_id',
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    return new AppError(error.message || 'Something went wrong.', 500);
+  }
+};
+export const getTitleId = async (name) => {
+  try {
     const mediaData = await axios({
       url: 'https://imdb8.p.rapidapi.com/auto-complete',
       method: 'GET',
@@ -81,19 +98,9 @@ export const searchMediaByName = async (name) => {
     });
 
     if (!mediaData.data.d) return;
-    const result = mediaData.data.d[0];
-    const res = await axios({
-      url: `https://api.themoviedb.org/3/find/${result.id}`,
-      method: 'GET',
-      params: {
-        api_key: process.env.MOVIEDB_API_KEY,
-        external_source: 'imdb_id',
-      },
-    });
-
-    return res.data;
+    return mediaData.data.d[0].id;
   } catch (error) {
-    return new AppError(error.message || 'Something went wrong.', 500);
+    return new AppError(error.message || 'Could not get title id', 500);
   }
 };
 
@@ -155,9 +162,12 @@ export const emptyAssets = (req, res, next) => {
 };
 
 export const mediaStream = catchAsync(async (req, res) => {
-  const media = await Movie.findOne({ id: req.params.mediaId });
-  const src = media.video_src.SD;
-  const fileName = `${normalizeText(media.title)}.mp4`;
+  const Model = req.params.mediaType === 'tv' ? TV : Movie;
+  const media = await Model.findOne({ id: req.params.mediaId });
+
+  const src = media.video_src.HD;
+  const name = media.title || media.name;
+  const fileName = `${normalizeText(name)}.mp4`;
   const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);
   const requestRangeHeader = req.headers.range;
   if (!requestRangeHeader) {
@@ -196,7 +206,8 @@ export const mediaStream = catchAsync(async (req, res) => {
 });
 
 export const getVideoCropSize = catchAsync(async (req, res) => {
-  const media = await Movie.findOne({ id: req.params.id });
+  const Model = req.params.mediaType === 'tv' ? TV : Movie;
+  const media = await Model.findOne({ id: req.params.mediaId });
   const src = media.video_src.SD;
   const fileName = `${normalizeText(media.title)}-temp.mp4`;
   const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);

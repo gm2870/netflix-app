@@ -53,7 +53,7 @@ export const getMovieBillboard = () =>
   getBillboardTitle(`/media/billboard/movie`);
 
 export const getBillboardTitle = (url: string) => (dispatch: AppDispatch) => {
-  console.log(url);
+  dispatch(mediaActions.getBillboardMedia(null));
   const config = {
     url,
   };

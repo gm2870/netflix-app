@@ -72,16 +72,6 @@
     }
   }
   &__fantcyTitle {
-    font-size: 18px;
-    font-weight: 900;
-    width: 100%;
-    font-family: Dank Mono;
-    @include respond(tablet) {
-      font-size: 24px;
-    }
-    @include respond(normal-desktop) {
-      font-size: 48px;
-    }
   }
   &__icon {
     margin-right: 0.5rem;

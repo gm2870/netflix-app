@@ -12,9 +12,25 @@ import CustomButton from '../../../src/components/CustomButton/CustomButton';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import Image from 'next/image';
 
+import { useSpring, animated } from '@react-spring/web';
+
 const Billboard = ({ item }: { item: Media }) => {
   const playerRef = useRef<videojs.Player | null>(null);
-  const [playing, setPlaying] = useState<boolean>(false);
+  const [playing, setPlaying] = useState<boolean>(true);
+  const [animatingTitle, toggleAnimatingTitle] = useState(false);
+
+  const { x } = useSpring({
+    from: { x: 0 },
+    x: animatingTitle ? 1 : 0,
+    delay: animatingTitle ? 5000 : 0,
+    config: { duration: 1300 },
+  });
+
+  const handleToggle = () => {
+    setPlaying(!playing);
+    toggleAnimatingTitle(!animatingTitle);
+  };
+
   const [toggleVolumeOn, setToggleVolumeOn] = useState<boolean>(false);
   const shouldPlay = useAppSelector((state) => state.ui.billboardPlaying);
   const name = item.name || item.title;
@@ -26,7 +42,7 @@ const Billboard = ({ item }: { item: Media }) => {
     componentName: 'billboard',
     sources: [
       {
-        src: `http://localhost:8001/api/v1/media/video/${item.id}`,
+        src: item.video_src.HD,
         type: 'video/mp4',
       },
     ],
@@ -37,18 +53,21 @@ const Billboard = ({ item }: { item: Media }) => {
 
     player.on('ended', () => {
       setPlaying(false);
+      handleToggle();
     });
   };
 
   const reloadVideoHandler = () => {
     playerRef.current?.load();
     setPlaying(true);
+    toggleAnimatingTitle(!animatingTitle);
   };
-  const toggleSoundHandler = () =>
+  const toggleSoundHandler = () => {
     setToggleVolumeOn((volOn) => {
       playerRef.current?.muted(volOn);
       return !volOn;
     });
+  };
 
   const handleScroll = () => {
     if (
@@ -69,7 +88,8 @@ const Billboard = ({ item }: { item: Media }) => {
     if (!shouldPlay) {
       playerRef.current?.pause();
     } else {
-      // playerRef.current?.play();
+      playerRef.current?.play();
+      toggleAnimatingTitle(!animatingTitle);
     }
   }, [shouldPlay]);
 
@@ -90,10 +110,21 @@ const Billboard = ({ item }: { item: Media }) => {
           </div>
         )}
         <div className={classes.info}>
-          <div className={classes.info__fantcyTitle}>
+          <animated.div
+            style={{
+              scale: x.to({
+                range: [0, 1],
+                output: [1, 0.6],
+              }),
+            }}
+            className={classes.info__fantcyTitle}
+          >
             <img src={`/images/${name}.webp`} alt="title logo" />
-          </div>
-          <div className={classes.info__description}>{item.overview}</div>
+          </animated.div>
+
+          {!animatingTitle && (
+            <div className={classes.info__description}>{item.overview}</div>
+          )}
           <div className={classes.info__actions}>
             <CustomButton
               variant="contained"

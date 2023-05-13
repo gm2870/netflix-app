@@ -43,7 +43,7 @@ const Titles = () => {
       {genresWithMedia.length && (
         <SlidersContainer genresWithTitles={genresWithMedia} />
       )}
-      <NoSsr>{!genresWithMedia.length && <SliderLoader />}</NoSsr>
+      <NoSsr>{(!genresWithMedia.length || !item) && <SliderLoader />}</NoSsr>
     </section>
   );
 };
