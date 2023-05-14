@@ -10,10 +10,9 @@ import {
 } from '../../src/store/redux/media/media-actions';
 import SliderLoader from '../../src/components/loader/SliderLoader';
 import NoSsr from '@mui/base/NoSsr';
-import { getGeneralBillboard } from '../../api/controllers/media/mediaController.mjs';
 import Billboard from '../../src/components/Billboard/Billboard';
 
-const browse = () => {
+const Browse = () => {
   const dispatch = useAppDispatch();
   const media = useAppSelector((state) => state.media);
   const genresWithMedia = media.mediaItems;
@@ -21,7 +20,7 @@ const browse = () => {
   useEffect(() => {
     dispatch(getGenralBillboard());
     dispatch(getAllTitles());
-  }, []);
+  }, [dispatch]);
 
   return (
     <section className={classes.browse}>
@@ -37,7 +36,7 @@ const browse = () => {
     </section>
   );
 };
-export default browse;
+export default Browse;
 
 // export async function getServerSideProps() {
 //   const tv = await getGeneralBillboard();

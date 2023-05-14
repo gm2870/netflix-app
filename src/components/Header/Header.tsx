@@ -30,7 +30,7 @@ const Header = () => {
     if (router.query.q) {
       setShowSearch(true);
     }
-  }, [router.isReady]);
+  }, [router.isReady, router.query.q]);
 
   useEffect(() => {
     window.addEventListener('scroll', () => {

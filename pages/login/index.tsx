@@ -46,7 +46,7 @@ const validationSchema = Yup.object().shape({
     .required('Your password must contain between 4 and 60 characters.'),
 });
 
-const login = () => {
+const Login = () => {
   const ref = useRef<HTMLDivElement>(null);
   const invalidMessage = useAppSelector((state) => state.auth.invalidMessage);
   const dispatch = useAppDispatch();
@@ -228,4 +228,4 @@ const login = () => {
   );
 };
 
-export default login;
+export default Login;

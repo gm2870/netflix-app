@@ -5,7 +5,7 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 type NotificationsProps = {
   onMouseLeave: () => void;
 };
-const notifications = (props: NotificationsProps) => {
+const Notifications = (props: NotificationsProps) => {
   return (
     <Fragment>
       <div className={classes.arrow}>
@@ -24,4 +24,4 @@ const notifications = (props: NotificationsProps) => {
   );
 };
 
-export default notifications;
+export default Notifications;

@@ -46,6 +46,7 @@ const MediaItem = ({
     divNode.addEventListener('mouseleave', hideModal);
 
     return () => {
+      clearTimeout(timeout);
       document.removeEventListener('mouseleave', hideModal);
       document.removeEventListener('mouseenter', openModal);
     };

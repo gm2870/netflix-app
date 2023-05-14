@@ -1,5 +1,11 @@
+/** @type {import('next').NextConfig} */
+
 const path = require('path');
 const nextConfig = {
+  rules: {
+    'react-hooks/exhaustive-deps': 'off',
+    '@next/next/no-img-element': 'off',
+  },
   reactStrictMode: false,
   swcMinify: true,
   sassOptions: {

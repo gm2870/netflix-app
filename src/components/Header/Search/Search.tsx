@@ -1,22 +1,25 @@
 import classes from './Search.module.scss';
 import SearchIcon from '@mui/icons-material/Search';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 type SearchProps = {
   hide: (searchRef: any) => void;
 };
-const search = (props: SearchProps) => {
+const Search = (props: SearchProps) => {
   const [searchParam, setSearchParam] = useState('');
   const searchRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  const handleOutsideClick = (event: any) => {
-    if (searchParam) return;
-    if (searchRef.current && !searchRef.current.contains(event.target)) {
-      props.hide(event);
-    }
-  };
+  const handleOutsideClick = useCallback(
+    (event: any) => {
+      if (searchParam) return;
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        props.hide(event);
+      }
+    },
+    [props, searchParam]
+  );
 
   const handleChange = (event: any) => {
     setSearchParam(event.target.value);
@@ -34,19 +37,19 @@ const search = (props: SearchProps) => {
     return () => {
       clearTimeout(timeout);
     };
-  }, [searchParam]);
+  }, [router, searchParam]);
 
   useEffect(() => {
     if (router.isReady && router.query.q) {
       const inputVal = router.query.q.toString();
       setSearchParam(inputVal);
     }
-  }, [router.isReady]);
+  }, [router.query.q, router.isReady]);
 
   useEffect(() => {
     window.addEventListener('click', handleOutsideClick);
     return () => window.removeEventListener('click', handleOutsideClick);
-  }, []);
+  }, [handleOutsideClick]);
   const clearSearch = () => router.push('/browse');
   return (
     <div ref={searchRef} className={classes.search}>
@@ -70,4 +73,4 @@ const search = (props: SearchProps) => {
     </div>
   );
 };
-export default search;
+export default Search;

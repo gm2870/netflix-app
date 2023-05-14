@@ -17,7 +17,7 @@ const validationSchema = Yup.object().shape({
   password: Yup.string().required('Password is required.'),
 });
 
-const signup = () => {
+const Signup = () => {
   const email = useAppSelector((state) => state.auth.email);
   const dispatch = useAppDispatch();
 
@@ -103,4 +103,4 @@ const signup = () => {
   );
 };
 
-export default signup;
+export default Signup;

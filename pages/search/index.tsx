@@ -19,7 +19,7 @@ const Search = () => {
     if (router.isReady && router.query.q) {
       dispatch(searchTitle(router.query.q.toString()));
     }
-  }, [router.query.q]);
+  }, [dispatch, router.isReady, router.query.q]);
 
   return (
     <div className={classes.search}>

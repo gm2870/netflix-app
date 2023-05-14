@@ -31,7 +31,7 @@ const Titles = () => {
       dispatch(getMovieBillboard());
       dispatch(getMovieTitles());
     }
-  }, [typeId]);
+  }, [dispatch, typeId]);
 
   return (
     <section>
