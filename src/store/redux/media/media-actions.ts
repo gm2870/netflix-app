@@ -46,14 +46,20 @@ export const getMovieTitles = () => (dispatch: AppDispatch) => {
   };
   sendRequest(config, dispatch, setMedia, handleError);
 };
-export const getGenralBillboard = () =>
-  getBillboardTitle(`/media/billboard/general`);
-export const getTVBillboard = () => getBillboardTitle(`/media/billboard/tv`);
-export const getMovieBillboard = () =>
-  getBillboardTitle(`/media/billboard/movie`);
 
-export const getBillboardTitle = (url: string) => (dispatch: AppDispatch) => {
-  dispatch(mediaActions.getBillboardMedia(null));
+export const getBillboardTitle = (type: string) => (dispatch: AppDispatch) => {
+  let url = '';
+  switch (type) {
+    case '0':
+      url = `/media/billboard/general`;
+      break;
+    case '1':
+      url = `/media/billboard/tv`;
+      break;
+    case '2':
+      url = `/media/billboard/movie`;
+      break;
+  }
   const config = {
     url,
   };

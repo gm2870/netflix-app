@@ -4,10 +4,7 @@ import Head from 'next/head';
 import Header from '../../src/components/Header/Header';
 import SlidersContainer from '../../src/components/Slider/SlidersContainer';
 import { useAppDispatch, useAppSelector } from '../../src/hooks';
-import {
-  getAllTitles,
-  getGenralBillboard,
-} from '../../src/store/redux/media/media-actions';
+import { getAllTitles } from '../../src/store/redux/media/media-actions';
 import SliderLoader from '../../src/components/loader/SliderLoader';
 import NoSsr from '@mui/base/NoSsr';
 import Billboard from '../../src/components/Billboard/Billboard';
@@ -16,9 +13,8 @@ const Browse = () => {
   const dispatch = useAppDispatch();
   const media = useAppSelector((state) => state.media);
   const genresWithMedia = media.mediaItems;
-  const item = media.billboardMedia;
+  console.log(media);
   useEffect(() => {
-    dispatch(getGenralBillboard());
     dispatch(getAllTitles());
   }, [dispatch]);
 
@@ -28,11 +24,11 @@ const Browse = () => {
         <title>Netflix - Home</title>
       </Head>
       <Header />
-      {item && <Billboard item={item} />}
+      <Billboard />
       {genresWithMedia.length && (
         <SlidersContainer genresWithTitles={genresWithMedia} />
       )}
-      <NoSsr>{(!genresWithMedia.length || !item) && <SliderLoader />}</NoSsr>
+      <NoSsr>{!genresWithMedia.length && <SliderLoader />}</NoSsr>
     </section>
   );
 };

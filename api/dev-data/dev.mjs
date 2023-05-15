@@ -11,35 +11,17 @@ import catchAsync from '../utils/catchAsync.mjs';
 import AppError from '../utils/appError.mjs';
 import TV from '../models/media/tvModel.mjs';
 import { importGenres } from '../dev-data/genre.mjs';
-
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
 dotenv.config({ path: `${__dirname}/../../.env.local` });
+
 mongoose.connect(process.env.MONGODB_URI);
-const mediaNames = [
-  // 'red-notice',
-  // 'avengers-endgame',
-  // 'spiderman-no-way-home',
-  // 'the-batman',
-  // 'irishman',
-  // 'scream',
-  // 'the-lost-city',
-  // 'bullet-train',
-  // 'joker',
-  // 'better-call-saul',
-  // 'dark',
-  // 'blindspot',
-  // 'ted-lasso',
-  // 'see',
-  // 'money-heist',
-  // '1899',
-  'designated survier',
-  // 'treason',
-  // 'the-sandman',
-  // 'the-recruit',
-];
+
+const mediaNames = [];
 
 const importTVMedia = async () => {
   for (const name of mediaNames) {
@@ -52,58 +34,73 @@ const importTVMedia = async () => {
   }
   process.exit();
 };
-const updateTVMedia = async () => {
-  const res = await Movie.updateMany(
-    {},
-    { media_type: 'movie' },
-    { upsert: true }
-  );
-  console.log(res);
+
+const updateManyTitleId = async (model) => {
+  const Model = model === 'tv' ? TV : Movie;
+  const items = await Model.find();
+  for (const show of items) {
+    const id = await getTitleId(show.name);
+    if (!id?.startsWith('tt')) continue;
+    const res = await Model.updateOne(
+      { id: show.id },
+      { title_id: id },
+      { upsert: true }
+    );
+    console.log(res);
+  }
   process.exit();
 };
-export const importMovieMedia = async (name) => {
+
+export const importOne = async (name, model) => {
+  const Model = model === 'tv' ? TV : Movie;
   const res = await searchMediaByName(name);
-  await Movie.create(res.movie_results[0]);
+  await Model.create(res.movie_results[0]);
 
   process.exit();
 };
 
-const deleteAllMedia = async () => {
+const deleteMany = async (model) => {
+  const Model = model === 'tv' ? TV : Movie;
+
   try {
-    await Movie.deleteMany();
+    await Model.deleteMany();
   } catch (error) {
     return new AppError(error.message || 'Something went wrong.', 500);
   }
   process.exit();
 };
 
-export const checkAndUpdateSrc = async () => {
-  const items = await Movie.find();
+export const checkAndUpdateSrc = async (model) => {
+  const Model = model === 'tv' ? TV : Movie;
+  const items = await Model.find();
   for (const media of items) {
     if (
-      !media.video_src.HD ||
-      !media.video_src.SD ||
+      !media.video_src ||
       needsSrcUpdate(media.video_src.SD) ||
       needsSrcUpdate(media.video_src.HD)
     ) {
-      updateSrc(media);
+      updateItemSrc(model, media);
     }
   }
   process.exit();
 };
 
-export const forceSrcUpdate = catchAsync(async () => {
-  const items = await Movie.find();
+export const forceSrcUpdate = catchAsync(async (model) => {
+  const Model = model === 'tv' ? TV : Movie;
+
+  const items = await Model.find();
   let i = 0;
   for (const media of items) {
-    await updateSrc(media);
+    if (!media.title_id) continue;
+    await updateItemSrc(model, media);
 
     i++;
   }
   if (i === items.length) process.exit();
 });
 
-export const updateSrc = async (media) => {
+export const updateItemSrc = async (model, media) => {
+  const Model = model === 'tv' ? TV : Movie;
   let HDSrc, SDSrc, videoData;
   const name = media.name || media.title;
 
@@ -128,7 +125,8 @@ export const updateSrc = async (media) => {
     console.log(`${name} failed`);
     return;
   }
-  return await TV.findOneAndUpdate(
+  console.log(videoData);
+  return await Model.findOneAndUpdate(
     { id: media.id },
     {
       video_src: {
@@ -136,27 +134,35 @@ export const updateSrc = async (media) => {
         HD: videoData.HD,
       },
       title_video_id: videoData.videoId,
-    }
+    },
+    { upsert: true }
   );
 };
-export const updateMedia = async (id) => {
-  const item = await TV.findOne({ id });
-  await updateSrc(item);
+export const updateOne = async (model, id) => {
+  const Model = model === 'tv' ? TV : Movie;
+  try {
+    const item = await Model.findOne({ id });
+    await updateItemSrc(model, item);
+  } catch (error) {
+    console.log(error);
+  }
   process.exit();
 };
 
 if (process.argv[2] === '--import-tv') {
   importTVMedia();
 } else if (process.argv[2] === '--delete') {
-  deleteAllMedia();
+  deleteMany();
 } else if (process.argv[2] === '--update-src') {
-  forceSrcUpdate();
+  forceSrcUpdate('tv');
 } else if (process.argv[2] === '--update') {
-  updateMedia(67026);
+  updateOne('tv', 103768);
 } else if (process.argv[2] === '--import-genres') {
   importGenres();
 } else if (process.argv[2] === '--import-movie') {
-  importMovieMedia('red notice');
+  importOne('red notice');
 } else if (process.argv[2] === '--update-tv') {
-  updateTVMedia();
+  updateManyTitleId('tv');
+} else if (process.argv[2] === '--update-movie') {
+  updateManyTitleId('movie');
 }

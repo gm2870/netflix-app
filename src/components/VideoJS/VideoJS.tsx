@@ -6,10 +6,11 @@ export const VideoJS = (props: any) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<videojs.Player>(null);
   const { options, onReady } = props;
-
   useEffect(() => {
     // +++  Determine the available player IDs +++//
-
+    if (playerRef.current && !options.sources[0].src) {
+      playerRef.current.dispose();
+    }
     // Make sure Video.js player is only initialized once
     if (!playerRef.current && videoRef.current) {
       const player = videojs(videoRef.current, options, () => {
