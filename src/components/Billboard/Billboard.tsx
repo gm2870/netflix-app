@@ -1,12 +1,10 @@
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useEffect, useReducer } from 'react';
 import { useRef } from 'react';
 import CircleButton from '../../../src/components/CircleButton/CircleButton';
 import VideoJS from '../../../src/components/VideoJS/VideoJS';
 import videojs from 'video.js';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import classes from './Billboard.module.scss';
-import { useAppSelector } from '../../../src/hooks';
 import CustomButton from '../../../src/components/CustomButton/CustomButton';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import Image from 'next/image';
@@ -16,15 +14,12 @@ import { NoSsr } from '@mui/material';
 import SliderLoader from '../loader/SliderLoader';
 import { useGetBillboardMediaQuery } from '../../services/query/media';
 
-const Billboard = () => {
-  const router = useRouter();
-  const playerRef = useRef<videojs.Player | null>(null);
-  const [playing, setPlaying] = useState<boolean>(true);
-  const [animatingTitle, toggleAnimatingTitle] = useState(false);
-  const [toggleVolumeOn, setToggleVolumeOn] = useState<boolean>(false);
-  const [loading, setLoading] = useState(true);
-
-  const [videoOptions, setVideoOptions] = useState({
+const initialPlayerState = {
+  playing: false,
+  showImage: true,
+  animatingTitle: false,
+  volumnOn: false,
+  options: {
     autoplay: true,
     muted: true,
     children: ['MediaLoader'],
@@ -36,105 +31,100 @@ const Billboard = () => {
         type: 'video/mp4',
       },
     ],
-  });
+  },
+};
+
+const Billboard = () => {
+  const router = useRouter();
+  const playerRef = useRef<videojs.Player | null>(null);
+  const reducer = (state: any, action: any) => {
+    switch (action.type) {
+      case 'play':
+        playerRef?.current?.dispose();
+        return {
+          ...state,
+          playing: true,
+          showImage: false,
+          animatingTitle: true,
+          options: {
+            ...state.options,
+            sources: [
+              {
+                src: action.payload,
+                type: 'video/mp4',
+              },
+            ],
+          },
+        };
+      case 'togglePause':
+        const paused = !state.playing;
+        paused ? playerRef.current?.pause() : playerRef.current?.play();
+        return {
+          ...state,
+          playing: paused,
+        };
+      case 'toggleVolumn':
+        const vol = !state.volumnOn;
+        playerRef.current?.muted(!vol);
+        return {
+          ...state,
+          volumnOn: vol,
+        };
+      case 'end':
+        return {
+          ...state,
+          playing: false,
+          showImage: true,
+          animatingTitle: false,
+        };
+
+      default:
+        return state;
+    }
+  };
+  const [player, setPlayer] = useReducer(reducer, initialPlayerState);
 
   const { x } = useSpring({
     from: { x: 0 },
-    x: animatingTitle ? 1 : 0,
-    delay: animatingTitle ? 5000 : 0,
+    x: player.animatingTitle ? 1 : 0,
+    delay: player.animatingTitle ? 3000 : 0,
     config: { duration: 1300 },
   });
   const type = (router.query.type_id as string) || '0';
-  const {
-    data: item,
-    isLoading,
-    isError,
-  } = useGetBillboardMediaQuery(type, { skip: loading });
+  const { data: item, isLoading, isError } = useGetBillboardMediaQuery(type);
 
   useEffect(() => {
     if (item) {
-      setLoading(false);
-      setVideoOptions({
-        autoplay: true,
-        muted: true,
-        children: ['MediaLoader'],
-        controls: false,
-        componentName: 'billboard',
-        sources: [
-          {
-            src: item.video_src.HD,
-            type: 'video/mp4',
-          },
-        ],
-      });
+      setPlayer({ type: 'play', payload: item.video_src.HD });
     }
-    return () => {
-      playerRef.current?.dispose();
-    };
   }, [item]);
-
-  const handleToggle = () => {
-    setPlaying(!playing);
-    toggleAnimatingTitle(!animatingTitle);
-  };
 
   const handlePlayerReady = (player: videojs.Player) => {
     playerRef.current = player;
 
     player.on('ended', () => {
-      setPlaying(false);
-      handleToggle();
+      setPlayer({ type: 'end' });
     });
   };
 
-  const shouldPlay = useAppSelector((state) => state.ui.billboardPlaying);
   const name = item?.name || item?.title;
 
   const reloadVideoHandler = () => {
     playerRef.current?.load();
-    setPlaying(true);
-    toggleAnimatingTitle(!animatingTitle);
+    setPlayer({ type: 'play', payload: { src: item?.video_src.HD } });
   };
   const toggleSoundHandler = () => {
-    setToggleVolumeOn((volOn) => {
-      playerRef.current?.muted(volOn);
-      return !volOn;
-    });
+    setPlayer({ type: 'toggleVolumn' });
   };
-
-  const handleScroll = () => {
-    if (!playerRef?.current) return;
-    if (
-      window.scrollY > 600 &&
-      playerRef.current &&
-      !playerRef.current.paused()
-    ) {
-      playerRef.current?.pause();
-    } else {
-      playerRef.current?.play();
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-  }, []);
-  useEffect(() => {
-    if (!shouldPlay) {
-      playerRef.current?.pause();
-    } else {
-      playerRef.current?.play();
-      toggleAnimatingTitle(!animatingTitle);
-    }
-  }, [shouldPlay]);
 
   return (
     <section className={classes.billboardRow}>
       {!isLoading && (
         <div className={classes.billboard}>
-          {!playing && (
+          {player.showImage && (
             <div
               className={classes.imageWraper}
-              style={{ opacity: playing ? 0 : 1 }}
+              style={{ opacity: player.playing ? 0 : 1 }}
             >
               <Image
                 alt="billboard image"
@@ -151,13 +141,14 @@ const Billboard = () => {
                   range: [0, 1],
                   output: [1, 0.6],
                 }),
+                transformOrigin: 'bottom left',
               }}
               className={classes.info__fantcyTitle}
             >
               <img src={`/images/${name}.webp`} alt="title logo" />
             </animated.div>
 
-            {!animatingTitle && (
+            {!player.animatingTitle && (
               <div className={classes.info__description}>{item?.overview}</div>
             )}
             <div className={classes.info__actions}>
@@ -180,10 +171,10 @@ const Billboard = () => {
             </div>
           </div>
           <div className={classes.actions}>
-            {playing ? (
+            {player.playing ? (
               <CircleButton onClick={toggleSoundHandler}>
                 <img
-                  src={`/images/volume-${toggleVolumeOn ? 'on' : 'off'}.png`}
+                  src={`/images/volume-${player.volumnOn ? 'on' : 'off'}.png`}
                 />
               </CircleButton>
             ) : (
@@ -196,14 +187,14 @@ const Billboard = () => {
             </div>
           </div>
 
-          {videoOptions.sources[0].src && (
+          {player.options.sources[0].src && (
             <div
               className={classes.videoContainer}
-              style={{ opacity: playing ? 1 : 0 }}
+              style={{ opacity: player.playing ? 1 : 0 }}
             >
               <VideoJS
                 controlBar={false}
-                options={videoOptions}
+                options={player.options}
                 onReady={handlePlayerReady}
               />
             </div>
@@ -213,9 +204,9 @@ const Billboard = () => {
           </div>
         </div>
       )}
-      {(isLoading || loading) && (
+      {isLoading && (
         <NoSsr>
-          <div>
+          <div className={classes.loaderWrapper}>
             <SliderLoader></SliderLoader>
           </div>
         </NoSsr>

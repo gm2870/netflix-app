@@ -8,10 +8,17 @@ import SlidersContainer from '../../../../src/components/Slider/SlidersContainer
 import SliderLoader from '../../../../src/components/loader/SliderLoader';
 import { NoSsr } from '@mui/material';
 import Billboard from '../../../../src/components/Billboard/Billboard';
+import { useGetTitlesWithGenreQuery } from '@/src/services/query/media';
 
 const Titles = () => {
-  const media = useAppSelector((state) => state.media);
-  const genresWithMedia = media.mediaItems;
+  const router = useRouter();
+  const type = router.query.type_id as string;
+
+  const {
+    data: genresWithTitles,
+    isLoading,
+    isError,
+  } = useGetTitlesWithGenreQuery(type);
 
   return (
     <section>
@@ -20,10 +27,10 @@ const Titles = () => {
       </Head>
       <Header />
       <Billboard />
-      {genresWithMedia.length && (
-        <SlidersContainer genresWithTitles={genresWithMedia} />
+      {genresWithTitles && (
+        <SlidersContainer genresWithTitles={genresWithTitles} />
       )}
-      <NoSsr>{!genresWithMedia.length && <SliderLoader />}</NoSsr>
+      <NoSsr>{isLoading && <SliderLoader />}</NoSsr>
     </section>
   );
 };

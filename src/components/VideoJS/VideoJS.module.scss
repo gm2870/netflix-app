@@ -10,6 +10,9 @@
   width: 100%;
   position: absolute;
   object-fit: fill;
+  video {
+    width: 100%;
+  }
 }
 
 .vjs-billboard {
@@ -33,4 +36,8 @@
 
     height: calc(100% + 130px);
   }
+}
+
+video.vjs-tech {
+  width: 100%;
 }

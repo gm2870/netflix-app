@@ -1,4 +1,4 @@
-import { Media } from '@/src/store/redux/media/model';
+import { GenreWithMedia, Media } from '@/src/store/redux/media/model';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const mediaApi = createApi({
@@ -31,7 +31,32 @@ export const mediaApi = createApi({
         return response.data;
       },
     }),
+    getTitlesWithGenre: build.query<GenreWithMedia[], string>({
+      query: (type: string) => {
+        let url = '';
+        switch (type) {
+          case '1':
+            url = '/media/tv-shows';
+            break;
+          case '2':
+            url = '/media/movies';
+            break;
+          default:
+            url = '/media/all';
+            break;
+        }
+        return { url };
+      },
+      transformResponse: (
+        response: { data: GenreWithMedia[]; status: string },
+        meta,
+        arg
+      ) => {
+        return response.data;
+      },
+    }),
   }),
 });
 
-export const { useGetBillboardMediaQuery } = mediaApi;
+export const { useGetBillboardMediaQuery, useGetTitlesWithGenreQuery } =
+  mediaApi;
