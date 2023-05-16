@@ -10,8 +10,9 @@ import Menu from './Menu/Menu';
 import Notifications from './Notifications/Notifications';
 import Search from './Search/Search';
 import { useRouter } from 'next/router';
+import Genres from './Genres/Genres';
 
-const Header = () => {
+const Header = (props: any) => {
   const [stickyHeader, setStickyHeader] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showNavigationLinks, setNavigationLinks] = useState(false);
@@ -22,7 +23,6 @@ const Header = () => {
   const notiDropdown = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-
   const navigationToggleHandler = () =>
     setNavigationLinks(!showNavigationLinks);
 
@@ -100,7 +100,6 @@ const Header = () => {
       className={`${classes.account__icon} ${classes.caret} ${classes.open}`}
     />
   );
-
   return (
     <div
       className={`${classes.headerWrapper} ${
@@ -196,6 +195,11 @@ const Header = () => {
           </div>
         </div>
       </header>
+      {props.genres && (
+        <div className={classes.subHeader}>
+          <Genres genres={props.genres} />
+        </div>
+      )}
     </div>
   );
 };
