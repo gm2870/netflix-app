@@ -1,0 +1,13 @@
+.gridWrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 0px 4%;
+}
+.gridList {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  list-style-type: none;
+  gap: 3rem 0.4rem;
+  padding: 0px;
+  margin-top: 10rem;
+}

@@ -1,15 +1,18 @@
-import { FormControl, Select } from '@mui/material';
+import { FormControl, MenuItem, Select } from '@mui/material';
 import { useRouter } from 'next/router';
 import classes from './Genres.module.scss';
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
+import Link from 'next/link';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 type Genre = {
   name: string;
   id: number;
 };
 const Genres = ({ genres }: { genres: Genre[] }) => {
-  const [genre, setGenre] = useState(0);
+  const [genre, setGenre] = useState('');
+  const router = useRouter();
   const [genreList, setGenreList] = useState<JSX.Element[]>([]);
   const [position, setPosition] = useState({
     top: 0,
@@ -17,7 +20,6 @@ const Genres = ({ genres }: { genres: Genre[] }) => {
   });
 
   const inputComponent = useRef<HTMLInputElement>(null);
-  const router = useRouter();
   useEffect(() => {
     setPosition({
       top: inputComponent.current
@@ -32,16 +34,35 @@ const Genres = ({ genres }: { genres: Genre[] }) => {
     for (let i = 0; i < genres.length; i += chunkSize) {
       const chunk = genres.slice(i, i + chunkSize);
       const lis = chunk.map((l, i) => (
-        <li className={classes.menu__item} key={i}>
-          <a className={classes.menu__link} href={`/browse/genre/1?g=${l.id}`}>
+        <MenuItem
+          value={l.id}
+          className={classes.menu__item}
+          key={l.id * Math.random()}
+        >
+          <Link
+            className={classes.menu__link}
+            href={`/browse/genre/${router.query.type_id}?g=${l.id}`}
+          >
             {l.name}
-          </a>
-        </li>
+          </Link>
+        </MenuItem>
       ));
-      list.push(<ul className={classes.menu}>{lis} </ul>);
+      list.push(
+        <ul key={Math.random()} className={classes.menu}>
+          {lis}
+        </ul>
+      );
     }
     setGenreList(list);
   }, [inputComponent, genres]);
+
+  useEffect(() => {
+    if (router.query.g) {
+      const genreName =
+        genres.find((g) => g.id === +(router.query.g as string))?.name || '';
+      setGenre(genreName);
+    }
+  }, [genres]);
 
   const BootstrapInput = styled(InputBase)(({ theme }) => ({
     'label + &': {
@@ -78,35 +99,53 @@ const Genres = ({ genres }: { genres: Genre[] }) => {
       },
     },
   };
-
   const type = router.query.type_id === '1' ? 'TV Shows' : 'Movies';
 
   return (
     <div className={classes.genreWrapper}>
-      <span className={classes.type}>{type}</span>
-      <FormControl sx={{ mx: 0, minWidth: 120 }} size="small">
-        <Select
-          ref={inputComponent}
-          input={<BootstrapInput />}
-          MenuProps={MenuProps}
-          renderValue={(selected: number) => {
-            if (!selected) {
-              return <span>Genres</span>;
-            }
+      {!router.query.g && (
+        <Fragment>
+          <span className={classes.type}>{type}</span>
+          <FormControl sx={{ mx: 0, minWidth: 120 }} size="small">
+            <Select
+              ref={inputComponent}
+              input={<BootstrapInput />}
+              MenuProps={MenuProps}
+              renderValue={(selected: number) => {
+                if (!selected) {
+                  return <span>Genres</span>;
+                }
 
-            return selected;
-          }}
-          value={genre}
-          labelId="genres"
-          sx={{
-            '.MuiSvgIcon-root ': {
-              fill: 'white !important',
-            },
-          }}
-        >
-          {genreList}
-        </Select>
-      </FormControl>
+                return selected;
+              }}
+              value={0}
+              labelId="genres"
+              sx={{
+                '.MuiSvgIcon-root ': {
+                  fill: 'white !important',
+                },
+              }}
+            >
+              {genreList}
+            </Select>
+          </FormControl>
+        </Fragment>
+      )}
+
+      {router.query.g && genres.length ? (
+        <Fragment>
+          <Link
+            className={classes.type__link}
+            href={`/browse/genre/${router.query.type_id}`}
+          >
+            {type}
+          </Link>
+          <span className={classes.breadcrumbIcon}>
+            <KeyboardArrowRightIcon />
+          </span>
+          <p>{genre}</p>
+        </Fragment>
+      ) : null}
     </div>
   );
 };

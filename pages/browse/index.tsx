@@ -12,7 +12,7 @@ const Browse = () => {
     data: genresWithTitles,
     isLoading,
     isError,
-  } = useGetTitlesWithGenreQuery('0');
+  } = useGetTitlesWithGenreQuery({ type: '', genreId: '' });
 
   return (
     <section className={classes.browse}>

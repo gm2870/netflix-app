@@ -1,12 +1,24 @@
 .genreWrapper {
   display: flex;
   color: #fff;
+  align-items: center;
 }
 .type {
   font-size: 38px;
   font-weight: 500;
   line-height: 30px;
   margin-right: 15px;
+  &__link {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 30px;
+    color: gray;
+  }
+}
+.breadcrumbIcon {
+  display: flex;
+  color: gray;
+  margin: 0 5px;
 }
 .genreLabel {
   color: white;

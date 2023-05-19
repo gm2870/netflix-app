@@ -113,13 +113,46 @@ export const getAllMovies = catchAsync(async (req, res) => {
 
 export const getAllMoviesByGenre = catchAsync(async (req, res) => {
   const genreId = req.params.genreId;
-  const movies = await Movie.find();
-  let movieList = [];
-  movieList = movies.filter((m) => m.genre_ids.includes(genreId));
-
+  const genres = await Genre.aggregate([
+    {
+      $match: {
+        id: genreId,
+      },
+    },
+    {
+      $lookup: {
+        from: 'movies',
+        let: {
+          genreId: '$id',
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: [
+                  {
+                    $arrayElemAt: ['$genre_ids', 0],
+                  },
+                  genreId,
+                ],
+              },
+            },
+          },
+        ],
+        as: 'titles',
+      },
+    },
+    {
+      $project: {
+        id: 1,
+        name: 1,
+        titles: 1,
+      },
+    },
+  ]);
   res.status(200).json({
     status: 'success',
-    data: movieList,
+    data: genres,
   });
 });
 
@@ -166,14 +199,48 @@ export const getAllTVShows = catchAsync(async (req, res) => {
 });
 
 export const getAllTVShowsByGenre = catchAsync(async (req, res) => {
-  const genreId = req.params.genreId;
-  const tvShows = await TV.find();
-  let tvList = [];
-  tvList = tvShows.filter((m) => m.genre_ids.includes(genreId));
-
+  const genreId = +req.params.genreId;
+  console.log(genreId);
+  const genres = await Genre.aggregate([
+    {
+      $match: {
+        id: genreId,
+      },
+    },
+    {
+      $lookup: {
+        from: 'tv_shows',
+        let: {
+          genreId: '$id',
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: [
+                  {
+                    $arrayElemAt: ['$genre_ids', 0],
+                  },
+                  genreId,
+                ],
+              },
+            },
+          },
+        ],
+        as: 'titles',
+      },
+    },
+    {
+      $project: {
+        id: 1,
+        name: 1,
+        titles: 1,
+      },
+    },
+  ]);
   res.status(200).json({
     status: 'success',
-    data: tvList,
+    data: genres,
   });
 });
 

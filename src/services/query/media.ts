@@ -28,18 +28,22 @@ export const mediaApi = createApi({
         meta,
         arg
       ) => {
-        return response.data;
+        return response.data || [];
       },
     }),
-    getTitlesWithGenre: build.query<GenreWithMedia[], string>({
-      query: (type: string) => {
+    getTitlesWithGenre: build.query<
+      GenreWithMedia[],
+      { type: string; genreId: string }
+    >({
+      query: ({ type, genreId }) => {
+        console.log(genreId);
         let url = '';
         switch (type) {
           case '1':
-            url = '/media/tv-shows';
+            url = genreId ? `/media/tv-shows/${genreId}` : '/media/tv-shows';
             break;
           case '2':
-            url = '/media/movies';
+            url = genreId ? `/media/movies/${genreId}` : '/media/movies';
             break;
           default:
             url = '/media/all';

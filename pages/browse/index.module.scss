@@ -1,9 +1,1 @@
 @use '../styles/abstracts' as *;
-
-.browse {
-  display: grid;
-}
-
-.billboard {
-  grid-area: 1 / 1 / span 3 / span 3;
-}
