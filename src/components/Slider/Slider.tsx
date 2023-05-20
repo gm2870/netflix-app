@@ -225,7 +225,7 @@ const Slider = ({ titles }: { titles: Media[] }) => {
     ? `${classes.slider__content} ${classes.animating}`
     : `${classes.slider__content}`;
   return (
-    <section className={classes.sliderContainer}>
+    <section id="card" className={classes.sliderContainer}>
       <div
         className={classes.rowContent}
         onMouseEnter={handleSliderHover}
@@ -257,11 +257,7 @@ const Slider = ({ titles }: { titles: Media[] }) => {
                 {result}
               </div>
             </div>
-          ) : (
-            <div className={classes.slider__content}>
-              {/* <SliderLoader /> */}
-            </div>
-          )}
+          ) : null}
           {sliderState.moved && showButtons && (
             <span onClick={handlePrevSlide} className={classes.slider__prev}>
               <ArrowBackIosIcon className={classes.slider__indicatorIcon} />

@@ -3,10 +3,10 @@
 .card {
   box-shadow: rgb(0 0 0 / 75%) 0px 3px 10px;
   border-radius: 6px;
-  position: absolute;
+  position: relative;
   background-color: #181818;
   overflow: hidden;
-  opacity: 0;
+  opacity: 1;
   width: 100%;
   .imageContainer {
     height: 0;

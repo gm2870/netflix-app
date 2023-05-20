@@ -1,6 +1,5 @@
 import { Modal } from '@mui/material';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
-import Box from '@mui/material/Box';
+import React, { Fragment, useReducer, useRef } from 'react';
 import classes from './MediaItem.module.scss';
 import PreviewModal from '../PreviewModal/PreviewModal';
 import { Media } from '../../store/redux/media/model';
@@ -17,92 +16,100 @@ const MediaItem = ({
   isFirst?: boolean;
   isLast?: boolean;
 }) => {
-  const [open, setOpen] = useState(false);
-  const [closedModal, setClosedModal] = useState(false);
-
-  const boxRef = useRef<HTMLDivElement>(null);
-  let timeout: ReturnType<typeof setTimeout>;
-
-  useEffect(() => {
-    const divNode = boxRef.current!;
-
-    const openModal = (event: any) => {
-      if (divNode && divNode.contains(event.target)) {
-        timeout = setTimeout(() => {
-          if (!closedModal) {
-            setOpen(true);
-            setClosedModal(false);
-          }
-        }, 1000);
-      }
-    };
-
-    const hideModal = () => {
-      clearTimeout(timeout);
-      setClosedModal(true);
-    };
-    divNode.addEventListener('mouseenter', openModal);
-
-    divNode.addEventListener('mouseleave', hideModal);
-
-    return () => {
-      clearTimeout(timeout);
-      document.removeEventListener('mouseleave', hideModal);
-      document.removeEventListener('mouseenter', openModal);
-    };
-  }, [boxRef]);
-
-  const modalPosition = () => {
-    const position = {
+  const getSX = () => {
+    const sx = {
       position: 'absolute',
-      outline: 'none',
+      outline: 'none !important',
       width: '0px',
       top: '0px',
       left: '0px',
+      transition: 'all 1s',
     };
+
     const box = boxRef.current!;
     const offsetWidth = box.offsetWidth;
     const left = box.getBoundingClientRect().left;
-    const top = box.getBoundingClientRect().top;
-    position.width = `${offsetWidth * 1.5}px`;
-    position.top = `${top - offsetWidth * 0.4}px`;
+    const top = box.getBoundingClientRect().top + window.scrollY;
+
+    sx.width = `${offsetWidth * 1.5}px`;
+    sx.top = `${top - offsetWidth * 0.4}px`;
     if (isFirst) {
-      position.left = `${left}px`;
+      sx.left = `${left}px`;
     } else if (isLast) {
-      position.left = `${left - offsetWidth * 0.5}px`;
+      sx.left = `${left - offsetWidth * 0.5}px`;
     } else {
-      position.left = `${left - offsetWidth * 0.25}px`;
+      sx.left = `${left - offsetWidth * 0.25}px`;
     }
-    return position;
+    return sx;
+  };
+  const reducer = (
+    state: any,
+    action: {
+      type: string;
+      payload?: any;
+    }
+  ) => {
+    console.log(action.type);
+    switch (action.type) {
+      case 'open':
+        return {
+          open: true,
+          sx: action.payload,
+        };
+
+      case 'close':
+        return {
+          open: false,
+          sx: {},
+        };
+      default:
+        return state;
+    }
+  };
+  const [modalConfig, setModalConfig] = useReducer(reducer, {
+    open: false,
+    sx: {},
+  });
+  const boxRef = useRef<HTMLDivElement>(null);
+  const openModal = () => {
+    console.log(underIndicator);
+    if (underIndicator) {
+      return;
+    }
+    setModalConfig({ type: 'open', payload: getSX() });
   };
   const hideModal = () => {
-    clearTimeout(timeout);
-    setOpen(false);
+    setModalConfig({ type: 'close' });
   };
+
   return (
     <Fragment>
-      {item && (
-        <div className={classes.mediaItem}>
-          <div ref={boxRef} className={classes.boxArt}>
-            <Image
-              alt="item image"
-              className={classes.boxArt__image}
-              src={`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`}
-              fill={true}
-            />
-            <p className={classes.boxArt__title}>{item.title || item.name}</p>
-          </div>
-          <Modal hideBackdrop open={open && !underIndicator}>
-            <Box sx={modalPosition}>
-              <PreviewModal
-                item={item}
-                show={open}
-                hideModal={hideModal}
-              ></PreviewModal>
-            </Box>
-          </Modal>
+      <div className={classes.mediaItem}>
+        <div ref={boxRef} className={classes.boxArt}>
+          <Image
+            onMouseEnter={openModal}
+            alt="item image"
+            className={classes.boxArt__image}
+            src={`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`}
+            fill={true}
+          />
+          <p className={classes.boxArt__title}>{item.title || item.name}</p>
         </div>
-      )}
+      </div>
+
+      <Modal
+        container={document.getElementById('content')}
+        className={classes.modal}
+        sx={getSX}
+        hideBackdrop
+        open={modalConfig.open}
+      >
+        <PreviewModal
+          item={item}
+          show={modalConfig.open}
+          hideModal={hideModal}
+        ></PreviewModal>
+      </Modal>
     </Fragment>
   );
 };

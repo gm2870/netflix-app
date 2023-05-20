@@ -20,11 +20,14 @@ const Browse = () => {
         <title>Netflix - Home</title>
       </Head>
       <Header />
-      <Billboard />
-      {genresWithTitles && (
-        <SlidersContainer genresWithTitles={genresWithTitles} />
-      )}
-      <NoSsr>{isLoading && <SliderLoader />}</NoSsr>
+      <div id="content" tabIndex={-1} className={classes.modalWrapper}></div>
+      <div className={classes.content}>
+        <Billboard />
+        {genresWithTitles && (
+          <SlidersContainer genresWithTitles={genresWithTitles} />
+        )}
+        <NoSsr>{isLoading && <SliderLoader />}</NoSsr>
+      </div>
     </section>
   );
 };

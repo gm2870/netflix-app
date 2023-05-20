@@ -67,3 +67,18 @@
     padding-left: 0;
   }
 }
+.modal {
+  outline: none !important;
+  &:focus {
+    outline: none !important;
+  }
+}
+.modalWrapper {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  top: 0;
+  will-change: scroll-position;
+}

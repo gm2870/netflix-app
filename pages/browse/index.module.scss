@@ -1,1 +1,12 @@
 @use '../styles/abstracts' as *;
+.modalWrapper {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  top: 0;
+  will-change: scroll-position;
+  overflow: visible !important;
+  padding-right: 0 !important;
+}
