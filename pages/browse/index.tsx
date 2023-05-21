@@ -20,7 +20,7 @@ const Browse = () => {
         <title>Netflix - Home</title>
       </Head>
       <Header />
-      <div id="content" tabIndex={-1} className={classes.modalWrapper}></div>
+      <div id="modalContainer" className={classes.modalWrapper}></div>
       <div className={classes.content}>
         <Billboard />
         {genresWithTitles && (

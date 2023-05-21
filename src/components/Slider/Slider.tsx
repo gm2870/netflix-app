@@ -225,7 +225,7 @@ const Slider = ({ titles }: { titles: Media[] }) => {
     ? `${classes.slider__content} ${classes.animating}`
     : `${classes.slider__content}`;
   return (
-    <section id="card" className={classes.sliderContainer}>
+    <section className={classes.sliderContainer}>
       <div
         className={classes.rowContent}
         onMouseEnter={handleSliderHover}

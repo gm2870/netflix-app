@@ -13,7 +13,6 @@
 .rowContent {
   padding: 0;
   width: 100vw; // this is for preventing width change on y scroll bar toggle
-  overflow: hidden;
 }
 
 .title {
@@ -97,7 +96,7 @@
       right: 62px;
     }
     list-style-type: none;
-    margin: -24px 0 12px;
+    margin: -24px 0 12px !important;
     padding: 0;
     position: absolute;
     right: 4%;
