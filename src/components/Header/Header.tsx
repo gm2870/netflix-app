@@ -30,12 +30,20 @@ const Header = (props: HeaderProps) => {
   const router = useRouter();
   const navigationToggleHandler = () =>
     setNavigationLinks(!showNavigationLinks);
-
   useEffect(() => {
     if (router.query.q) {
       setShowSearch(true);
     }
   }, [router.isReady, router.query.q]);
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      const user = JSON.parse(JSON.stringify(localStorage.getItem('user')));
+      if (!user) {
+        localStorage.removeItem('user');
+        router.push('/logout');
+      }
+    }
+  }, [router]);
 
   useEffect(() => {
     window.addEventListener('scroll', () => {

@@ -67,7 +67,7 @@ const Login = () => {
     resolver: yupResolver(validationSchema),
   });
 
-  const [login, { isLoading, error, isSuccess }] = useLoginMutation();
+  const [login, { data, isLoading, error, isSuccess }] = useLoginMutation();
 
   const loginHandler = (credentials: FieldValues) => {
     login({
@@ -77,6 +77,7 @@ const Login = () => {
   };
   useEffect(() => {
     if (isSuccess) {
+      localStorage.setItem('user', JSON.stringify(data.user));
       router.push('/browse');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
