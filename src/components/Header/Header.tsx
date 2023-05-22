@@ -11,8 +11,13 @@ import Notifications from './Notifications/Notifications';
 import Search from './Search/Search';
 import { useRouter } from 'next/router';
 import Genres from './Genres/Genres';
+import { Genre } from '@/src/models/genre.model';
 
-const Header = (props: any) => {
+type HeaderProps = {
+  genres?: Genre[];
+};
+
+const Header = (props: HeaderProps) => {
   const [stickyHeader, setStickyHeader] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showNavigationLinks, setNavigationLinks] = useState(false);

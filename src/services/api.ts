@@ -1,88 +1,53 @@
+import {
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+  fetchBaseQuery,
+} from '@reduxjs/toolkit/query/react';
+import { Mutex } from 'async-mutex';
+import { authActions } from '../store/redux/auth/auth-slice';
+
 export const API_URL = 'http://localhost:8001/api/v1';
 
-import axios from 'axios';
-import { AppDispatch } from '../store/redux/index';
-import { uiActions } from '../store/redux/ui/ui';
-import { RequestConfig } from './models';
-
-const instance = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true,
-});
-
-instance.interceptors.response.use(
-  (res) => {
-    return res;
-  },
-  async (err) => {
-    const originalConfig = err.config;
-    if (!originalConfig.url.includes('/currentUser') && !originalConfig.retry) {
-      if (err.response.status === 401 && !originalConfig.retry) {
-        originalConfig.retry = true;
-        try {
-          await instance({
-            url: API_URL + '/auth/refreshtoken',
-            method: 'GET',
-          });
-          return instance(originalConfig);
-        } catch (_error) {
-          return Promise.reject(_error);
+const mutex = new Mutex();
+const baseQuery = fetchBaseQuery({ baseUrl: API_URL });
+export const baseQueryWithReauth: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  // wait until the mutex is available without locking it
+  await mutex.waitForUnlock();
+  let result = await baseQuery(args, api, extraOptions);
+  if (
+    !result.meta?.request.url.includes('login') &&
+    result.error &&
+    result.error.status === 401
+  ) {
+    // checking whether the mutex is locked
+    if (!mutex.isLocked()) {
+      const release = await mutex.acquire();
+      try {
+        const refreshResult = await baseQuery(
+          '/auth/refresh-token',
+          api,
+          extraOptions
+        );
+        if (refreshResult.data) {
+          // retry the initial query
+          result = await baseQuery(args, api, extraOptions);
+        } else {
+          api.dispatch(authActions.logoutUser());
         }
+      } finally {
+        // release must be called once the mutex should be released again.
+        release();
       }
+    } else {
+      // wait until the mutex is available without locking it
+      await mutex.waitForUnlock();
+      result = await baseQuery(args, api, extraOptions);
     }
-    return Promise.reject(err);
   }
-);
-
-export const sendRequest = async (
-  requestConfig: RequestConfig,
-  dispatch: AppDispatch,
-  handleSuccess: (data: any) => void,
-  handleError: (error: any) => void
-) => {
-  dispatch(uiActions.toggleLoader());
-  try {
-    const res = await instance({
-      url: API_URL + requestConfig.url,
-      method: requestConfig.method || 'GET',
-      headers: requestConfig.headers,
-      params: requestConfig.params,
-      data: requestConfig.data,
-      withCredentials: true,
-      responseType: requestConfig.responeType || 'json',
-    });
-    if (res.data.status === 'success') {
-      handleSuccess(res.data.data);
-    }
-  } catch (error: any) {
-    const err = error.response?.data?.message || error.message || error;
-    handleError(err);
-  }
-  dispatch(uiActions.toggleLoader());
-};
-
-export const sendReq = async (
-  requestConfig: RequestConfig,
-  handleSuccess: (data: any) => void,
-  handleError: (error: any) => void
-) => {
-  try {
-    const res = await instance({
-      url: API_URL + requestConfig.url,
-      method: requestConfig.method || 'GET',
-      headers: requestConfig.headers,
-      params: requestConfig.params,
-      data: requestConfig.data,
-      withCredentials: true,
-    });
-    if (res.data.status === 'success') {
-      handleSuccess(res.data.data);
-    }
-  } catch (error: any) {
-    const err = error.response?.data?.message || error.message || error;
-    handleError(err);
-  }
+  return result;
 };

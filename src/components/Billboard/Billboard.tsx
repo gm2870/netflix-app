@@ -126,12 +126,14 @@ const Billboard = () => {
               className={classes.imageWraper}
               style={{ opacity: player.playing ? 0 : 1 }}
             >
-              <Image
-                alt="billboard image"
-                className={classes.billboard__image}
-                src={`https://image.tmdb.org/t/p/w1280${item?.backdrop_path}`}
-                fill={true}
-              />
+              {item?.backdrop_path && (
+                <Image
+                  alt="billboard image"
+                  className={classes.billboard__image}
+                  src={`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`}
+                  fill={true}
+                />
+              )}
             </div>
           )}
           <div className={classes.info}>

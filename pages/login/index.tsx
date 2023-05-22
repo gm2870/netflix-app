@@ -4,14 +4,13 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import classes from './login.module.scss';
 import Link from 'next/link';
-import { useRef, useState } from 'react';
-import CustomButtonProps from '../../src/components/CustomButton/CustomButton';
+import { useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FieldValues, useForm } from 'react-hook-form';
-import { loginUser } from '../../src/store/redux/auth/auth-actions';
-import { useAppDispatch, useAppSelector } from '../../src/hooks';
 import CustomButton from '../../src/components/CustomButton/CustomButton';
+import { useLoginMutation } from '@/src/services/query/auth';
+import { useRouter } from 'next/router';
 
 const CustomInput = styled(TextField)({
   '& label': {
@@ -24,7 +23,6 @@ const CustomInput = styled(TextField)({
   '& .MuiInputBase-input': {
     color: 'white',
     borderRadius: '4px',
-    // width: '314px',
   },
 
   '& .MuiFilledInput-root': {
@@ -48,12 +46,12 @@ const validationSchema = Yup.object().shape({
 
 const Login = () => {
   const ref = useRef<HTMLDivElement>(null);
-  const invalidMessage = useAppSelector((state) => state.auth.invalidMessage);
-  const dispatch = useAppDispatch();
+  const router = useRouter();
   const [showLearnMore, setShowLearnMore] = useState({
     opacity: 0,
     visibility: '',
   });
+
   const handleLearnMore = () => {
     setShowLearnMore({
       opacity: 1,
@@ -69,15 +67,21 @@ const Login = () => {
     resolver: yupResolver(validationSchema),
   });
 
-  const loading = useAppSelector((state) => state.ui.loading);
+  const [login, { isLoading, error, isSuccess }] = useLoginMutation();
+
   const loginHandler = (credentials: FieldValues) => {
-    dispatch(
-      loginUser({
-        email: credentials.email,
-        password: credentials.password,
-      })
-    );
+    login({
+      email: credentials.email,
+      password: credentials.password,
+    });
   };
+  useEffect(() => {
+    if (isSuccess) {
+      router.push('/browse');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
+
   return (
     <div className={classes.login}>
       <header className={classes.header}>
@@ -139,8 +143,10 @@ const Login = () => {
                 className={classes.form__error}
               >{`${errors.password.message}`}</p>
             )}
-            {invalidMessage && (
-              <p className={classes.form__error}>{invalidMessage}</p>
+            {(error as any)?.data.message && (
+              <p className={classes.form__error}>
+                {(error as any).data.message}
+              </p>
             )}
             <CustomButton
               className={classes.form__btn}
@@ -149,7 +155,7 @@ const Login = () => {
               type="submit"
               dynamicSize={false}
             >
-              {loading ? (
+              {isLoading ? (
                 <CircularProgress thickness={5} size={17} color="inherit" />
               ) : (
                 'Sign In'

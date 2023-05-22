@@ -6,6 +6,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { signupUser } from '../../src/store/redux/auth/auth-actions';
 import { useAppDispatch, useAppSelector } from '../../src/hooks';
+import { useSignupMutation } from '@/src/services/query/auth';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 type SignupCredentials = {
   password: string;
   email: string;
@@ -19,7 +22,7 @@ const validationSchema = Yup.object().shape({
 
 const Signup = () => {
   const email = useAppSelector((state) => state.auth.email);
-  const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const {
     register,
@@ -32,9 +35,18 @@ const Signup = () => {
       password: '',
     },
   });
+  const [signup, { isLoading, error, isSuccess }] = useSignupMutation();
+
   const registerUser = (data: SignupCredentials) => {
-    dispatch(signupUser(data));
+    signup(data);
   };
+  useEffect(() => {
+    if (isSuccess) {
+      router.push('/browse');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
+
   const CustomInput = styled(TextField)({
     '& .MuiFilledInput-root': {
       backgroundColor: 'unset',
@@ -43,7 +55,7 @@ const Signup = () => {
     },
   });
   return (
-    <div>
+    <div className={classes.signup}>
       <header className={classes.header}>
         <Link href="/" className={classes.header__logo}>
           <img src="/images/netflix-logo.svg" alt="Netflix logo" />
@@ -85,6 +97,11 @@ const Signup = () => {
             />
             {errors.password && (
               <p className={classes.form__error}>{errors.password.message}</p>
+            )}
+            {(error as any)?.data.message && (
+              <p className={classes.form__error}>
+                {(error as any).data.message}
+              </p>
             )}
             <Button
               className={classes.form__btn}

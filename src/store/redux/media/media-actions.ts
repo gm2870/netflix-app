@@ -1,4 +1,4 @@
-import { sendReq, sendRequest } from '../../../services/api';
+import { sendReq, sendRequest } from '../../../services/axios-api';
 // import { sliderActions } from '../slider/slider';
 import { mediaActions } from './media';
 import { AppDispatch } from '../../redux/index';

@@ -1,11 +1,10 @@
 import { GenreWithMedia, Media } from '@/src/store/redux/media/model';
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQueryWithReauth } from '../api';
 
 export const mediaApi = createApi({
   reducerPath: 'mediaApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8001/api/v1',
-  }),
+  baseQuery: baseQueryWithReauth,
   endpoints: (build) => ({
     getBillboardMedia: build.query<Media, string>({
       query: (type: string) => {
@@ -36,7 +35,6 @@ export const mediaApi = createApi({
       { type: string; genreId: string }
     >({
       query: ({ type, genreId }) => {
-        console.log(genreId);
         let url = '';
         switch (type) {
           case '1':
@@ -59,8 +57,38 @@ export const mediaApi = createApi({
         return response.data;
       },
     }),
+    getTitleInfo: build.query<
+      Media,
+      {
+        id: number;
+        type: string;
+      }
+    >({
+      query: ({ id, type }) => {
+        let url = '';
+        switch (type) {
+          case 'tv':
+            url = `/media/tv/${id}`;
+            break;
+          case 'movie':
+            url = `/media/movie/${id}`;
+            break;
+        }
+        return { url };
+      },
+      transformResponse: (
+        response: { data: Media; status: string },
+        meta,
+        arg
+      ) => {
+        return response.data;
+      },
+    }),
   }),
 });
 
-export const { useGetBillboardMediaQuery, useGetTitlesWithGenreQuery } =
-  mediaApi;
+export const {
+  useGetBillboardMediaQuery,
+  useGetTitlesWithGenreQuery,
+  useGetTitleInfoQuery,
+} = mediaApi;

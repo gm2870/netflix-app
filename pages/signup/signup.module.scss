@@ -1,5 +1,8 @@
 @use '../styles/abstracts' as *;
-
+.signup {
+  background-color: #fff;
+  height: 100vh;
+}
 .header {
   display: flex;
   align-items: center;
@@ -27,17 +30,15 @@
     }
   }
 }
-.signup {
-  max-width: 970px;
-  margin: 0 auto;
-  padding: 0 3%;
 
-  @include respond(tablet) {
-    max-width: 440px;
-  }
-}
 .form {
   margin: 0 auto;
+  padding: 0 3%;
+  max-width: 440px;
+
+  @include respond(tablet) {
+    max-width: 710px;
+  }
   &__actions {
     display: flex;
     flex-direction: column;

@@ -1,7 +1,7 @@
 import Router from 'next/router';
 import { authActions } from './auth-slice';
 import { AppDispatch } from '../../redux/index';
-import { sendRequest } from '../../../services/api';
+import { sendRequest } from '../../../services/axios-api';
 type Credentials = {
   email: string;
   password: string;
@@ -22,7 +22,7 @@ type Credentials = {
 
 export const loginUser = (data: Credentials) => (dispatch: AppDispatch) => {
   const handleSuccess = () => {
-    authenticateAndRedirect('/browse');
+    authenticateAndRedirect(dispatch, '/browse');
   };
   const handleErr = (errMsg: string) =>
     dispatch(authActions.setMessage(errMsg));
@@ -57,13 +57,16 @@ export const signupUser = (data: Credentials) => (dispatch: AppDispatch) => {
     method: 'POST',
     data,
   };
-  const handleSuccess = () => authenticateAndRedirect('/browse');
+  const handleSuccess = () => authenticateAndRedirect(dispatch, '/browse');
   const handleErr = (msg: string) => dispatch(authActions.setError(msg));
 
   sendRequest(config, dispatch, handleSuccess, handleErr);
 };
 
-export const authenticateAndRedirect = (path: string) => {
-  authActions.authenticate();
+export const authenticateAndRedirect = (
+  dispatch: AppDispatch,
+  path: string
+) => {
+  dispatch(authActions.authenticate());
   Router.push(path);
 };

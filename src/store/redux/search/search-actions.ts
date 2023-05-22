@@ -1,5 +1,5 @@
 import { AppDispatch } from '..';
-import { sendRequest } from '../../../services/api';
+import { sendRequest } from '../../../services/axios-api';
 import { Media } from '../media/model';
 import { setResult } from './search';
 export const searchTitle = (name: string) => (dispatch: AppDispatch) => {
