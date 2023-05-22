@@ -4,8 +4,6 @@ import { store } from '../src/store/redux/index';
 import { Provider } from 'react-redux';
 import type { AppProps } from 'next/app';
 import React from 'react';
-import Header from '../src/components/Header/Header';
-// import { getCurrentUser } from '../src/store/redux/auth/auth-actions';
 
 const theme = createTheme({
   palette: {

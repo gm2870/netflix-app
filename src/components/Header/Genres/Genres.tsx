@@ -6,10 +6,8 @@ import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import Link from 'next/link';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-type Genre = {
-  name: string;
-  id: number;
-};
+import { Genre } from '@/src/models/genre.model';
+
 const Genres = ({ genres }: { genres: Genre[] }) => {
   const [genre, setGenre] = useState('');
   const router = useRouter();
@@ -43,7 +41,7 @@ const Genres = ({ genres }: { genres: Genre[] }) => {
             className={classes.menu__link}
             href={`/browse/genre/${router.query.type_id}?g=${l.id}`}
           >
-            {l.name}
+            {l.title}
           </Link>
         </MenuItem>
       ));
@@ -54,15 +52,15 @@ const Genres = ({ genres }: { genres: Genre[] }) => {
       );
     }
     setGenreList(list);
-  }, [inputComponent, genres]);
+  }, [inputComponent, genres, router.query.type_id]);
 
   useEffect(() => {
     if (router.query.g) {
       const genreName =
-        genres.find((g) => g.id === +(router.query.g as string))?.name || '';
+        genres.find((g) => g.id === +(router.query.g as string))?.title || '';
       setGenre(genreName);
     }
-  }, [genres]);
+  }, [genres, router.query.g]);
 
   const BootstrapInput = styled(InputBase)(({ theme }) => ({
     'label + &': {

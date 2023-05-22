@@ -1,5 +1,5 @@
 export type Genre = {
   id: number;
   title: string;
-  types: string[];
+  types?: string[];
 };

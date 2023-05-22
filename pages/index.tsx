@@ -64,10 +64,6 @@ export default function Home() {
     dispatch(checkEmail(e.email));
   };
 
-  // const logOut = useCallback(() => {
-  //   dispatch(logout());
-  // }, [dispatch]);
-
   return (
     <Fragment>
       <div className={classes.story}>

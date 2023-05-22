@@ -24,7 +24,7 @@ const Titles = () => {
     genreId,
   });
   const headerGenres = genresWithTitles.map((g) => ({
-    name: g.name,
+    title: g.name,
     id: g.id,
   }));
   useEffect(() => {

@@ -15,6 +15,8 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { Media } from '../../store/redux/media/model';
 import { LightTooltip } from '../Tooltip/Tooltip';
 import Image from 'next/image';
+import { useGetTitleInfoQuery } from '@/src/services/query/media';
+import { Genre } from '@/src/models/genre.model';
 
 type PreviewProps = {
   item: Media;
@@ -22,6 +24,12 @@ type PreviewProps = {
   show: boolean;
 };
 const PreviewModal = (props: PreviewProps) => {
+  const {
+    data: info,
+    isLoading,
+    isError,
+  } = useGetTitleInfoQuery({ type: props.item.media_type, id: props.item.id });
+
   const dispatch = useAppDispatch();
   const playerRef = useRef<videojs.Player | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -194,22 +202,24 @@ const PreviewModal = (props: PreviewProps) => {
               </div>
             </div>
             <div className={classes['preview__video-metadata']}>
-              <span
-                className={classes['preview__video-metadata-match-percentage']}
-              >
-                98% Match
+              <span className={classes.name}>
+                {props.item.name || props.item.title}
               </span>
-              <span className={classes['duration-text']}>2h 57m</span>
-              <span className={classes['hd-text']}>HD</span>
+              <div className={classes.rating}>
+                <span className={classes.rating__value}>
+                  {props.item.vote_average}
+                </span>
+                <span>/ 10</span>
+              </div>
             </div>
             <div className={classes['preview__evidence']}>
-              <span className={classes['preview__evidence-item']}>
-                Stand-Up
-              </span>
-              <span className={classes['preview__evidence-item']}>
-                Social Commentary
-              </span>
-              <span className={classes['preview__evidence-item']}>Thai</span>
+              {info
+                ? info.genres.map((g: any, i: number) => (
+                    <span key={i} className={classes['preview__evidence-item']}>
+                      {g.name}
+                    </span>
+                  ))
+                : null}
             </div>
           </div>
         </div>

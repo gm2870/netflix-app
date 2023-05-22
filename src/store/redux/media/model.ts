@@ -14,6 +14,7 @@ export type Media = {
   video_src: Src;
   adult: boolean;
   name?: string;
+  vote_average: number;
 };
 
 type Src = {

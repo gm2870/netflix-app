@@ -1,5 +1,5 @@
 import { Box, Portal } from '@mui/material';
-import React, { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import classes from './MediaItem.module.scss';
 import PreviewModal from '../PreviewModal/PreviewModal';
 import { Media } from '../../store/redux/media/model';
@@ -59,12 +59,14 @@ const MediaItem = ({
     <Fragment>
       <div onMouseOver={openModal} ref={boxRef} className={classes.mediaItem}>
         <div className={classes.boxArt}>
-          <Image
-            alt="item image"
-            className={classes.boxArt__image}
-            src={`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`}
-            fill={true}
-          />
+          {item.backdrop_path && (
+            <Image
+              alt="item image"
+              className={classes.boxArt__image}
+              src={`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`}
+              fill={true}
+            />
+          )}
           <p className={classes.boxArt__title}>{item.title || item.name}</p>
         </div>
       </div>

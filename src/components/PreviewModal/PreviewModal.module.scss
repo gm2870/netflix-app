@@ -136,16 +136,17 @@
       }
     }
   }
-  .duration-text {
+  .name {
     margin-right: 0.5em;
+    font-size: 18px;
   }
-  .hd-text {
+  .rating {
     display: inline-block;
     color: white;
-    border: 1.5px solid #fff;
-    border-radius: 2px;
     padding: 1px 3px;
-    font-size: 10px;
+    &__value {
+      color: #46d369;
+    }
   }
 }
 .hidden {
