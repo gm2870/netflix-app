@@ -42,6 +42,8 @@ const UserSchema = new mongoose.Schema({
     default: 'default.jpg',
   },
   blocked_at: Date,
+  favorites: [Number],
+  dislikes: [Number],
 });
 
 UserSchema.pre('save', async function (next) {

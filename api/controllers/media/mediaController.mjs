@@ -1,8 +1,13 @@
+import axios from 'axios';
 import Genre from '../../models/genreModel.mjs';
 import Movie from '../../models/media/movieModel.mjs';
 import TV from '../../models/media/tvModel.mjs';
 import catchAsync from '../../utils/catchAsync.mjs';
-
+import { getToken } from '../authController.mjs';
+import User from '../../models/userModel.mjs';
+import { promisify } from 'util';
+import jwt from 'jsonwebtoken';
+import AppError from '../../utils/appError.mjs';
 export const getAllTitles = async (req, res) => {
   const genres = await Genre.aggregate([
     {
@@ -244,6 +249,20 @@ export const getAllTVShowsByGenre = catchAsync(async (req, res) => {
   });
 });
 
+export const getTitle = catchAsync(async (req, res) => {
+  const result = await axios({
+    url: `https://api.themoviedb.org/3/${req.params.type}/${req.params.titleId}`,
+    method: 'GET',
+    params: {
+      api_key: process.env.MOVIEDB_API_KEY,
+    },
+  });
+  res.status(200).json({
+    status: 'success',
+    data: result.data,
+  });
+});
+
 export const getGeneralBillboard = async (req, res) => {
   const tv = await TV.findOne({ id: 67026 });
   res.status(200).json({
@@ -267,3 +286,20 @@ export const getMovieBillboard = async (req, res) => {
     data: movie,
   });
 };
+
+export const protect = catchAsync(async (req, res, next) => {
+  const token = getToken(req);
+  if (!token) {
+    return next(
+      new AppError('Your not logged in, Please log in to get access', 401)
+    );
+  }
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) {
+    return next(
+      new AppError('The user belonging to this token does not exits', 401)
+    );
+  }
+  next();
+});
