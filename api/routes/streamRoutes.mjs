@@ -7,7 +7,7 @@ router.get('/search/:name', streamController.searchMedia);
 router.get('/movie/:genreId', streamController.searchMedia);
 
 router.get('/:mediaType/video/:mediaId', streamController.mediaStream);
-router.get('/crop-size/:id', streamController.getVideoCropSize);
+router.get('/crop-size/:type/:id', streamController.getVideoCropSize);
 router.get('/image/:backdropPath', streamController.imageStream);
 
 export default router;

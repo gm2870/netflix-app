@@ -84,6 +84,31 @@ export const mediaApi = createApi({
         return response.data;
       },
     }),
+    getCropSize: build.query<
+      number,
+      {
+        id: number;
+        type: string;
+      }
+    >({
+      query: ({ id, type }) => {
+        let url = '';
+        switch (type) {
+          case 'tv':
+            url = `/stream/crop-size/tv/${id}`;
+            break;
+          case 'movie':
+            url = `/stream/crop-size/movie/${id}`;
+            break;
+        }
+        return {
+          url,
+        };
+      },
+      transformResponse: (response: { data: number; status: string }) => {
+        return response.data;
+      },
+    }),
   }),
 });
 
@@ -91,4 +116,5 @@ export const {
   useGetBillboardMediaQuery,
   useGetTitlesWithGenreQuery,
   useGetTitleInfoQuery,
+  useGetCropSizeQuery,
 } = mediaApi;

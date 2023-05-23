@@ -6,17 +6,15 @@ import { useRef } from 'react';
 import { Fade } from '@mui/material';
 import VideoJS from '../VideoJS/VideoJS';
 import videojs from 'video.js';
-import {
-  getCropSize,
-  resetCropSize,
-} from '../../store/redux/media/media-actions';
 import { uiActions } from '../../store/redux/ui/ui';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { Media } from '../../store/redux/media/model';
 import { LightTooltip } from '../Tooltip/Tooltip';
 import Image from 'next/image';
-import { useGetTitleInfoQuery } from '@/src/services/query/media';
-import { Genre } from '@/src/models/genre.model';
+import {
+  useGetCropSizeQuery,
+  useGetTitleInfoQuery,
+} from '@/src/services/query/media';
 
 type PreviewProps = {
   item: Media;
@@ -24,11 +22,10 @@ type PreviewProps = {
   show: boolean;
 };
 const PreviewModal = (props: PreviewProps) => {
-  const {
-    data: info,
-    isLoading,
-    isError,
-  } = useGetTitleInfoQuery({ type: props.item.media_type, id: props.item.id });
+  const { data: info } = useGetTitleInfoQuery({
+    type: props.item.media_type,
+    id: props.item.id,
+  });
 
   const dispatch = useAppDispatch();
   const playerRef = useRef<videojs.Player | null>(null);
@@ -36,8 +33,19 @@ const PreviewModal = (props: PreviewProps) => {
   const imageRef = useRef<HTMLDivElement>(null);
   const videoContainer = useRef<HTMLDivElement>(null);
 
-  const cropSize = useAppSelector((state) => state.media.cropSize);
-
+  const {
+    data: cropSize,
+    isLoading,
+    isSuccess,
+    isError,
+  } = useGetCropSizeQuery(
+    {
+      type: props.item.media_type,
+      id: props.item.id,
+    },
+    { skip: !cardRef.current }
+  );
+  console.log(cropSize);
   const [playing, setPlaying] = useState(false);
 
   const [imageOpacity, setImageOpacity] = useState(1);
@@ -209,7 +217,7 @@ const PreviewModal = (props: PreviewProps) => {
                 <span className={classes.rating__value}>
                   {props.item.vote_average}
                 </span>
-                <span>/ 10</span>
+                <span> / 10</span>
               </div>
             </div>
             <div className={classes['preview__evidence']}>

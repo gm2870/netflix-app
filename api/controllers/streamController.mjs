@@ -206,10 +206,11 @@ export const mediaStream = catchAsync(async (req, res) => {
 });
 
 export const getVideoCropSize = catchAsync(async (req, res) => {
-  const Model = req.params.mediaType === 'tv' ? TV : Movie;
-  const media = await Model.findOne({ id: req.params.mediaId });
+  const Model = req.params.type === 'tv' ? TV : Movie;
+  const media = await Model.findOne({ id: req.params.id });
   const src = media.video_src.SD;
-  const fileName = `${normalizeText(media.title)}-temp.mp4`;
+  const name = media.title || media.name;
+  const fileName = `${normalizeText(name)}-temp.mp4`;
   const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);
   const downloadStream = got.stream(src);
   const fileWriterStream = fs.createWriteStream(resolvedPath);
