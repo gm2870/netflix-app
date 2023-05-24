@@ -10,7 +10,6 @@ export const getVideoSrc = async (id, quality = 480) => {
     await page.setUserAgent(
       'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
     );
-
     await page.goto(titleUrl);
     let videoId;
     await page.waitForSelector('#suggestion-search', { visible: true });
@@ -32,20 +31,35 @@ export const getVideoSrc = async (id, quality = 480) => {
         '#react-autowhatever-navSuggestionSearch--item-2 a[data-testid="search-result--video"]'
       );
       // eslint-disable-next-line no-undef
-      const firstItem = document.querySelector(
+      let firstItem = document.querySelector(
         '#react-autowhatever-navSuggestionSearch--item-1 a[data-testid="search-result--video"] .searchResult__videoTitle'
-      ).innerHTML;
+      );
+      // this is for the case when first result is not the actual title.
+      // happend to squid game.
+      if (!firstItem) {
+        firstItem = document.querySelector(
+          '#react-autowhatever-navSuggestionSearch--item-2 a[data-testid="search-result--video"] .searchResult__videoTitle'
+        );
+      }
       // eslint-disable-next-line no-undef
-      const secondItem = document.querySelector(
+      let secondItem = document.querySelector(
         '#react-autowhatever-navSuggestionSearch--item-2 a[data-testid="search-result--video"] .searchResult__videoTitle'
-      ).innerHTML;
+      );
+      if (!secondItem) {
+        secondItem = document.querySelector(
+          '#react-autowhatever-navSuggestionSearch--item-3 a[data-testid="search-result--video"] .searchResult__videoTitle'
+        );
+      }
+
+      const firstText = firstItem.innerHTML;
+      const secondText = secondItem.innerHTML;
       if (!firstLink) {
         return secondLink.getAttribute('href');
       }
       // check if one of the two trailers are official
-      if (firstItem.includes('Official')) {
+      if (firstText.includes('Official')) {
         return firstLink.getAttribute('href');
-      } else if (secondItem.includes('Official')) {
+      } else if (secondText.includes('Official')) {
         return secondLink.getAttribute('href');
       } else return firstLink.getAttribute('href');
     });

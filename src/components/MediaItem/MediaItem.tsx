@@ -30,7 +30,7 @@ const MediaItem = ({
     const offsetWidth = box.offsetWidth;
     const left = box.getBoundingClientRect().left;
     const top = box.getBoundingClientRect().top + window.scrollY;
-
+    console.log(box.getBoundingClientRect().left);
     sx.width = `${offsetWidth * 1.5}px`;
     sx.top = `${top - offsetWidth * 0.4}px`;
     if (isFirst) {

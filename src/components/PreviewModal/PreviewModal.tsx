@@ -15,6 +15,7 @@ import {
   useGetCropSizeQuery,
   useGetTitleInfoQuery,
 } from '@/src/services/query/media';
+import { resetCropSize } from '@/src/store/redux/media/media-actions';
 
 type PreviewProps = {
   item: Media;
@@ -31,49 +32,58 @@ const PreviewModal = (props: PreviewProps) => {
   const playerRef = useRef<videojs.Player | null>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
   const videoContainer = useRef<HTMLDivElement>(null);
-
-  const {
-    data: cropSize,
-    isLoading,
-    isSuccess,
-    isError,
-  } = useGetCropSizeQuery(
-    {
-      type: props.item.media_type,
-      id: props.item.id,
-    },
-    { skip: !cardRef.current }
-  );
-  console.log(cropSize);
+  const [options, setOptions] = useState({
+    autoplay: true,
+    muted: true,
+    children: ['MediaLoader'],
+    controls: false,
+    componentName: 'card',
+    loop: true,
+    sources: [
+      {
+        src: '',
+        type: 'video/mp4',
+      },
+    ],
+    cropSize: 0,
+  });
+  const { data: cropSize } = useGetCropSizeQuery({
+    type: props.item.media_type,
+    id: props.item.id,
+  });
   const [playing, setPlaying] = useState(false);
 
   const [imageOpacity, setImageOpacity] = useState(1);
 
   const [soundOn, setSoundOn] = useState(false);
 
-  const videoJsOptions = {
-    autoplay: true,
-    muted: true,
-    children: ['MediaLoader'],
-    controls: false,
-    componentName: 'card',
-    sources: [
-      {
-        src: `http://localhost:8001/api/v1/media/video/${props.item.id}`,
-        type: 'video/mp4',
-      },
-    ],
-    cropSize,
-  };
-
   useEffect(() => {
-    // dispatch(getCropSize(props.item.id));
+    console.log(cropSize);
+    if (cropSize !== undefined) {
+      console.log(props.item.video_src?.SD);
+      setOptions({
+        autoplay: true,
+        muted: true,
+        children: ['MediaLoader'],
+        controls: false,
+        componentName: 'card',
+        loop: true,
+        sources: [
+          {
+            src: `${props.item.video_src?.SD}`,
+            type: 'video/mp4',
+          },
+        ],
+        cropSize,
+      });
+    }
     return () => {
-      // dispatch(resetCropSize());
+      dispatch(resetCropSize());
       dispatch(uiActions.toggleBillnoardPlaying());
     };
-  }, []);
+  }, [cropSize]);
 
   const toggleSound = () => {
     setSoundOn((prev) => {
@@ -125,11 +135,11 @@ const PreviewModal = (props: PreviewProps) => {
             height={250}
           />
         </div>
-        {playing && (
+        {options.sources[0].src && (
           <div ref={videoContainer} className={classes.video}>
             <VideoJS
               controlBar={false}
-              options={videoJsOptions}
+              options={options}
               onReady={handlePlayerReady}
             />
             {!imageOpacity && (
@@ -145,7 +155,7 @@ const PreviewModal = (props: PreviewProps) => {
             )}
           </div>
         )}
-        <div className={classes.preview}>
+        <div ref={previewRef} className={classes.preview}>
           <div className={classes.preview__info}>
             <div className={classes['preview__controls']}>
               <Fade

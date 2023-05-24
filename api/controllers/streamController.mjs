@@ -98,6 +98,9 @@ export const getTitleId = async (name) => {
     });
 
     if (!mediaData.data.d) return;
+    if (!mediaData.data.d[0].id.startsWith('tt')) {
+      return mediaData.data.d[1].id;
+    }
     return mediaData.data.d[0].id;
   } catch (error) {
     return new AppError(error.message || 'Could not get title id', 500);
@@ -236,9 +239,7 @@ export const getVideoCropSize = catchAsync(async (req, res) => {
         }
         res.status(200).json({
           status: 'success',
-          data: {
-            blackBarHeight,
-          },
+          data: +blackBarHeight,
         });
       }
     })

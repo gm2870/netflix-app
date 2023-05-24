@@ -50,7 +50,25 @@ const updateManyTitleId = async (model) => {
   }
   process.exit();
 };
+const updateOneTitleId = async (model, id) => {
+  const Model = model === 'tv' ? TV : Movie;
+  const item = await Model.findOne({ id });
+  const name = item.name || item.title;
+  console.log(name);
+  const titleId = await getTitleId(name);
+  console.log(titleId);
+  if (!titleId?.startsWith('tt')) {
+    return new AppError('Invalid title id.', 500);
+  }
+  const res = await Model.updateOne(
+    { id: item.id },
+    { title_id: titleId },
+    { upsert: true }
+  );
+  console.log(res);
 
+  process.exit();
+};
 export const importOne = async (name, model) => {
   const Model = model === 'tv' ? TV : Movie;
   const res = await searchMediaByName(name);
@@ -116,7 +134,6 @@ export const updateItemSrc = async (model, media) => {
     let titleId = media.title_id;
     if (!titleId) {
       titleId = await getTitleId(name);
-      console.log(titleId);
     }
     videoData = await getVideoSrc(titleId, 1080);
   }
@@ -156,7 +173,7 @@ if (process.argv[2] === '--import-tv') {
 } else if (process.argv[2] === '--update-src') {
   forceSrcUpdate('movie');
 } else if (process.argv[2] === '--update') {
-  updateOne('tv', 67026);
+  updateOne('movie', 284052);
 } else if (process.argv[2] === '--import-genres') {
   importGenres();
 } else if (process.argv[2] === '--import-movie') {
@@ -165,4 +182,6 @@ if (process.argv[2] === '--import-tv') {
   updateManyTitleId('tv');
 } else if (process.argv[2] === '--update-movie') {
   updateManyTitleId('movie');
+} else if (process.argv[2] === '--add-id') {
+  updateOneTitleId('tv', 93405);
 }

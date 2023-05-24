@@ -8,11 +8,7 @@
 }
 .vjs-card {
   width: 100%;
-  position: absolute;
-  object-fit: fill;
-  video {
-    width: 100%;
-  }
+  display: inline-block;
 }
 
 .vjs-billboard {
@@ -40,4 +36,6 @@
 
 video.vjs-tech {
   width: 100%;
+  height: 100%;
+  object-fit: fill;
 }
