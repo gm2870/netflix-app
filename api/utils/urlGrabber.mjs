@@ -1,6 +1,5 @@
 import puppeteer from 'puppeteer';
 export const getVideoSrc = async (id, quality = 480) => {
-  if (!id.startsWith('tt')) return null;
   const browser = await puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });

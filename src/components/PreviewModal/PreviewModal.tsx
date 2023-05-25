@@ -87,8 +87,8 @@ const PreviewModal = (props: PreviewProps) => {
 
   const toggleSound = () => {
     setSoundOn((prev) => {
-      const ref = playerRef.current!;
-      ref.muted(prev);
+      const ref = playerRef.current;
+      ref?.muted(prev);
       return !prev;
     });
   };

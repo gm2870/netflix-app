@@ -1,0 +1,18 @@
+@use '../../../../styles/abstracts' as *;
+
+.subHeader {
+  padding: 0 4%;
+  position: absolute;
+  top: 68px;
+  z-index: 5;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  @include respond(tablet) {
+    height: 68px;
+    padding: 0 4%;
+  }
+  @include respond(normal-desktop) {
+    padding: 0 60px;
+  }
+}

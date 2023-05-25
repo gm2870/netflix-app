@@ -13,10 +13,10 @@ export const VideoJS = (props: any) => {
       videoRef.current.appendChild(videoElement);
 
       const player = videojs(videoElement, options, () => {
-        var style = window
+        const style = window
           .getComputedStyle(document.body, null)
           .getPropertyValue('font-size');
-        var fontSize = parseFloat(style);
+        const fontSize = parseFloat(style);
         let cropSize;
         if (!options.controls) {
           cropSize = +options.cropSize;

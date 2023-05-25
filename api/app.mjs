@@ -68,5 +68,4 @@ app.use(globalErrorHandler);
 //     }
 //   })
 // );
-// updateMedia(103768);
 export default app;

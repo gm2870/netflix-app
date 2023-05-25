@@ -147,6 +147,7 @@ export const updateTitleMedia = async (model, id, videoData) => {
 };
 
 export const needsSrcUpdate = (src) => {
+  if (!src) return true;
   const expireTime = src
     .split('?')
     .find((x) => x.startsWith('Expires='))

@@ -117,7 +117,7 @@ export const getAllMovies = catchAsync(async (req, res) => {
 });
 
 export const getAllMoviesByGenre = catchAsync(async (req, res) => {
-  const genreId = req.params.genreId;
+  const genreId = +req.params.genreId;
   const genres = await Genre.aggregate([
     {
       $match: {

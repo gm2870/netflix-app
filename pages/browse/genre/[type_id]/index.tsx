@@ -11,6 +11,7 @@ import GridList from '@/src/components/GridList/GridList';
 import { GenreWithMedia, Media } from '@/src/store/redux/media/model';
 import { useEffect, useState } from 'react';
 import SlidersContainer from '@/src/components/Slider/SlidersContainer';
+import Genres from '@/src/components/Header/Genres/Genres';
 const Titles = () => {
   const router = useRouter();
   const type = router.query.type_id as string;
@@ -42,7 +43,12 @@ const Titles = () => {
       <Head>
         <title>Netflix - TV</title>
       </Head>
-      <Header genres={headerGenres} />
+      <Header />
+      {!isLoading && (
+        <div className={classes.subHeader}>
+          <Genres genres={headerGenres} />
+        </div>
+      )}
       <Billboard />
 
       {!genreId && genresWithTitles && (

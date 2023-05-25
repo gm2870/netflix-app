@@ -1,4 +1,3 @@
-import { Fragment } from 'react';
 import Slider from './Slider';
 import { GenreWithMedia } from '../../store/redux/media/model';
 import Link from 'next/link';
@@ -20,6 +19,7 @@ const SlidersContainer = ({
             <h2 className={classes.title__header}>{g.name}</h2>
           </Link>
         )}
+
         <Slider titles={g.titles} />
       </div>
     );

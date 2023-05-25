@@ -7,6 +7,7 @@
   background-color: #181818;
   opacity: 1;
   width: 100%;
+  overflow: hidden;
   .imageContainer {
     height: 0;
     position: relative;
@@ -32,8 +33,6 @@
   position: absolute;
   top: 0;
   width: 100%;
-  // height: 0;
-  // padding-bottom: 56.25%;
   margin: 0;
   overflow: hidden;
 
@@ -51,7 +50,6 @@
 }
 .preview {
   color: #fff;
-  position: absolute;
   width: 100%;
   background-color: #181818;
   &__controls {
@@ -141,12 +139,13 @@
   }
   .name {
     margin-right: 0.5em;
-    font-size: 18px;
+    font-size: 1.5rem;
   }
   .rating {
     display: inline-block;
     color: white;
     padding: 1px 3px;
+    font-size: 1.3rem;
     &__value {
       color: #46d369;
     }

@@ -39,7 +39,11 @@ const updateManyTitleId = async (model) => {
   const Model = model === 'tv' ? TV : Movie;
   const items = await Model.find();
   for (const show of items) {
-    const id = await getTitleId(show.name);
+    if (show.title_id) continue;
+    console.log(show.name);
+    const name = show.name || show.title;
+    const id = await getTitleId(name);
+    console.log(id);
     if (!id?.startsWith('tt')) continue;
     const res = await Model.updateOne(
       { id: show.id },
@@ -91,14 +95,11 @@ const deleteMany = async (model) => {
 export const checkAndUpdateSrc = async (model) => {
   const Model = model === 'tv' ? TV : Movie;
   const items = await Model.find();
+  console.log(items.length);
   for (const media of items) {
-    if (
-      !media.video_src ||
-      needsSrcUpdate(media.video_src.SD) ||
-      needsSrcUpdate(media.video_src.HD)
-    ) {
-      updateItemSrc(model, media);
-    }
+    if (!media.video_src.HD) {
+      await updateItemSrc(model, media);
+    } else continue;
   }
   process.exit();
 };
@@ -131,11 +132,11 @@ export const updateItemSrc = async (model, media) => {
       HD: HDSrc,
     };
   } else {
-    let titleId = media.title_id;
-    if (!titleId) {
-      titleId = await getTitleId(name);
-    }
-    videoData = await getVideoSrc(titleId, 1080);
+    // let titleId = media.title_id;
+    // if (!titleId) {
+    //   titleId = await getTitleId(name);
+    // }
+    videoData = await getVideoSrc(name, 1080);
   }
 
   if (!videoData || !videoData.SD) {
@@ -171,7 +172,7 @@ if (process.argv[2] === '--import-tv') {
 } else if (process.argv[2] === '--delete') {
   deleteMany();
 } else if (process.argv[2] === '--update-src') {
-  forceSrcUpdate('movie');
+  checkAndUpdateSrc('movie');
 } else if (process.argv[2] === '--update') {
   updateOne('movie', 284052);
 } else if (process.argv[2] === '--import-genres') {

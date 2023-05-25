@@ -10,14 +10,8 @@ import Menu from './Menu/Menu';
 import Notifications from './Notifications/Notifications';
 import Search from './Search/Search';
 import { useRouter } from 'next/router';
-import Genres from './Genres/Genres';
-import { Genre } from '@/src/models/genre.model';
 
-type HeaderProps = {
-  genres?: Genre[];
-};
-
-const Header = (props: HeaderProps) => {
+const Header = () => {
   const [stickyHeader, setStickyHeader] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showNavigationLinks, setNavigationLinks] = useState(false);
@@ -208,11 +202,6 @@ const Header = (props: HeaderProps) => {
           </div>
         </div>
       </header>
-      {props.genres && (
-        <div className={classes.subHeader}>
-          <Genres genres={props.genres} />
-        </div>
-      )}
     </div>
   );
 };
