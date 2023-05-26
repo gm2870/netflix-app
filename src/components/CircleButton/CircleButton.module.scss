@@ -1,16 +1,18 @@
-.circle-button {
-  height: 42px;
-  width: 42px;
+@use '../../../styles/abstracts' as *;
 
-  //min-height: 32px;
-  //min-width: 32px;
+.circle-button {
+  height: 32px;
+  width: 32px;
   margin: 0 0.25em;
   border-radius: 50%;
   cursor: pointer;
   background-color: rgba(42, 42, 42, 0.6);
-  //   border-color: hsla(0, 0%, 100%, 0.5);
   border: 2px solid hsla(0, 0%, 100%, 0.5);
   transition: all 0.1s;
+  @include respond(tablet) {
+    height: 42px;
+    width: 42px;
+  }
   &--white {
     background-color: #fff;
   }

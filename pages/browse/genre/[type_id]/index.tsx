@@ -12,9 +12,11 @@ import { GenreWithMedia, Media } from '@/src/store/redux/media/model';
 import { useEffect, useState } from 'react';
 import SlidersContainer from '@/src/components/Slider/SlidersContainer';
 import Genres from '@/src/components/Header/Genres/Genres';
+import useSliderConfig from '@/src/hooks/use-slider-config';
 const Titles = () => {
   const router = useRouter();
-  const type = router.query.type_id as string;
+  const type = (router.query.type_id as string) || '1';
+  console.log(type);
   const genreId = router.query.g as string;
   const [genresWithTitles, setGenresWithTitles] = useState<GenreWithMedia[]>(
     []
@@ -37,11 +39,15 @@ const Titles = () => {
     const l = isLoading || isFetching;
     setLoading(l);
   }, [isLoading, isFetching]);
-
+  const { rowItems } = useSliderConfig();
   return (
     <section>
       <Head>
-        <title>Netflix - TV</title>
+        {type !== '2' ? (
+          <title>Netflix - TV Shows</title>
+        ) : (
+          <title>Netflix - Movies</title>
+        )}
       </Head>
       <Header />
       {!isLoading && (
@@ -59,7 +65,12 @@ const Titles = () => {
         (genresWithTitles.length ? (
           <GridList>
             {genresWithTitles[0].titles.map((t: Media, i: number) => (
-              <MediaItem key={i} item={t} />
+              <MediaItem
+                isFirst={i % rowItems === 0}
+                isLast={(i + 1) % rowItems === 0}
+                key={i}
+                item={t}
+              />
             ))}
           </GridList>
         ) : (

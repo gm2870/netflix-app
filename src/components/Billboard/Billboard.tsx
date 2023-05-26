@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { useRef } from 'react';
 import CircleButton from '../../../src/components/CircleButton/CircleButton';
 import VideoJS from '../../../src/components/VideoJS/VideoJS';
@@ -10,9 +10,13 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import Image from 'next/image';
 import { useSpring, animated } from '@react-spring/web';
 import { useRouter } from 'next/router';
-import { NoSsr } from '@mui/material';
+import { Button, NoSsr } from '@mui/material';
 import SliderLoader from '../loader/SliderLoader';
-import { useGetBillboardMediaQuery } from '../../services/query/media';
+import {
+  useGetBillboardMediaQuery,
+  useGetCropSizeQuery,
+} from '../../services/query/media';
+import { useAppDispatch, useAppSelector } from '@/src/hooks';
 
 const initialPlayerState = {
   playing: false,
@@ -31,16 +35,19 @@ const initialPlayerState = {
         type: 'video/mp4',
       },
     ],
+    cropSize: 0,
   },
 };
 
 const Billboard = () => {
   const router = useRouter();
   const playerRef = useRef<videojs.Player | null>(null);
+  const billboardPkaying: boolean = useAppSelector(
+    (state) => state.ui.billboardPlaying
+  );
   const reducer = (state: any, action: any) => {
     switch (action.type) {
       case 'play':
-        playerRef?.current?.dispose();
         return {
           ...state,
           playing: true,
@@ -50,19 +57,20 @@ const Billboard = () => {
             ...state.options,
             sources: [
               {
-                src: action.payload,
+                src: action.payload.src,
                 type: 'video/mp4',
               },
             ],
+            cropSize: action.payload.cropSize,
           },
         };
       case 'togglePause':
         const paused = !state.playing;
-        paused ? playerRef.current?.pause() : playerRef.current?.play();
         return {
           ...state,
           playing: paused,
         };
+
       case 'toggleVolumn':
         const vol = !state.volumnOn;
         playerRef.current?.muted(!vol);
@@ -70,7 +78,9 @@ const Billboard = () => {
           ...state,
           volumnOn: vol,
         };
+
       case 'end':
+        console.log(state);
         return {
           ...state,
           playing: false,
@@ -87,17 +97,32 @@ const Billboard = () => {
   const { x } = useSpring({
     from: { x: 0 },
     x: player.animatingTitle ? 1 : 0,
-    delay: player.animatingTitle ? 3000 : 0,
+    delay: player.animatingTitle ? 5000 : 0,
     config: { duration: 1300 },
   });
   const type = (router.query.type_id as string) || '0';
-  const { data: item, isLoading, isError } = useGetBillboardMediaQuery(type);
+  const { data: item, isLoading } = useGetBillboardMediaQuery(type);
+  const [itemId, setItemId] = useState(0);
+
+  const { data: cropSize } = useGetCropSizeQuery(
+    {
+      type: type === '2' ? 'movie' : 'tv',
+      id: itemId,
+    },
+    { skip: !itemId }
+  );
 
   useEffect(() => {
     if (item) {
-      setPlayer({ type: 'play', payload: item.video_src.HD });
+      setItemId(item.id);
+      if (cropSize !== undefined) {
+        // setPlayer({
+        //   type: 'play',
+        //   payload: { src: item.video_src.HD, cropSize },
+        // });
+      }
     }
-  }, [item]);
+  }, [item, cropSize]);
 
   const handlePlayerReady = (player: videojs.Player) => {
     playerRef.current = player;
@@ -116,16 +141,16 @@ const Billboard = () => {
   const toggleSoundHandler = () => {
     setPlayer({ type: 'toggleVolumn' });
   };
+  useEffect(() => {
+    billboardPkaying ? playerRef.current?.pause() : playerRef.current?.play();
+  }, [billboardPkaying]);
 
   return (
     <section className={classes.billboardRow}>
       {!isLoading && (
         <div className={classes.billboard}>
           {player.showImage && (
-            <div
-              className={classes.imageWraper}
-              style={{ opacity: player.playing ? 0 : 1 }}
-            >
+            <div className={classes.imageWraper}>
               {item?.backdrop_path && (
                 <Image
                   alt="billboard image"

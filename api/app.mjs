@@ -13,8 +13,11 @@ import { emptyAssets } from './controllers/streamController.mjs';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { forceSrcUpdate, updateManySrc } from './dev-data/dev.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+import schedule from 'node-schedule';
+import catchAsync from './utils/catchAsync.mjs';
 dotenv.config({ path: `${__dirname}/../.env.local` });
 
 const app = express();
@@ -46,26 +49,15 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/media', mediaRoutes);
 app.use('/api/v1/stream', streamRoutes);
 // app.use(express.static(join(__dirname, 'public')));
-
+const rule = new schedule.RecurrenceRule();
+rule.hour = [4, 11, 19];
+rule.minute = 30;
 app.use(globalErrorHandler);
-// schedule.scheduleJob(
-//   '35 8,14,20 * * *',
-//   catchAsync(async () => {
-//     // eslint-disable-next-line
-//     console.log('src update running');
-//     const movies = await Media.find();
-//     for (const movie of movies) {
-//       const videoSrc = await getVideoUrl(movie.title_id, 1080);
-//       if (!videoSrc) return;
-//       await Movie.findOneAndUpdate(
-//         { id: movie.id },
-//         {
-//           video_src: videoSrc,
-//         }
-//       );
-//       // eslint-disable-next-line
-//       console.log(movie.title, ' src updated');
-//     }
-//   })
-// );
+schedule.scheduleJob(
+  rule,
+  catchAsync(async () => {
+    forceSrcUpdate('tv');
+    forceSrcUpdate('movie');
+  })
+);
 export default app;

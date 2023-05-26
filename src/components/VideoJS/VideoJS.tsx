@@ -3,14 +3,15 @@ import videojs from 'video.js';
 import classes from './VideoJS.module.scss';
 
 export const VideoJS = (props: any) => {
-  const videoRef = useRef<any>(null);
+  const videoRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<videojs.Player>(null);
   const { options, onReady } = props;
   useEffect(() => {
     if (!playerRef.current) {
       const videoElement = document.createElement('video-js');
       videoElement.classList.add('vjs-big-play-centered');
-      videoRef.current.appendChild(videoElement);
+      videoRef.current?.replaceChildren();
+      videoRef.current?.appendChild(videoElement);
 
       const player = videojs(videoElement, options, () => {
         const style = window
@@ -18,23 +19,31 @@ export const VideoJS = (props: any) => {
           .getPropertyValue('font-size');
         const fontSize = parseFloat(style);
         let cropSize;
+        let multiplier = 1;
         if (!options.controls) {
-          cropSize = +options.cropSize;
+          cropSize = options.cropSize;
           if (cropSize == 64 || cropSize === 40) {
             cropSize = 47;
+            multiplier = options.componentName === 'billboard' ? 3.5 : 1;
           } else if (cropSize === 32) {
             cropSize = 18;
+            multiplier = options.componentName === 'billboard' ? 2.5 : 1;
           } else if (cropSize > 50) {
-            cropSize = +options.cropSize - Math.ceil(+options.cropSize / 3);
+            cropSize = options.cropSize - Math.ceil(options.cropSize / 3);
+            multiplier = options.componentName === 'billboard' ? 3.5 : 1;
           } else if (cropSize < 10) {
             cropSize = 0;
+            multiplier = 1;
+          } else {
+            cropSize = options.cropSize;
+            multiplier = options.componentName === 'billboard' ? 2.5 : 1;
           }
           const vid = videoRef.current;
           if (vid) {
             vid.style.position = 'relative';
             vid.style.height = '0';
             vid.style.paddingBottom = '56.25%';
-            vid.style.top = `-${cropSize / fontSize}rem`;
+            vid.style.top = `-${(cropSize * multiplier) / fontSize}rem`;
           }
 
           videoElement.style.height = '0';

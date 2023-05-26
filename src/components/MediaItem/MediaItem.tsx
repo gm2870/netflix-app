@@ -1,5 +1,5 @@
 import { Box, Portal } from '@mui/material';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import classes from './MediaItem.module.scss';
 import PreviewModal from '../PreviewModal/PreviewModal';
 import { Media } from '../../store/redux/media/model';

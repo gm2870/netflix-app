@@ -216,11 +216,12 @@ export const getVideoCropSize = catchAsync(async (req, res) => {
   const name = media.title || media.name;
   const fileName = `${normalizeText(name)}-temp.mp4`;
   const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);
-  const downloadStream = got.stream(src);
   const fileWriterStream = fs.createWriteStream(resolvedPath);
-  let downloaded = 0;
   let blackBarHeight = 0;
+
   const asyncExec = util.promisify(exec);
+  let downloaded = 0;
+  const downloadStream = got.stream(src);
 
   downloadStream
     .on('downloadProgress', async (progress) => {

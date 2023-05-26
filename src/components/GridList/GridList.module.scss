@@ -1,3 +1,5 @@
+@use '../../../styles/abstracts' as *;
+
 .gridWrapper {
   display: flex;
   flex-flow: column nowrap;
@@ -5,9 +7,19 @@
 }
 .gridList {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   list-style-type: none;
   gap: 3rem 0.4rem;
   padding: 0px;
   margin-top: 10rem;
+  @include respond(tablet) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include respond(small-desktop) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  @include respond(normal-desktop) {
+    grid-template-columns: repeat(6, 1fr);
+  }
 }

@@ -92,16 +92,15 @@ const deleteMany = async (model) => {
   process.exit();
 };
 
-export const checkAndUpdateSrc = async (model) => {
+export const updateManySrc = async (model) => {
   const Model = model === 'tv' ? TV : Movie;
   const items = await Model.find();
-  console.log(items.length);
+
   for (const media of items) {
     if (!media.video_src.HD) {
       await updateItemSrc(model, media);
     } else continue;
   }
-  process.exit();
 };
 
 export const forceSrcUpdate = catchAsync(async (model) => {
@@ -115,7 +114,7 @@ export const forceSrcUpdate = catchAsync(async (model) => {
 
     i++;
   }
-  if (i === items.length) process.exit();
+  // if (i === items.length) process.exit();
 });
 
 export const updateItemSrc = async (model, media) => {
@@ -132,10 +131,6 @@ export const updateItemSrc = async (model, media) => {
       HD: HDSrc,
     };
   } else {
-    // let titleId = media.title_id;
-    // if (!titleId) {
-    //   titleId = await getTitleId(name);
-    // }
     videoData = await getVideoSrc(name, 1080);
   }
 
@@ -172,9 +167,9 @@ if (process.argv[2] === '--import-tv') {
 } else if (process.argv[2] === '--delete') {
   deleteMany();
 } else if (process.argv[2] === '--update-src') {
-  checkAndUpdateSrc('movie');
+  UpdateManySrc('movie');
 } else if (process.argv[2] === '--update') {
-  updateOne('movie', 284052);
+  updateOne('movie', 512195);
 } else if (process.argv[2] === '--import-genres') {
   importGenres();
 } else if (process.argv[2] === '--import-movie') {

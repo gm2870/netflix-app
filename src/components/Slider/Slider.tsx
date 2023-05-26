@@ -132,6 +132,8 @@ const Slider = ({ titles }: { titles: Media[] }) => {
   useEffect(() => {
     if (sliderState.moved) {
       dispatch({ type: 'RIGHT', animating: false });
+    } else {
+      dispatch({ type: 'INITIAL', animating: false });
     }
   }, [rowItems]);
 
@@ -168,12 +170,7 @@ const Slider = ({ titles }: { titles: Media[] }) => {
     const key = sliderItems[itemIndex].id * Math.random();
     return (
       <div key={key} className={`${classes.slider__item} slider__item--`}>
-        <MediaItem
-          underIndicator={false}
-          isFirst={false}
-          isLast={false}
-          item={sliderItems[itemIndex]}
-        />
+        <MediaItem underIndicator={false} item={sliderItems[itemIndex]} />
       </div>
     );
   });
@@ -209,12 +206,7 @@ const Slider = ({ titles }: { titles: Media[] }) => {
     const item = sliderItems[itemIndex];
     return (
       <div key={key} className={`${classes.slider__item} slider__item--`}>
-        <MediaItem
-          underIndicator={false}
-          isFirst={false}
-          isLast={false}
-          item={item}
-        />
+        <MediaItem underIndicator={false} item={item} />
       </div>
     );
   });

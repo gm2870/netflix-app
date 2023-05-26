@@ -3,7 +3,7 @@
 .subHeader {
   padding: 0 4%;
   position: absolute;
-  top: 68px;
+  top: 41px;
   z-index: 5;
   width: 100%;
   display: flex;
@@ -11,6 +11,7 @@
   @include respond(tablet) {
     height: 68px;
     padding: 0 4%;
+    top: 68px;
   }
   @include respond(normal-desktop) {
     padding: 0 60px;

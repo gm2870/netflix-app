@@ -7,7 +7,7 @@ import { Fade } from '@mui/material';
 import VideoJS from '../VideoJS/VideoJS';
 import videojs from 'video.js';
 import { uiActions } from '../../store/redux/ui/ui';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppDispatch } from '../../hooks';
 import { Media } from '../../store/redux/media/model';
 import { LightTooltip } from '../Tooltip/Tooltip';
 import Image from 'next/image';
@@ -15,7 +15,6 @@ import {
   useGetCropSizeQuery,
   useGetTitleInfoQuery,
 } from '@/src/services/query/media';
-import { resetCropSize } from '@/src/store/redux/media/media-actions';
 
 type PreviewProps = {
   item: Media;
@@ -27,6 +26,7 @@ const PreviewModal = (props: PreviewProps) => {
     type: props.item.media_type,
     id: props.item.id,
   });
+  const [showMiniModel, setShowMiniModal] = useState(false);
 
   const dispatch = useAppDispatch();
   const playerRef = useRef<videojs.Player | null>(null);
@@ -53,16 +53,13 @@ const PreviewModal = (props: PreviewProps) => {
     type: props.item.media_type,
     id: props.item.id,
   });
-  const [playing, setPlaying] = useState(false);
 
   const [imageOpacity, setImageOpacity] = useState(1);
 
   const [soundOn, setSoundOn] = useState(false);
 
   useEffect(() => {
-    console.log(cropSize);
     if (cropSize !== undefined) {
-      console.log(props.item.video_src?.SD);
       setOptions({
         autoplay: true,
         muted: true,
@@ -80,10 +77,9 @@ const PreviewModal = (props: PreviewProps) => {
       });
     }
     return () => {
-      dispatch(resetCropSize());
       dispatch(uiActions.toggleBillnoardPlaying());
     };
-  }, [cropSize]);
+  }, [cropSize, showMiniModel]);
 
   const toggleSound = () => {
     setSoundOn((prev) => {
@@ -102,14 +98,16 @@ const PreviewModal = (props: PreviewProps) => {
     player.on('ended', () => setImageOpacity(1));
   };
 
-  const onTrailerStart = () => {
-    setPlaying(true);
+  const onTrailerStart = () => {};
+
+  const onLikeHover = () => {
+    setShowMiniModal(true);
   };
 
-  const [showMiniModel, setShowMiniModal] = useState(false);
-  const onLikeHover = () => setShowMiniModal(true);
   const onHideModal = props.hideModal;
-  const onMiniModalMouseLeave = () => setShowMiniModal(false);
+  const onMiniModalMouseLeave = () => {
+    setShowMiniModal(false);
+  };
   const onTrailerStartPlaying = () => {
     const ref = playerRef.current!;
     ref.muted(false);
