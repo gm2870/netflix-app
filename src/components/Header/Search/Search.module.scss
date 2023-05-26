@@ -1,8 +1,16 @@
+@use '../../../../styles/abstracts' as *;
+
 .search {
-  width: 300px;
+  width: 150px;
   position: relative;
   display: flex;
   align-items: center;
+  @include respond(tablet) {
+    width: 200px;
+  }
+  @include respond(small-desktop) {
+    width: 250px;
+  }
   &__icon {
     fill: #fff;
     position: absolute;
@@ -15,6 +23,10 @@
     background-color: #000;
     padding-left: 2rem;
     color: white;
+    font-size: 1.3rem;
+    @include respond(small-desktop) {
+      font-size: 1.3rem;
+    }
     &:focus {
       outline: none;
     }
