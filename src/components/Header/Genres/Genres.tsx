@@ -72,7 +72,7 @@ const Genres = ({ genres }: { genres: Genre[] }) => {
       backgroundColor: '#000',
       border: '1px solid #fff',
       color: '#fff',
-      fontSize: 16,
+      fontSize: '1.2rem',
       padding: '5px 10px',
       display: 'flex',
       alignItems: 'center',
@@ -94,6 +94,7 @@ const Genres = ({ genres }: { genres: Genre[] }) => {
         left: `${position.left}px !important`,
         border: '1px solid hsla(0,0%,100%,.15)',
         borderRadius: 0,
+        overflow: 'auto',
       },
     },
   };
@@ -104,7 +105,7 @@ const Genres = ({ genres }: { genres: Genre[] }) => {
       {!router.query.g && (
         <Fragment>
           <span className={classes.type}>{type}</span>
-          <FormControl sx={{ mx: 0, minWidth: 120 }} size="small">
+          <FormControl sx={{ mx: 0 }} size="small">
             <Select
               ref={inputComponent}
               input={<BootstrapInput />}

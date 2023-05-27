@@ -6,6 +6,7 @@
 .row {
   z-index: 3;
   position: relative;
+  overflow: hidden;
 }
 .sliderContent {
   margin: 3vw 0;
@@ -38,12 +39,17 @@
   }
 }
 .slider {
-  padding: 0 4%;
+  padding: 0 7%;
   overflow-x: visible;
   margin: 0;
   z-index: 2;
   position: relative;
-
+  @include respond(phone) {
+    padding: 0 6%;
+  }
+  @include respond(tablet) {
+    padding: 0 4%;
+  }
   @include respond(normal-desktop) {
     padding: 0 60px;
   }
@@ -58,21 +64,31 @@
   &__prev {
     position: absolute;
     top: 0;
-    width: 4%;
+    width: 7%;
     height: 100%;
     color: #fff;
     background: hsla(0, 0%, 8%, 0.5);
     display: flex;
     align-items: center;
-    justify-content: center;
     z-index: 120;
     cursor: pointer;
     svg {
       width: 30px;
       height: 30px;
+      position: absolute;
+      right: 10px;
+      @include respond(tablet) {
+        right: unset;
+      }
     }
     &:hover {
       background: hsla(0, 0%, 8%, 0.7);
+    }
+    @include respond(phone) {
+      width: 6%;
+    }
+    @include respond(tablet) {
+      width: 4%;
     }
     @include respond(normal-desktop) {
       width: 60px;
@@ -91,17 +107,16 @@
   }
   &__pagination {
     display: block;
-
-    @include respond(normal-desktop) {
-      right: 62px;
-    }
     list-style-type: none;
-    margin: -24px 0 12px !important;
+    margin: -15px 0 12px !important;
     padding: 0;
     position: absolute;
     right: 4%;
     top: 0;
-
+    @include respond(small-desktop) {
+      right: 62px;
+      margin: -24px 0 12px !important;
+    }
     li {
       background-color: #4d4d4d;
       display: inline-block;

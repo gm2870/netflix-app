@@ -1,3 +1,5 @@
+@use '../../../../styles/abstracts' as *;
+
 .genreWrapper {
   display: flex;
   color: #fff;
@@ -31,7 +33,11 @@
     cursor: default;
     display: block;
     line-height: 24px;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+
+    @include respond(normal-desktop) {
+      font-size: 1rem;
+    }
   }
   &__link {
     padding: 1px 20px 1px 10px;

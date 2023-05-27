@@ -17,13 +17,13 @@ const Header = () => {
   const [showNavigationLinks, setNavigationLinks] = useState(false);
   const [showNotifications, setShowNotification] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
-
+  const navDropdown = useRef<HTMLDivElement>(null);
+  const browseButtonRef = useRef<any>(null);
   const userDropdown = useRef<HTMLDivElement>(null);
   const notiDropdown = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const navigationToggleHandler = () =>
-    setNavigationLinks(!showNavigationLinks);
+  const navigationToggleHandler = () => setNavigationLinks(true);
   useEffect(() => {
     if (router.query.q) {
       setShowSearch(true);
@@ -77,6 +77,7 @@ const Header = () => {
   const handleHideSearch = ({ target }: { target: Element }) => {
     if (searchRef.current && !searchRef.current.contains(target)) {
       setShowSearch(false);
+      setNavigationLinks(false);
     }
   };
 
@@ -87,6 +88,21 @@ const Header = () => {
       dropdownRef.style.opacity = showUserDropdown ? '1' : '0';
     }
   }, [showUserDropdown]);
+  const handleOutsideClick = (event: any) => {
+    if (
+      navDropdown.current &&
+      !navDropdown.current.contains(event.target) &&
+      !browseButtonRef.current.contains(event.target)
+    ) {
+      console.log(event.target);
+      setNavigationLinks(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('click', handleOutsideClick);
+    return () => window.removeEventListener('click', handleOutsideClick);
+  }, [handleOutsideClick]);
 
   useEffect(() => {
     const dropdownRef = notiDropdown.current;
@@ -125,6 +141,7 @@ const Header = () => {
         </div>
         <List className={classes.navigation}>
           <ListItem
+            ref={browseButtonRef}
             onClick={navigationToggleHandler}
             className={classes.navigation__menu}
           >
@@ -135,7 +152,7 @@ const Header = () => {
             />
           </ListItem>
           {showNavigationLinks && (
-            <div className={classes.navigation__dropdown}>
+            <div ref={navDropdown} className={classes.navigation__dropdown}>
               {navigations.map((nav) => (
                 <ListItem
                   key={nav.name}

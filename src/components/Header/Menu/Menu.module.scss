@@ -1,9 +1,14 @@
+@use '../../../../styles/abstracts' as *;
+
 .menu {
   display: flex;
   flex-direction: column;
-  width: 220px;
+  width: 20rem;
   background-color: rgba(0, 0, 0, 0.9);
   border: 1px solid hsla(0, 0%, 100%, 0.15);
+  @include respond(normal-desktop) {
+    width: 25rem;
+  }
   &__icon {
     margin: 0 1rem;
     width: 20px;
@@ -44,7 +49,7 @@
 .arrow {
   position: absolute;
   right: 2rem;
-  top: -1.4rem;
+  top: -1.3rem;
   color: #fff;
   display: inline-block;
 }

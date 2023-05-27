@@ -114,7 +114,7 @@ export const forceSrcUpdate = catchAsync(async (model) => {
 
     i++;
   }
-  // if (i === items.length) process.exit();
+  if (i === items.length) process.exit();
 });
 
 export const updateItemSrc = async (model, media) => {
@@ -166,8 +166,8 @@ if (process.argv[2] === '--import-tv') {
   importTVMedia();
 } else if (process.argv[2] === '--delete') {
   deleteMany();
-} else if (process.argv[2] === '--update-src') {
-  UpdateManySrc('movie');
+} else if (process.argv[2] === '--update-many') {
+  forceSrcUpdate('movie');
 } else if (process.argv[2] === '--update') {
   updateOne('movie', 512195);
 } else if (process.argv[2] === '--import-genres') {

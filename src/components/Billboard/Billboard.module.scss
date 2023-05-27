@@ -41,7 +41,7 @@
   }
 }
 .info {
-  bottom: 35%;
+  bottom: 30%;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -50,6 +50,9 @@
   top: 0;
   width: 36%;
   z-index: 4;
+  @include respond(tablet) {
+    bottom: 35%;
+  }
   @include respond(small-desktop) {
     bottom: 40%;
   }
