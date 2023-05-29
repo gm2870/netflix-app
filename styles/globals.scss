@@ -50,7 +50,7 @@ ul {
   list-style-type: none;
 }
 .MuiButtonBase-root {
-  text-transform: none;
+  text-transform: none !important;
 }
 
 .mr-1 {
@@ -116,14 +116,14 @@ img {
 .vjs-controls-disabled .vjs-control,
 .vjs-controls-disabled .vjs-slider,
 .vjs-controls-disabled .vjs-fullscreen-control {
-  display: none;
+  display: none !important;
 }
 
 .MuiInputLabel-root::after {
   border-bottom: none !important;
 }
 .MuiInputBase-root::before {
-  display: none;
+  display: none !important;
 }
 
 video {

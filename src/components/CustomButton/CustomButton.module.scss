@@ -2,8 +2,8 @@
 
 .button {
   border-radius: $primary-border-radius;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
   &--white {
     background-color: #fff;
   }

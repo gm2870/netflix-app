@@ -32,13 +32,13 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 app.use(cookieParser());
 
-app.use(
-  cors({
-    origin: 'http://localhost:3000',
-    credentials: true,
-  })
-);
-if (process.env.NODE_ENV === 'production') app.use('/', emptyAssets);
+// app.use(
+//   cors({
+//     origin: 'http://localhost:3000',
+//     credentials: true,
+//   })
+// );
+// if (process.env.NODE_ENV === 'production') app.use('/', emptyAssets);
 
 app.use('/', viewRoutes);
 

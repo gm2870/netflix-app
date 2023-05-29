@@ -11,6 +11,8 @@ import { FieldValues, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '../src/hooks';
 import { checkEmail } from '../src/store/redux/auth/auth-actions';
 import CustomButton from '../src/components/CustomButton/CustomButton';
+import Footer from '../src/components/Footer/Footer';
+import Image from 'next/image';
 const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email('Please enter a valid email address.')
@@ -68,10 +70,12 @@ export default function Home() {
     <Fragment>
       <div className={classes.story}>
         <header className={classes.header}>
-          <img
-            src="/images/netflix-logo.svg"
+          <Image
+            src="/images/netflix.png"
             alt="Netflix logo"
             className={classes.header__logo}
+            width={130}
+            height={30}
           />
 
           <div className={classes['header__language']}>
@@ -100,7 +104,13 @@ export default function Home() {
           </div>
         </header>
         <div className={classes.hero}>
-          <img className={classes.hero__image} src="/images/hero-bg.jpg" />
+          <Image
+            width={2000}
+            height={1000}
+            className={classes.hero__image}
+            src="/images/hero-bg.jpg"
+            alt="hero background inage"
+          />
           <div className={classes.hero__gradient}></div>
           <div className={classes.hero__text}>
             <div className={classes.description}>
@@ -168,7 +178,12 @@ export default function Home() {
           </div>
           <div className={classes['watch-tv__gif']}>
             <div className={classes['watch-tv__img']}>
-              <img src="/images/watch-tv.png" />
+              <Image
+                src="/images/watch-tv.png"
+                alt="watch tv"
+                width={500}
+                height={400}
+              />
               <div className={classes['watch-tv__video']}>
                 <video autoPlay muted loop playsInline>
                   <source
@@ -191,10 +206,20 @@ export default function Home() {
           </div>
           <div className={classes.downloadAndWatch__gif}>
             <div className={classes.downloadAndWatch__img}>
-              <img src="/images/download-watch.jpg" />
+              <Image
+                src="/images/download-watch.jpg"
+                alt="download and watch"
+                width={550}
+                height={400}
+              />
               <div className={classes.downloader}>
                 <div className={classes.downloader__img}>
-                  <img src="/images/stranger-things.png" />
+                  <Image
+                    src="/images/stranger-things.png"
+                    alt="stranger things"
+                    width={50}
+                    height={70}
+                  />
                 </div>
                 <div className={classes.downloader__text}>
                   <p>Stranger Things</p>
@@ -206,6 +231,7 @@ export default function Home() {
           </div>
         </div>
       </AnimationCardComponent>
+      <Footer />
     </Fragment>
   );
 }

@@ -11,6 +11,8 @@ import { FieldValues, useForm } from 'react-hook-form';
 import CustomButton from '../../src/components/CustomButton/CustomButton';
 import { useLoginMutation } from '@/src/services/query/auth';
 import { useRouter } from 'next/router';
+import Footer from '@/src/components/Footer/Footer';
+import Image from 'next/image';
 
 const CustomInput = styled(TextField)({
   '& label': {
@@ -87,15 +89,23 @@ const Login = () => {
     <div className={classes.login}>
       <header className={classes.header}>
         <Link href="/" className={classes.header__link}>
-          <img
-            src="/images/netflix-logo.svg"
+          <Image
+            src="/images/netflix.png"
             alt="Netflix logo"
             className={classes.header__logo}
+            width={130}
+            height={30}
           />
         </Link>
       </header>
       <div className={classes.login__imageContainer}>
-        <img className={classes.login__image} src="/images/hero-bg.jpg" />
+        <Image
+          width={2000}
+          height={1000}
+          className={classes.login__image}
+          src="/images/hero-bg.jpg"
+          alt="hero background inage"
+        />
       </div>
 
       <div className={classes.login__container}>
@@ -206,31 +216,7 @@ const Login = () => {
           </div>
         </div>
       </div>
-      <div className={classes.footer}>
-        <div className={classes.footer__body}>
-          <p className={classes.footer__top}>Questions? Call 0800-022-5173</p>
-          <ul className={classes.footer__links}>
-            <li className={classes.footer__linkItem}>
-              <Link href="/">FAQ</Link>
-            </li>
-            <li className={classes.footer__linkItem}>
-              <Link href="/">Help Center</Link>
-            </li>
-            <li className={classes.footer__linkItem}>
-              <Link href="/">Terms of Use</Link>
-            </li>
-            <li className={classes.footer__linkItem}>
-              <Link href="/">Privacy</Link>
-            </li>
-            <li className={classes.footer__linkItem}>
-              <Link href="/">Cookie Preferences</Link>
-            </li>
-            <li className={classes.footer__linkItem}>
-              <Link href="/">Corporate Information</Link>
-            </li>
-          </ul>
-        </div>
-      </div>
+      <Footer />
     </div>
   );
 };
