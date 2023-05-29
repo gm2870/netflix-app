@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon --watch api/ --watch src/  server.mjs",
     "build": "next build",
-    "start": "next start",
+    "start": "node server.mjs",
     "lint": "next lint"
   },
   "dependencies": {

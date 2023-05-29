@@ -5,9 +5,8 @@ const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
 import { parse } from 'url';
 import dbConnect from './api/libs/dbConnect.mjs';
-const app = next({});
+const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
-
 app.prepare().then(async () => {
   // server.use(function (req, res, next) {
   //   req.url = req.originalUrl.replace('/http://localhost:3000/_next', '/_next');

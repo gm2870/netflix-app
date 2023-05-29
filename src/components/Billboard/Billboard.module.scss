@@ -4,6 +4,7 @@
   background-color: #000;
   padding-bottom: 40%;
   margin-bottom: 20px;
+  min-height: 1000px;
 }
 
 .billboard {
@@ -74,8 +75,7 @@
       font-size: 1.6rem;
     }
   }
-  &__fantcyTitle {
-  }
+
   &__icon {
     margin-right: 0.5rem;
     font-size: 1.5rem;
@@ -89,21 +89,21 @@
   }
 }
 .colorPrimary {
-  color: #000;
-  background-color: #fff;
-  font-size: 1rem;
-  font-weight: 700;
-  margin-right: 0.5rem;
-  padding: 0rem;
-  padding-left: 1.1rem;
-  padding-right: 1.5rem;
-  flex-shrink: 0;
+  color: #000 !important;
+  background-color: #fff !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  margin-right: 0.5rem !important;
+  padding: 0rem !important;
+  padding-left: 1.1rem !important;
+  padding-right: 1.5rem !important;
+  flex-shrink: 0 !important;
   @include respond(small-desktop) {
-    margin-right: 1rem;
-    padding: 0.5rem;
-    font-size: 1.6rem;
-    padding-left: 1.5rem;
-    padding-right: 2.4rem;
+    margin-right: 1rem !important;
+    padding: 0.5rem !important;
+    font-size: 1.6rem !important;
+    padding-left: 1.5rem !important;
+    padding-right: 2.4rem !important;
   }
 
   &:hover {
@@ -111,18 +111,18 @@
   }
 }
 .gray {
-  font-size: 1rem;
-  font-weight: 500;
-  display: flex;
-  flex-shrink: 0;
-  padding-left: 1.1rem;
-  padding-right: 1.5rem;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  display: flex !important;
+  flex-shrink: 0 !important;
+  padding-left: 1.1rem !important;
+  padding-right: 1.5rem !important;
   @include respond(small-desktop) {
-    font-size: 1.6rem;
+    font-size: 1.6rem !important;
   }
-  background-color: rgba(109, 109, 110, 0.7);
+  background-color: rgba(109, 109, 110, 0.7) !important;
   &:hover {
-    background-color: rgba(109, 109, 110, 0.2);
+    background-color: rgba(109, 109, 110, 0.2) !important;
   }
 }
 .actions {

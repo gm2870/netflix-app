@@ -101,8 +101,9 @@ const Billboard = () => {
     config: { duration: 1300 },
   });
   const type = (router.query.type_id as string) || '0';
-  const { data: item, isLoading } = useGetBillboardMediaQuery(type);
+  const { data: item, isLoading, isFetching } = useGetBillboardMediaQuery(type);
   const [itemId, setItemId] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const { data: cropSize } = useGetCropSizeQuery(
     {
@@ -116,10 +117,10 @@ const Billboard = () => {
     if (item) {
       setItemId(item.id);
       if (cropSize !== undefined) {
-        // setPlayer({
-        //   type: 'play',
-        //   payload: { src: item.video_src.HD, cropSize },
-        // });
+        setPlayer({
+          type: 'play',
+          payload: { src: item.video_src.HD, cropSize },
+        });
       }
     }
   }, [item, cropSize]);
@@ -145,9 +146,14 @@ const Billboard = () => {
     billboardPkaying ? playerRef.current?.pause() : playerRef.current?.play();
   }, [billboardPkaying]);
 
+  useEffect(() => {
+    const loading = isLoading || isFetching;
+    setLoading(loading);
+  }, [isLoading, isFetching]);
+
   return (
     <section className={classes.billboardRow}>
-      {!isLoading && (
+      {!loading && (
         <div className={classes.billboard}>
           {player.showImage && (
             <div className={classes.imageWraper}>
@@ -226,12 +232,10 @@ const Billboard = () => {
               />
             </div>
           )}
-          <div>
-            <div className={classes.billboard__gradient}></div>
-          </div>
+          <div className={classes.billboard__gradient}></div>
         </div>
       )}
-      {isLoading && (
+      {loading && (
         <NoSsr>
           <div className={classes.loaderWrapper}>
             <SliderLoader></SliderLoader>
