@@ -9,7 +9,6 @@ import mediaRoutes from './routes/mediaRoutes.mjs';
 import globalErrorHandler from './controllers/errorController.mjs';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-import { emptyAssets } from './controllers/streamController.mjs';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';

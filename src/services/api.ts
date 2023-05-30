@@ -7,7 +7,7 @@ import {
 import { Mutex } from 'async-mutex';
 import { authActions } from '../store/redux/auth/auth-slice';
 
-export const API_URL = 'http://localhost:8001/api/v1';
+export const API_URL = process.env.API_URL;
 
 const mutex = new Mutex();
 const baseQuery = fetchBaseQuery({ baseUrl: API_URL });

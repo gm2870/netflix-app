@@ -2,7 +2,7 @@ import next from 'next';
 import server from './api/app.mjs';
 const port = process.env.PORT || 3000;
 const dev = process.env.NODE_ENV !== 'production';
-const hostname = 'localhost';
+const hostname = '162.19.208.190';
 import { parse } from 'url';
 import dbConnect from './api/libs/dbConnect.mjs';
 const app = next({ dev, hostname, port });
