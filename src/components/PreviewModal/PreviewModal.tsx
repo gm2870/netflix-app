@@ -76,9 +76,6 @@ const PreviewModal = (props: PreviewProps) => {
         cropSize,
       });
     }
-    return () => {
-      dispatch(uiActions.toggleBillnoardPlaying());
-    };
   }, [cropSize, showMiniModel]);
 
   const toggleSound = () => {
@@ -93,9 +90,12 @@ const PreviewModal = (props: PreviewProps) => {
     playerRef.current = player;
     player.on('play', () => {
       setImageOpacity(0);
-      dispatch(uiActions.toggleBillnoardPlaying());
+      dispatch(uiActions.setBillnoardPlaying(false));
     });
-    player.on('ended', () => setImageOpacity(1));
+    player.on('ended', () => {
+      setImageOpacity(1);
+      dispatch(uiActions.setBillnoardPlaying(true));
+    });
   };
 
   const onTrailerStart = () => {};

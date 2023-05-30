@@ -42,7 +42,7 @@ const initialPlayerState = {
 const Billboard = () => {
   const router = useRouter();
   const playerRef = useRef<videojs.Player | null>(null);
-  const billboardPkaying: boolean = useAppSelector(
+  const billboardPlaying: boolean = useAppSelector(
     (state) => state.ui.billboardPlaying
   );
   const reducer = (state: any, action: any) => {
@@ -143,14 +143,24 @@ const Billboard = () => {
     setPlayer({ type: 'toggleVolumn' });
   };
   useEffect(() => {
-    billboardPkaying ? playerRef.current?.pause() : playerRef.current?.play();
-  }, [billboardPkaying]);
+    if (playerRef.current) {
+      if (billboardPlaying && playerRef.current.paused()) {
+        playerRef.current.play();
+      } else if (!billboardPlaying && !playerRef.current.paused()) {
+        playerRef.current.pause();
+      }
+    }
+  }, [billboardPlaying]);
 
   useEffect(() => {
     const loading = isLoading || isFetching;
     setLoading(loading);
   }, [isLoading, isFetching]);
-
+  const opc = useSpring({
+    from: { opacity: 1 },
+    to: { opacity: 0 },
+    delay: 5000,
+  });
   return (
     <section className={classes.billboardRow}>
       {!loading && (
@@ -181,9 +191,12 @@ const Billboard = () => {
               <img src={`/images/${name}.webp`} alt="title logo" />
             </animated.div>
 
-            {!player.animatingTitle && (
-              <div className={classes.info__description}>{item?.overview}</div>
+            {player.playing && (
+              <animated.div style={opc} className={classes.info__description}>
+                {item?.overview}
+              </animated.div>
             )}
+
             <div className={classes.info__actions}>
               <CustomButton
                 variant="contained"

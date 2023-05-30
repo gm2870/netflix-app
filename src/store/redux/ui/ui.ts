@@ -17,8 +17,8 @@ const uiSlice = createSlice({
     toggleLoader: (state) => {
       state.loading = !state.loading;
     },
-    toggleBillnoardPlaying: (state) => {
-      state.billboardPlaying = !state.billboardPlaying;
+    setBillnoardPlaying: (state, action) => {
+      state.billboardPlaying = action.payload;
     },
   },
 });

@@ -167,9 +167,9 @@ if (process.argv[2] === '--import-tv') {
 } else if (process.argv[2] === '--delete') {
   deleteMany();
 } else if (process.argv[2] === '--update-many') {
-  forceSrcUpdate('movie');
+  forceSrcUpdate('tv');
 } else if (process.argv[2] === '--update') {
-  updateOne('movie', 512195);
+  updateOne('tv', 67026);
 } else if (process.argv[2] === '--import-genres') {
   importGenres();
 } else if (process.argv[2] === '--import-movie') {

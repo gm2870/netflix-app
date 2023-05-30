@@ -4,6 +4,8 @@ import classes from './MediaItem.module.scss';
 import PreviewModal from '../PreviewModal/PreviewModal';
 import { Media } from '../../store/redux/media/model';
 import Image from 'next/image';
+import { uiActions } from '@/src/store/redux/ui/ui';
+import { useAppDispatch } from '@/src/hooks';
 
 const MediaItem = ({
   item,
@@ -16,6 +18,7 @@ const MediaItem = ({
   isFirst?: boolean;
   isLast?: boolean;
 }) => {
+  const dispatch = useAppDispatch();
   const getSX = () => {
     const sx = {
       position: 'absolute',
@@ -30,7 +33,6 @@ const MediaItem = ({
     const offsetWidth = box.offsetWidth;
     const left = box.getBoundingClientRect().left;
     const top = box.getBoundingClientRect().top + window.scrollY;
-    console.log(box.getBoundingClientRect().left);
     sx.width = `${offsetWidth * 1.5}px`;
     sx.top = `${top - offsetWidth * 0.4}px`;
     if (isFirst) {
@@ -52,6 +54,7 @@ const MediaItem = ({
     setOpen(true);
   };
   const hideModal = () => {
+    dispatch(uiActions.setBillnoardPlaying(true));
     setOpen(false);
   };
 
