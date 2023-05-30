@@ -17,7 +17,7 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-dotenv.config({ path: `${__dirname}/../../.env.local` });
+dotenv.config({ path: `${__dirname}/../../.env` });
 
 mongoose.connect(process.env.MONGODB_URI);
 

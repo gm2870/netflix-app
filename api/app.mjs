@@ -12,12 +12,12 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { forceSrcUpdate, updateManySrc } from './dev-data/dev.mjs';
+import { forceSrcUpdate } from './dev-data/dev.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import schedule from 'node-schedule';
 import catchAsync from './utils/catchAsync.mjs';
-dotenv.config({ path: `${__dirname}/../.env.local` });
+dotenv.config({ path: `${__dirname}/../.env` });
 
 const app = express();
 
@@ -31,12 +31,12 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 app.use(cookieParser());
 
-// app.use(
-//   cors({
-//     origin: 'http://localhost:3000',
-//     credentials: true,
-//   })
-// );
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  })
+);
 // if (process.env.NODE_ENV === 'production') app.use('/', emptyAssets);
 
 app.use('/', viewRoutes);

@@ -19,7 +19,6 @@ const Browse = () => {
     const loading = isLoading || isFetching;
     setLoading(loading);
   }, [isLoading, isFetching]);
-
   return (
     <section className={classes.browse}>
       <Head>
