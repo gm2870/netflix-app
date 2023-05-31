@@ -5,7 +5,7 @@ const dev = process.env.NEXT_PUBLIC_NODE_ENV !== 'production';
 const hostname = 'localhost';
 import { parse } from 'url';
 import dbConnect from './api/libs/dbConnect.mjs';
-const app = next({ dev, hostname, port });
+const app = next({ dev: true, port });
 const handle = app.getRequestHandler();
 app.prepare().then(async () => {
   // server.use(function (req, res, next) {

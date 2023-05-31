@@ -154,7 +154,7 @@ const Login = () => {
                 className={classes.form__error}
               >{`${errors.password.message}`}</p>
             )}
-            {(error as any)?.data.message && (
+            {(error as any)?.data?.message && (
               <p className={classes.form__error}>
                 {(error as any).data.message}
               </p>

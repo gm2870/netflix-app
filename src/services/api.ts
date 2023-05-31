@@ -9,7 +9,7 @@ import { authActions } from '../store/redux/auth/auth-slice';
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const mutex = new Mutex();
-const baseQuery = fetchBaseQuery({ baseUrl: API_URL });
+const baseQuery = fetchBaseQuery({ baseUrl: API_URL, credentials: 'include' });
 export const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
   unknown,

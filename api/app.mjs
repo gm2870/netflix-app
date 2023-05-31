@@ -33,7 +33,8 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: '*',
+    origin: 'http://162.19.208.190',
+    credentials: true,
   })
 );
 // if (process.env.NODE_ENV === 'production') app.use('/', emptyAssets);
