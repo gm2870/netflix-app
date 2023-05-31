@@ -33,8 +33,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: 'http://localhost:3000',
-    credentials: true,
+    origin: '*',
   })
 );
 // if (process.env.NODE_ENV === 'production') app.use('/', emptyAssets);
@@ -47,11 +46,11 @@ app.use('/api/v1/genre', genreRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/media', mediaRoutes);
 app.use('/api/v1/stream', streamRoutes);
-// app.use(express.static(join(__dirname, 'public')));
+
+app.use(globalErrorHandler);
 const rule = new schedule.RecurrenceRule();
 rule.hour = [4, 11, 19];
 rule.minute = 30;
-app.use(globalErrorHandler);
 schedule.scheduleJob(
   rule,
   catchAsync(async () => {

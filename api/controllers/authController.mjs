@@ -23,7 +23,8 @@ const createSendToken = catchAsync(async (user, statusCode, res) => {
     ),
     httpOnly: true,
   };
-  // if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+  if (process.env.NEXT_PUBLIC_NODE_ENV === 'production')
+    cookieOptions.secure = true;
   res.cookie('jwt', token, cookieOptions);
   user.refreshToken = await generateRefreshToken(user._id);
   const refreshOptions = {
@@ -81,6 +82,8 @@ export const login = catchAsync(async (req, res, next) => {
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError('Email or password is wrong', 401));
   }
+  console.log(req.body);
+
   createSendToken(user, 200, res);
 });
 
@@ -110,6 +113,7 @@ export const protect = catchAsync(async (req, res, next) => {
 });
 
 export const handleRefreshToken = catchAsync(async (req, res, next) => {
+  console.log('refresh');
   const token = getRefreshToken(req);
   const tokenObj = await Token.findOne({
     token,

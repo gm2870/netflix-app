@@ -58,11 +58,12 @@ const sendErrorProd = (err, req, res) => {
 };
 
 const globalErrorHandler = (err, req, res, next) => {
+  console.log();
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NEXT_PUBLIC_NODE_ENV === 'development') {
     sendErrorDev(err, req, res);
-  } else if (process.env.NODE_ENV === 'production') {
+  } else if (process.env.NEXT_PUBLIC_NODE_ENV === 'production') {
     let error = { ...err };
     error.message = err.message;
     if (err.name === 'CastError') {
