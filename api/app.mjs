@@ -33,10 +33,11 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: 'http://162.19.208.190',
+    origin: 'http://myflix.alifarzanegan.ir',
     credentials: true,
   })
 );
+
 // if (process.env.NODE_ENV === 'production') app.use('/', emptyAssets);
 
 app.use('/', viewRoutes);

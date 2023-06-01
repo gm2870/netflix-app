@@ -2,10 +2,9 @@ import next from 'next';
 import server from './api/app.mjs';
 const port = process.env.NEXT_PUBLIC_PORT || 3000;
 const dev = process.env.NEXT_PUBLIC_NODE_ENV !== 'production';
-const hostname = 'localhost';
 import { parse } from 'url';
 import dbConnect from './api/libs/dbConnect.mjs';
-const app = next({ dev: true, port });
+const app = next({ dev, port });
 const handle = app.getRequestHandler();
 app.prepare().then(async () => {
   // server.use(function (req, res, next) {
