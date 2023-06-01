@@ -29,8 +29,8 @@
     margin: 0 auto;
     max-width: 450px;
     z-index: 2;
+    margin-bottom: 5.5rem;
     @include respond(tablet) {
-      margin-bottom: 5.5rem;
       min-height: 660px;
       padding: 60px 68px 40px;
     }
