@@ -195,11 +195,11 @@
         margin-left: 0.5rem;
         margin-top: 0;
       }
-      &__text {
-        width: 100%;
-        display: flex;
-        align-items: center;
-      }
+    }
+    &__text {
+      width: 100%;
+      display: flex;
+      align-items: center;
     }
     @include respond(tablet) {
       flex-direction: row;
