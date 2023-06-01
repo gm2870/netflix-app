@@ -58,7 +58,7 @@
   margin-left: 0.5rem;
   //   flex-direction: column;
   &__tab {
-    display: none;
+    display: none !important;
     @include respond(tablet) {
       display: flex;
       padding: 4px 8px !important;
