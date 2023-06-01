@@ -2,7 +2,8 @@ import Link from 'next/link';
 import classes from './index.module.scss';
 import { Button, styled, TextField } from '@mui/material';
 import AnimationCardComponent from '../src/components/animation-card/animation-card';
-import { Fragment, useCallback } from 'react';
+import { Fragment } from 'react';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import CircularProgress from '@mui/material/CircularProgress';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import * as Yup from 'yup';
@@ -71,8 +72,8 @@ export default function Home() {
       <div className={classes.story}>
         <header className={classes.header}>
           <Image
-            src="/images/netflix.png"
-            alt="Netflix logo"
+            src="/images/myflix.png"
+            alt="myflix logo"
             className={classes.header__logo}
             width={130}
             height={30}
@@ -152,8 +153,8 @@ export default function Home() {
                   {loading ? (
                     <CircularProgress color="inherit" />
                   ) : (
-                    <span style={{ width: '100%' }}>
-                      Get Started<i className="right-arrow"></i>
+                    <span className={classes.email__text}>
+                      Get Started <ArrowForwardIosIcon />
                     </span>
                   )}
                 </Button>

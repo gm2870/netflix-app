@@ -1,17 +1,12 @@
 @use './abstracts' as *;
 html {
-  font-size: 1.5vw;
+  font-size: 10px;
 
   @include respond(tablet) {
-    font-size: 1.2vw;
+    font-size: 12px;
   }
+
   @include respond(small-desktop) {
-    font-size: 0.85vw;
-  }
-  @include respond(normal-desktop) {
-    font-size: 0.75vw;
-  }
-  @include respond(big-desktop) {
     font-size: 14px;
   }
 }

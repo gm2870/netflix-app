@@ -90,8 +90,8 @@ const Login = () => {
       <header className={classes.header}>
         <Link href="/" className={classes.header__link}>
           <Image
-            src="/images/netflix.png"
-            alt="Netflix logo"
+            src="/images/myflix.png"
+            alt="myflix logo"
             className={classes.header__logo}
             width={130}
             height={30}
@@ -193,7 +193,7 @@ const Login = () => {
           </form>
         </div>
         <div className={classes['login__signup-now']}>
-          <span>New to Netflix? </span>
+          <span>New to Myflix? </span>
           <Link href="/signup">Sign up Now.</Link>
         </div>
         <div className={classes.captcha}>

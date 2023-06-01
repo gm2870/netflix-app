@@ -46,9 +46,12 @@
     position: relative;
   }
   &__select-icon {
-    top: 10px;
+    top: 7px;
     right: 5px;
     position: absolute;
+    @include respond(small-desktop) {
+      top: 10px;
+    }
   }
   @include respond(small-desktop) {
     max-width: calc(66.66666666% - 6rem);
@@ -191,6 +194,11 @@
       @include respond(tablet) {
         margin-left: 0.5rem;
         margin-top: 0;
+      }
+      &__text {
+        width: 100%;
+        display: flex;
+        align-items: center;
       }
     }
     @include respond(tablet) {
