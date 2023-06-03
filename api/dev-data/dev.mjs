@@ -1,6 +1,7 @@
 import Movie from '../models/media/movieModel.mjs';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import fs from 'fs';
 import { getSrcWithVideoId, getVideoSrc } from '../utils/urlGrabber.mjs';
 import {
   getTitleId,
@@ -136,6 +137,9 @@ export const updateItemSrc = async (model, media) => {
 
   if (!videoData || !videoData.SD) {
     console.log(`${name} failed`);
+    fs.appendFile('failed.txt', `\n${name} failed`, 'utf-8', (err) =>
+      console.log(err)
+    );
     return;
   }
   console.log(videoData);

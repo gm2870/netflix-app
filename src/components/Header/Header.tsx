@@ -94,7 +94,6 @@ const Header = () => {
       !navDropdown.current.contains(event.target) &&
       !browseButtonRef.current.contains(event.target)
     ) {
-      console.log(event.target);
       setNavigationLinks(false);
     }
   };
@@ -163,11 +162,12 @@ const Header = () => {
               ))}
             </div>
           )}
-          {navigations.map((nav) => (
-            <ListItem key={nav.name} className={classes.navigation__tab}>
-              <Link href={nav.link}>{nav.name}</Link>
-            </ListItem>
-          ))}
+          {!showNavigationLinks &&
+            navigations.map((nav) => (
+              <ListItem key={nav.name} className={classes.navigation__tab}>
+                <Link href={nav.link}>{nav.name}</Link>
+              </ListItem>
+            ))}
         </List>
 
         <div className={classes.account}>
