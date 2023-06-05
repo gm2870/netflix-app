@@ -33,7 +33,7 @@
 
   &__language {
     display: flex;
-
+    z-index: 3;
     .select-container {
       margin-right: 1rem !important;
     }
@@ -62,6 +62,7 @@
   grid-area: 1 / 1 / span 3 / span 3;
   border-bottom: 8px solid #222;
   display: grid;
+  position: relative;
   &__image {
     grid-area: 1 / 1 / span 3 / span 3;
     width: 100%;
@@ -131,6 +132,8 @@
     }
   }
   &__error {
+    max-width: 36.625rem;
+    margin: 10px auto;
     text-align: initial;
     color: #ffa00a;
   }
