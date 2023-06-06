@@ -16,7 +16,6 @@ import useSliderConfig from '@/src/hooks/use-slider-config';
 const Titles = () => {
   const router = useRouter();
   const type = (router.query.type_id as string) || '1';
-  console.log(type);
   const genreId = router.query.g as string;
   const [genresWithTitles, setGenresWithTitles] = useState<GenreWithMedia[]>(
     []

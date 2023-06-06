@@ -1,26 +1,25 @@
 import classes from './search.module.scss';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../../src/hooks';
-import { searchTitle } from '../../src/store/redux/search/search-actions';
-
+import { useEffect, useState } from 'react';
 import MediaItem from '../../src/components/MediaItem/MediaItem';
 import SliderLoader from '../../src/components/loader/SliderLoader';
-import Slider from '../../src/components/Slider/Slider';
 import Header from '../../src/components/Header/Header';
 import Head from 'next/head';
+import GridList from '@/src/components/GridList/GridList';
+import { Media } from '@/src/store/redux/media/model';
+import useSliderConfig from '@/src/hooks/use-slider-config';
+import { useSearchTitleQuery } from '@/src/services/query/media';
 
 const Search = () => {
-  const loading = useAppSelector((state) => state.ui.loading);
+  const [name,setName] = useState('');
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const result = useAppSelector((state) => state.search.result);
+  const {data,isLoading,isFetching} = useSearchTitleQuery(name,{skip:!name});
   useEffect(() => {
     if (router.isReady && router.query.q) {
-      dispatch(searchTitle(router.query.q.toString()));
+      setName(router.query.q.toString());
     }
-  }, [dispatch, router.isReady, router.query.q]);
-
+  }, [router.isReady, router.query.q]);
+  const { rowItems } = useSliderConfig();
   return (
     <div className={classes.search}>
       <Head>
@@ -28,9 +27,18 @@ const Search = () => {
       </Head>
       <Header />
       <div className={classes.search__gallery}>
-        <Slider titles={result} />
-        {!result.length && loading && <SliderLoader />}
-        {!loading && !result.length && (
+        {data && (!isLoading && !isFetching) && <GridList>
+        {data.map((t: Media, i: number) => (
+              <MediaItem
+                isFirst={i % rowItems === 0}
+                isLast={(i + 1) % rowItems === 0}
+                key={i}
+                item={t}
+              />
+            ))}
+        </GridList>}
+        {(isLoading || isFetching) && <SliderLoader />}
+        {(!isLoading && !isFetching) && !data?.length && (
           <div className={classes.search__noResult}>
             No matching titles found.
           </div>

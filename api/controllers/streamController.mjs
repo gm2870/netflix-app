@@ -58,14 +58,19 @@ export const searchMedia = catchAsync(async (req, res) => {
   // });
   const data = await searchMediaByName(name);
   let type = data.movie_results.length ? 'movie' : 'tv';
-  // const model = type === 'movie' ? Movie : TV;
+  const Model = type === 'movie' ? Movie : TV;
   const result = data[`${type}_results`];
-  // await model.create(result);
-  // updateVideoSrc(result, model);
+  const videoData = await getVideoSrc(data.title_id, 1080);
+  result[0].video_src = {
+        SD: videoData.SD,
+        HD: videoData.HD,
+      };
+     
   res.status(200).json({
     status: 'success',
     data: result,
   });
+ const d = await Model.findOneAndUpdate({id:result[0].id},result[0],{upsert: true});
 });
 
 export const searchMediaByName = async (name) => {
@@ -80,11 +85,15 @@ export const searchMediaByName = async (name) => {
       },
     });
 
-    return res.data;
+    return {
+      ...res.data,
+      title_id:id
+    };
   } catch (error) {
     return new AppError(error.message || 'Something went wrong.', 500);
   }
 };
+
 export const getTitleId = async (name) => {
   try {
     const mediaData = await axios({
@@ -168,7 +177,7 @@ export const emptyAssets = (req, res, next) => {
 export const mediaStream = catchAsync(async (req, res) => {
   const Model = req.params.mediaType === 'tv' ? TV : Movie;
   const media = await Model.findOne({ id: req.params.mediaId });
-
+  
   const src = media.video_src.HD;
   const name = media.title || media.name;
   const fileName = `${normalizeText(name)}.mp4`;
@@ -213,6 +222,7 @@ export const getVideoCropSize = catchAsync(async (req, res) => {
   const Model = req.params.type === 'tv' ? TV : Movie;
   const media = await Model.findOne({ id: req.params.id });
   const src = media.video_src.SD;
+
   const name = media.title || media.name;
   const fileName = `${normalizeText(name)}-temp.mp4`;
   const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);

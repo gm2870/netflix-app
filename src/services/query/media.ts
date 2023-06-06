@@ -24,8 +24,7 @@ export const mediaApi = createApi({
       },
       transformResponse: (
         response: { data: Media; status: string },
-        meta,
-        arg
+
       ) => {
         return response.data || [];
       },
@@ -51,8 +50,7 @@ export const mediaApi = createApi({
       },
       transformResponse: (
         response: { data: GenreWithMedia[]; status: string },
-        meta,
-        arg
+
       ) => {
         return response.data;
       },
@@ -78,8 +76,7 @@ export const mediaApi = createApi({
       },
       transformResponse: (
         response: { data: Media; status: string },
-        meta,
-        arg
+
       ) => {
         return response.data;
       },
@@ -109,6 +106,16 @@ export const mediaApi = createApi({
         return response.data;
       },
     }),
+    searchTitle: build.query<Media[],string>({
+      query:(name: string) => {
+        return {
+          url:`/stream/search/${name}`,
+        };
+      },
+      transformResponse: (response: { data: Media[]; status: string }) => {
+        return response.data;
+      },
+    })
   }),
 });
 
@@ -117,4 +124,5 @@ export const {
   useGetTitlesWithGenreQuery,
   useGetTitleInfoQuery,
   useGetCropSizeQuery,
+  useSearchTitleQuery,
 } = mediaApi;
