@@ -156,6 +156,7 @@ const Billboard = () => {
     const loading = isLoading || isFetching;
     setLoading(loading);
   }, [isLoading, isFetching]);
+
   const opc = useSpring({
     from: { opacity: 1 },
     to: { opacity: 0 },
@@ -191,11 +192,10 @@ const Billboard = () => {
               <img src={`/images/${name}.webp`} alt="title logo" />
             </animated.div>
 
-            {player.playing && (
               <animated.div style={opc} className={classes.info__description}>
                 {item?.overview}
               </animated.div>
-            )}
+            
 
             <div className={classes.info__actions}>
               <CustomButton

@@ -75,8 +75,10 @@ const PreviewModal = (props: PreviewProps) => {
         ],
         cropSize,
       });
+      setImageOpacity(0);
+      dispatch(uiActions.setBillnoardPlaying(false));
     }
-  }, [cropSize, showMiniModel]);
+  }, [cropSize, showMiniModel, props.item.video_src]);
 
   const toggleSound = () => {
     setSoundOn((prev) => {
@@ -88,10 +90,7 @@ const PreviewModal = (props: PreviewProps) => {
 
   const handlePlayerReady = (player: videojs.Player) => {
     playerRef.current = player;
-    player.on('play', () => {
-      setImageOpacity(0);
-      dispatch(uiActions.setBillnoardPlaying(false));
-    });
+
     player.on('ended', () => {
       setImageOpacity(1);
       dispatch(uiActions.setBillnoardPlaying(true));

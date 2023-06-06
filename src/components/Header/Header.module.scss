@@ -56,15 +56,13 @@
   height: 100%;
   padding: 0;
   margin-left: 0.5rem;
-  //   flex-direction: column;
   &__tab {
-    display: none !important;
+    display: none;
     @include respond(tablet) {
       display: flex;
       padding: 4px 8px !important;
       color: #e5e5e5;
       white-space: nowrap;
-      //   font-weight: 500;
     }
     &--current {
       color: white;

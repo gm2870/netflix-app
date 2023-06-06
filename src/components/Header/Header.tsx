@@ -162,12 +162,11 @@ const Header = () => {
               ))}
             </div>
           )}
-          {!showNavigationLinks &&
-            navigations.map((nav) => (
-              <ListItem key={nav.name} className={classes.navigation__tab}>
-                <Link href={nav.link}>{nav.name}</Link>
-              </ListItem>
-            ))}
+          {navigations.map((nav) => (
+            <ListItem key={nav.name} className={classes.navigation__tab}>
+              <Link href={nav.link}>{nav.name}</Link>
+            </ListItem>
+          ))}
         </List>
 
         <div className={classes.account}>
