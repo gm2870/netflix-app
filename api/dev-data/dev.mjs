@@ -171,9 +171,9 @@ if (process.argv[2] === '--import-tv') {
 } else if (process.argv[2] === '--delete') {
   deleteMany();
 } else if (process.argv[2] === '--update-many') {
-  forceSrcUpdate('tv');
+  forceSrcUpdate('movie');
 } else if (process.argv[2] === '--update') {
-  updateOne('tv', 67026);
+  updateOne('tv', 60797);
 } else if (process.argv[2] === '--import-genres') {
   importGenres();
 } else if (process.argv[2] === '--import-movie') {
