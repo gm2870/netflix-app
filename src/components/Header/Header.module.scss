@@ -56,10 +56,13 @@
   height: 100%;
   padding: 0;
   margin-left: 0.5rem;
+ 
   &__tab {
-    display: none;
+    display: none !important;
+    transition: color 0.4s;
+
     @include respond(tablet) {
-      display: flex;
+      display: flex !important;
       padding: 4px 8px !important;
       color: #e5e5e5;
       white-space: nowrap;
@@ -70,9 +73,8 @@
     }
     &:hover {
       color: rgb(179, 179, 179);
-    }
-    transition: color 0.4s;
-  }
+    } 
+   }
   &__menu {
     display: flex;
     align-items: center;
