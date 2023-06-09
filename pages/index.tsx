@@ -75,8 +75,7 @@ export default function Home() {
             src="/images/myflix.png"
             alt="myflix logo"
             className={classes.header__logo}
-            width={130}
-            height={30}
+            fill
           />
 
           <div className={classes['header__language']}>

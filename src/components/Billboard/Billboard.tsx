@@ -136,7 +136,6 @@ const Billboard = () => {
   const name = item?.name || item?.title;
 
   const reloadVideoHandler = () => {
-    playerRef.current?.load();
     setPlayer({ type: 'play', payload: { src: item?.video_src.HD } });
   };
   const toggleSoundHandler = () => {
@@ -192,10 +191,9 @@ const Billboard = () => {
               <img src={`/images/${name}.webp`} alt="title logo" />
             </animated.div>
 
-              <animated.div style={opc} className={classes.info__description}>
-                {item?.overview}
-              </animated.div>
-            
+            <animated.div style={opc} className={classes.info__description}>
+              {item?.overview}
+            </animated.div>
 
             <div className={classes.info__actions}>
               <CustomButton
