@@ -4,11 +4,11 @@ import { Button, TextField, styled } from '@mui/material';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { signupUser } from '../../src/store/redux/auth/auth-actions';
-import { useAppDispatch, useAppSelector } from '../../src/hooks';
+import { useAppSelector } from '../../src/hooks';
 import { useSignupMutation } from '@/src/services/query/auth';
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 type SignupCredentials = {
   password: string;
   email: string;
@@ -55,6 +55,10 @@ const Signup = () => {
     },
   });
   return (
+    <Fragment>
+    <Head>
+      <title>Projcet - Signup</title>
+    </Head>
     <div className={classes.signup}>
       <header className={classes.header}>
         <Link href="/" className={classes.header__logo}>
@@ -117,6 +121,7 @@ const Signup = () => {
         </form>
       </div>
     </div>
+    </Fragment>
   );
 };
 

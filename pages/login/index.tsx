@@ -4,7 +4,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 import classes from './login.module.scss';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FieldValues, useForm } from 'react-hook-form';
@@ -13,6 +13,7 @@ import { useLoginMutation } from '@/src/services/query/auth';
 import { useRouter } from 'next/router';
 import Footer from '@/src/components/Footer/Footer';
 import Image from 'next/image';
+import Head from 'next/head';
 
 const CustomInput = styled(TextField)({
   '& label': {
@@ -86,6 +87,10 @@ const Login = () => {
   }, [isLoading]);
 
   return (
+    <Fragment>
+      <Head>
+        <title>Projcet - Login</title>
+      </Head>
     <div className={classes.login}>
       <header className={classes.header}>
         <Link href="/" className={classes.header__link}>
@@ -218,6 +223,8 @@ const Login = () => {
       </div>
       <Footer />
     </div>
+    </Fragment>
+
   );
 };
 
