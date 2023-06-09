@@ -104,12 +104,15 @@
   &__pagination {
     display: block;
     list-style-type: none;
+    max-width: 10rem;
     margin: -15px 0 12px !important;
     padding: 0;
     position: absolute;
     right: 4%;
     top: 0;
     @include respond(small-desktop) {
+      max-width: unset;
+
       right: 62px;
       margin: -24px 0 12px !important;
     }
