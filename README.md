@@ -4,26 +4,26 @@ Project is available at https://project.alifarzanegan.ir
 
 **-Fontend Features**:
 
-High quality and responsive UI, identical to netflix
+    High quality and responsive UI, identical to netflix
 
-Material UI
+    Material UI
 
-Typescript
+    Typescript
 
-Nextjs
+    Nextjs
 
-Redux toolkit for state management
+    Redux toolkit for state management
 
-RTK query for API and caching
+    RTK query for API and caching
 
 **-Backend Features**:
 
-MVC structure
+    MVC structure
 
-Nodejs, Express and MongoDB
+    Nodejs, Express and MongoDB
 
-Mongoose
+    Mongoose
 
-Http only JWT authentication
+    Http only JWT authentication
 
-Refresh token rotation
+    Refresh token rotation
