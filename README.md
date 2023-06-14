@@ -2,7 +2,7 @@ A fake version of netflix
 
 Project is available at https://project.alifarzanegan.ir
 
--Fontend Features:
+**-Fontend Features**:
 
 High quality and responsive UI, identical to netflix
 
@@ -16,7 +16,7 @@ Redux toolkit for state management
 
 RTK query for API and caching
 
--Backend Features:
+**-Backend Features**:
 
 MVC structure
 
