@@ -24,9 +24,7 @@
     padding-left: 2rem;
     color: white;
     font-size: 1rem;
-    @include respond(tablet) {
-      font-size: 1.3rem;
-    }
+ 
     &:focus {
       outline: none;
     }
