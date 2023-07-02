@@ -39,7 +39,7 @@ const initialPlayerState = {
   },
 };
 
-const Billboard = () => {
+const Billboard = ({ onMoreInfoClick }: any) => {
   const router = useRouter();
   const playerRef = useRef<videojs.Player | null>(null);
   const billboardPlaying: boolean = useAppSelector(
@@ -206,7 +206,11 @@ const Billboard = () => {
                 />
                 <span className={classes.info__text}>Play</span>
               </CustomButton>
-              <CustomButton variant="contained" className={classes.gray}>
+              <CustomButton
+                onClick={onMoreInfoClick}
+                variant="contained"
+                className={classes.gray}
+              >
                 <ErrorOutlineIcon
                   className={`${classes.info__icon} ${classes['info__icon--black']}`}
                 />

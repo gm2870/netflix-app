@@ -7,9 +7,22 @@ import NoSsr from '@mui/base/NoSsr';
 import Billboard from '../../src/components/Billboard/Billboard';
 import { useGetTitlesWithGenreQuery } from '@/src/services/query/media';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import PreviewModal from '@/src/components/PreviewModal/PreviewModal';
+import { Media } from '@/src/store/redux/media/model';
 
 const Browse = () => {
   const [loading, setLoading] = useState(true);
+  const [titleId, setTitleId] = useState('');
+  const [item, setItem] = useState<Media>();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (router.isReady && router.query.titleId) {
+      setTitleId(router.query.titleId.toString());
+    }
+  }, [router.isReady, router.query.titleId]);
+
   const {
     data: genresWithTitles,
     isLoading,
@@ -19,6 +32,7 @@ const Browse = () => {
     const loading = isLoading || isFetching;
     setLoading(loading);
   }, [isLoading, isFetching]);
+  const moreInfoClickHandler = (item: Media) => setItem(item);
   return (
     <section className={classes.browse}>
       <Head>
@@ -27,7 +41,7 @@ const Browse = () => {
       <Header />
       <div id="modalContainer" className={classes.modalWrapper}></div>
       <div className={classes.content}>
-        <Billboard />
+        <Billboard onMoreInfoClick={moreInfoClickHandler} />
         {genresWithTitles && (
           <SlidersContainer genresWithTitles={genresWithTitles} />
         )}
@@ -37,6 +51,13 @@ const Browse = () => {
           </NoSsr>
         )}
       </div>
+      {item && (
+        <PreviewModal
+          item={item}
+          show={true}
+          hideModal={() => setItem(undefined)}
+        />
+      )}
     </section>
   );
 };
