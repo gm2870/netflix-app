@@ -25,9 +25,8 @@ const MiniInfo = ({ mediaType, id }: MiniInfoProps) => {
 
   return (
     <>
-      {info && (
-        <div ref={previewRef} className={classes.preview}>
-          <div className={classes.preview__info}>
+      <div ref={previewRef} className={classes.preview}>
+        <div className={classes.preview__info}>
             <div className={classes['preview__controls']}>
               <Fade
                 in={showLikeModal}
@@ -89,15 +88,17 @@ const MiniInfo = ({ mediaType, id }: MiniInfoProps) => {
                 </CircleButton>
               </div>
             </div>
+            {info && (
             <div className={classes['preview__video-metadata']}>
               <span className={classes.name}>{info.name || info.title}</span>
               <div className={classes.rating}>
                 <span className={classes.rating__value}>
-                  {info.vote_average}
+                  {info.vote_average.toFixed(1)}
                 </span>
                 <span> / 10</span>
               </div>
             </div>
+            )}
             <div className={classes['preview__evidence']}>
               {info
                 ? info.genres.map((g: any, i: number) => (
@@ -109,7 +110,7 @@ const MiniInfo = ({ mediaType, id }: MiniInfoProps) => {
             </div>
           </div>
         </div>
-      )}
+      
     </>
   );
 };

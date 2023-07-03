@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useRef } from 'react';
 import { Fade } from '@mui/material';
 import { Media } from '../../store/redux/media/model';
-import { useGetCropSizeQuery } from '@/src/services/query/media';
 import MiniInfo from './MiniInfo/MiniInfo';
 import DetailInfo from './DetailInfo/DetailInfo';
 import Player from '../Player/Player';
@@ -19,10 +18,6 @@ const PreviewModal = (props: PreviewProps) => {
 
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const { data: cropSize } = useGetCropSizeQuery({
-    type: props.item.media_type,
-    id: props.item.id,
-  });
 
   const onHideModal = props.hideModal;
 
@@ -30,9 +25,10 @@ const PreviewModal = (props: PreviewProps) => {
   //   const ref = playerRef.current!;
   //   ref.muted(false);
   // };
-
+  const [playing, setPlaying] = useState(false)
   const toggleSoundHandler = () =>
     setSoundOn((soundIsOn: boolean) => !soundIsOn);
+  const playStartHandler = (isPlaying: boolean) => setPlaying(isPlaying)
   return (
     <Fade
       in={props.show}
@@ -42,10 +38,12 @@ const PreviewModal = (props: PreviewProps) => {
         <Player
           backdrop_path={props.item.backdrop_path}
           video_src={props.item.video_src}
-          cropSize={cropSize || 0}
+          id={props.item.id}
           soundOn={soundOn}
+          media_type={props.item.media_type}
+          playing={playStartHandler}
         />
-        {cropSize && (
+        {playing && (
           <div className={classes.soundBtn}>
             <CircleButton onClick={toggleSoundHandler}>
               {!soundOn ? (
@@ -57,7 +55,7 @@ const PreviewModal = (props: PreviewProps) => {
           </div>
         )}
         <MiniInfo mediaType={props.item.media_type} id={props.item.id} />
-        <DetailInfo id={props.item.id} />
+        {/* <DetailInfo id={props.item.id} /> */}
       </div>
     </Fade>
   );

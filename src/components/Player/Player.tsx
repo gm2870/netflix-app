@@ -5,17 +5,23 @@ import Image from 'next/image';
 import { uiActions } from '@/src/store/redux/ui/ui';
 import { useAppDispatch } from '@/src/hooks';
 import videojs from 'video.js';
+import { useGetCropSizeQuery } from '@/src/services/query/media';
+import { VideoSrc } from '@/src/models/media.model';
 
 const Player = ({
-  cropSize,
+  id,
   video_src,
   backdrop_path,
   soundOn,
+  media_type,
+  playing
 }: {
-  cropSize: number;
-  video_src: any;
+  id:number,
+  video_src: VideoSrc;
   backdrop_path: string;
   soundOn: boolean;
+  media_type: string,
+  playing: (playing: boolean) => void
 }) => {
   const [imageOpacity, setImageOpacity] = useState(1);
   const dispatch = useAppDispatch();
@@ -36,6 +42,10 @@ const Player = ({
       },
     ],
     cropSize: 0,
+  });
+  const { data: cropSize } = useGetCropSizeQuery({
+    type: media_type,
+    id: id,
   });
 
   useEffect(() => {
@@ -67,8 +77,11 @@ const Player = ({
 
   const handlePlayerReady = (player: videojs.Player) => {
     playerRef.current = player;
-
+    player.on('playing', () => {
+      playing(true)
+    });
     player.on('ended', () => {
+      playing(false)
       dispatch(uiActions.setBillnoardPlaying(true));
     });
   };
