@@ -22,16 +22,7 @@
 .video-js .vjs-control-text {
   display: none;
 }
-.soundBtn {
-  position: absolute;
-  bottom: 13rem;
-  right: 1rem;
-  opacity: 0.5;
-  z-index: 5;
-  &:hover {
-    opacity: 1;
-  }
-}
+
 .netflixIcon {
   position: absolute;
   top: 0.5rem;

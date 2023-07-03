@@ -1,10 +1,9 @@
-import { Fade } from '@mui/material';
 import classes from './MiniInfo.module.scss';
-import { LightTooltip } from '../../Tooltip/Tooltip';
 import CircleButton from '../../CircleButton/CircleButton';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { useState, useRef } from 'react';
 import { useGetTitleInfoQuery } from '@/src/services/query/media';
+import LikePortal from '../../LikePortal/LikePortal';
 type MiniInfoProps = {
   mediaType: string;
   id: number;
@@ -28,40 +27,7 @@ const MiniInfo = ({ mediaType, id }: MiniInfoProps) => {
       <div ref={previewRef} className={classes.preview}>
         <div className={classes.preview__info}>
             <div className={classes['preview__controls']}>
-              <Fade
-                in={showLikeModal}
-                style={{ transitionDelay: showLikeModal ? '300ms' : '0ms' }}
-              >
-                <div
-                  onMouseLeave={onMiniModalMouseLeave}
-                  className={`${classes['preview__mini-modal']}`}
-                >
-                  <LightTooltip placement="top" title="Not for me" arrow>
-                    <button className={classes['preview__mini-modal-btn']}>
-                      <img
-                        className={classes['preview__mini-modal-img']}
-                        src="/images/dislike.png"
-                      />
-                    </button>
-                  </LightTooltip>
-                  <LightTooltip placement="top" title="I like this" arrow>
-                    <button className={classes['preview__mini-modal-btn']}>
-                      <img
-                        className={classes['preview__mini-modal-img']}
-                        src="/images/like.png"
-                      />
-                    </button>
-                  </LightTooltip>
-                  <LightTooltip placement="top" title="Love this!" arrow>
-                    <button className={classes['preview__mini-modal-btn']}>
-                      <img
-                        className={classes['preview__mini-modal-img']}
-                        src="/images/love.png"
-                      />
-                    </button>
-                  </LightTooltip>
-                </div>
-              </Fade>
+            { showLikeModal && <LikePortal showLikeModal={showLikeModal} onMiniModalMouseLeave={onMiniModalMouseLeave} />}
               <div className={classes['preview__buttons--left']}>
                 <CircleButton white>
                   <PlayArrowIcon

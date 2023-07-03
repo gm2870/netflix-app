@@ -4,28 +4,24 @@ import { useRef } from 'react';
 import { Fade } from '@mui/material';
 import { Media } from '../../store/redux/media/model';
 import MiniInfo from './MiniInfo/MiniInfo';
-import DetailInfo from './DetailInfo/DetailInfo';
+import TitleDetail from '../TitleDetail/TitleDetail';
 import Player from '../Player/Player';
-import CircleButton from '../CircleButton/CircleButton';
+import SoundButton from '../SoundButton/SoundButton';
 
 type PreviewProps = {
   item: Media;
   hideModal: () => void;
   show: boolean;
+  isMini?:boolean
 };
 const PreviewModal = (props: PreviewProps) => {
   const [soundOn, setSoundOn] = useState(false);
 
   const cardRef = useRef<HTMLDivElement>(null);
 
-
   const onHideModal = props.hideModal;
 
-  // const onTrailerStartPlaying = () => {
-  //   const ref = playerRef.current!;
-  //   ref.muted(false);
-  // };
-  const [playing, setPlaying] = useState(false)
+  const [playing, setPlaying] = useState(false);
   const toggleSoundHandler = () =>
     setSoundOn((soundIsOn: boolean) => !soundIsOn);
   const playStartHandler = (isPlaying: boolean) => setPlaying(isPlaying)
@@ -44,18 +40,9 @@ const PreviewModal = (props: PreviewProps) => {
           playing={playStartHandler}
         />
         {playing && (
-          <div className={classes.soundBtn}>
-            <CircleButton onClick={toggleSoundHandler}>
-              {!soundOn ? (
-                <img src="/images/volume-off.png" />
-              ) : (
-                <img src="/images/volume-on.png" />
-              )}
-            </CircleButton>
-          </div>
+            <SoundButton soundOn={soundOn} onToggle={toggleSoundHandler}  />
         )}
         <MiniInfo mediaType={props.item.media_type} id={props.item.id} />
-        {/* <DetailInfo id={props.item.id} /> */}
       </div>
     </Fade>
   );
