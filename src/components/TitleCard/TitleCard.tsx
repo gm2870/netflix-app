@@ -3,7 +3,7 @@ import classes from './TitleCard.module.scss';
 
 type EpisodInfo = {
   episodeNumber: number;
-  image: string;
+  still_path: string;
   overview: string;
   name: string;
   runtime: number;
@@ -11,22 +11,27 @@ type EpisodInfo = {
 
 const TitleCard = ({
   episodeNumber,
-  image,
+  still_path,
   overview,
   name,
   runtime,
 }: EpisodInfo) => {
+  const containerClassNames = episodeNumber === 1
+  ? `${classes.titleCardContainer} ${classes.grayBg}`
+  : `${classes.titleCardContainer}`;
   return (
-    <div className={classes.titleCardContainer}>
-      <span>{episodeNumber}</span>
-      <div>
-        <Image src={image} width={100} height={50} alt="alt" />
+    <div className={containerClassNames}>
+      <span className={classes.episodeNumber}>{episodeNumber}</span>
+      <div className={classes.image}>
+        <Image  src={`https://image.tmdb.org/t/p/w1280${still_path}`} width={150} height={100} alt="alt" />
       </div>
-      <div>
-        <span>{name}</span>
-        <span>{runtime}m</span>
+      <div className={classes.cardInfo}>
+        <div className={classes.header}>
+          <span className={classes.episodeTitle}>{name}</span>
+          <span>{runtime}m</span>
+        </div>
+        <p className={classes.overview}>{overview}</p>
       </div>
-      <p>{overview}</p>
     </div>
   );
 };

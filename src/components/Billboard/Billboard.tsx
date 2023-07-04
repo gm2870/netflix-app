@@ -15,8 +15,9 @@ import {
   useGetBillboardMediaQuery,
   useGetCropSizeQuery,
 } from '../../services/query/media';
-import { useAppSelector } from '@/src/hooks';
+import { useAppDispatch, useAppSelector } from '@/src/hooks';
 import PlayButton from '../PlayButton/PlayButton';
+import { mediaActions } from '@/src/store/redux/media/media';
 
 const initialPlayerState = {
   playing: false,
@@ -162,7 +163,7 @@ const Billboard = ({ onMoreInfoClick }: any) => {
       playerRef.current.pause();
     }
   }, [billboardPlaying]);
-
+  const dispatch = useAppDispatch();
   useEffect(() => {
     const loading = isLoading || isFetching;
     setLoading(loading);
@@ -170,7 +171,8 @@ const Billboard = ({ onMoreInfoClick }: any) => {
   const showDetailsHandler = () => {
     setPlayer({ type: 'togglePause' });
     setPlayer({ type: 'toggleShowImage' });
-    onMoreInfoClick(item);
+    console.log(item)
+    dispatch(mediaActions.setDetailPreviewItem(item));
   }
 
   const opc = useSpring({

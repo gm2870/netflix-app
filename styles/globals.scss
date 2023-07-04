@@ -14,7 +14,7 @@ html {
 body {
   box-sizing: border-box;
   padding: 0 !important;
-  overflow: auto !important;
+  // overflow: auto !important;
   overflow-x: hidden !important;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
@@ -101,9 +101,7 @@ ul {
   margin-bottom: 1px;
   margin-left: 2px;
 }
-img {
-  max-width: 100%;
-}
+
 .vjs-controls-disabled .vjs-button,
 .vjs-controls-disabled .vjs-icon-placeholder,
 .vjs-controls-disabled .vjs-control-text,

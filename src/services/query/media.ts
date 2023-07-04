@@ -1,7 +1,7 @@
 import { GenreWithMedia, Media } from '@/src/store/redux/media/model';
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQueryWithReauth } from '../api';
-import { TitleDetails } from '@/src/models/media.model';
+import { SeasonDetails, TitleDetails } from '@/src/models/media.model';
 
 export const mediaApi = createApi({
   reducerPath: 'mediaApi',
@@ -108,6 +108,23 @@ export const mediaApi = createApi({
       return response.data;
     },
   }),
+  getSeasonDetails: build.query<
+  SeasonDetails,
+  {
+    id: number;
+    seasonNumber: number;
+  }
+>({
+  query: ({ id,seasonNumber }) => {
+    return { url: `/media/tv-shows/${id}/season/${seasonNumber}` };
+  },
+  transformResponse: (
+    response: { data: SeasonDetails; status: string },
+
+  ) => {
+    return response.data;
+  },
+}),
     getCropSize: build.query<
       number,
       {
@@ -153,4 +170,5 @@ export const {
   useGetTitleDetailsQuery,
   useGetCropSizeQuery,
   useSearchTitleQuery,
+  useGetSeasonDetailsQuery
 } = mediaApi;

@@ -7,6 +7,9 @@ import MiniInfo from './MiniInfo/MiniInfo';
 import TitleDetail from '../TitleDetail/TitleDetail';
 import Player from '../Player/Player';
 import SoundButton from '../SoundButton/SoundButton';
+import { useAppDispatch } from '@/src/hooks';
+import { mediaActions } from '@/src/store/redux/media/media';
+import { uiActions } from '@/src/store/redux/ui/ui';
 
 type PreviewProps = {
   item: Media;
@@ -16,7 +19,7 @@ type PreviewProps = {
 };
 const PreviewModal = (props: PreviewProps) => {
   const [soundOn, setSoundOn] = useState(false);
-
+  const dispatch = useAppDispatch();
   const cardRef = useRef<HTMLDivElement>(null);
 
   const onHideModal = props.hideModal;
@@ -24,7 +27,11 @@ const PreviewModal = (props: PreviewProps) => {
   const [playing, setPlaying] = useState(false);
   const toggleSoundHandler = () =>
     setSoundOn((soundIsOn: boolean) => !soundIsOn);
-  const playStartHandler = (isPlaying: boolean) => setPlaying(isPlaying)
+  const playStartHandler = (isPlaying: boolean) => setPlaying(isPlaying);
+  const showDetailsPreviewHandler = () => {
+    dispatch(mediaActions.setDetailPreviewItem(props.item));
+    dispatch(uiActions.setBillnoardPlaying(false))
+  }
   return (
     <Fade
       in={props.show}
@@ -40,9 +47,12 @@ const PreviewModal = (props: PreviewProps) => {
           playing={playStartHandler}
         />
         {playing && (
+          <div className={classes.soundBtn}>
+
             <SoundButton soundOn={soundOn} onToggle={toggleSoundHandler}  />
+          </div>
         )}
-        <MiniInfo mediaType={props.item.media_type} id={props.item.id} />
+        <MiniInfo showDetailsPreviewHandler={showDetailsPreviewHandler} mediaType={props.item.media_type} id={props.item.id} />
       </div>
     </Fade>
   );

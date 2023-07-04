@@ -8,33 +8,27 @@ import Billboard from '../../src/components/Billboard/Billboard';
 import { useGetTitlesWithGenreQuery } from '@/src/services/query/media';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Media } from '@/src/store/redux/media/model';
-import { Modal } from '@mui/material';
-import Box from '@mui/material/Box';
-
+import { Dialog, DialogContent, styled } from '@mui/material';
 import TitleDetail from '@/src/components/TitleDetail/TitleDetail';
-import { useAppDispatch } from '@/src/hooks';
-import { uiActions } from '@/src/store/redux/ui/ui';
-const detailModalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 850,
-  height: 850,
-  bgcolor: 'transparent',
-  boxShadow: 24,
-  borderRadius:2,
-  overflow:'hidden'
-}
+import { useAppDispatch, useAppSelector } from '@/src/hooks';
+import { mediaActions } from '@/src/store/redux/media/media';
+
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialogContent-root': {
+    padding: 0,
+    backgroundColor:'transparent',
+  },
+}));
+
 const Browse = () => {
+
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(true);
   const [titleId, setTitleId] = useState('');
-  const [item, setItem] = useState<Media>();
-  const router = useRouter();
-  const [showMoreInfo,setShowMoreInfo] = useState(false);
 
+  const router = useRouter();
+  const detailPreviewItem = useAppSelector(state => state.media.detailPreviewItem);
+ 
   useEffect(() => {
     if (router.isReady && router.query.titleId) {
       setTitleId(router.query.titleId.toString());
@@ -51,16 +45,11 @@ const Browse = () => {
     const loading = isLoading || isFetching;
     setLoading(loading);
   }, [isLoading, isFetching]);
-  const moreInfoClickHandler = (item: Media) => {
-    setItem(item);
-    setShowMoreInfo(true);
-    dispatch(uiActions.setBillnoardPlaying(false))
-  };
+
   const closeDetailModalHandler = () => {
-    setShowMoreInfo(false);
-    console.log(uiActions)
-    dispatch(uiActions.setBillnoardPlaying(true))
+    dispatch(mediaActions.setDetailPreviewItem(null))
   }
+
   return (
     <section className={classes.browse}>
       <Head>
@@ -69,7 +58,7 @@ const Browse = () => {
       <Header />
       <div id="modalContainer" className={classes.modalWrapper}></div>
       <div className={classes.content}>
-        <Billboard onMoreInfoClick={moreInfoClickHandler} />
+        <Billboard />
         {genresWithTitles && (
           <SlidersContainer genresWithTitles={genresWithTitles} />
         )}
@@ -79,14 +68,22 @@ const Browse = () => {
           </NoSsr>
         )}
       </div>
-      {(showMoreInfo && item) && (
-        <Modal onClose={closeDetailModalHandler} open={showMoreInfo}>
-          <Box sx={detailModalStyle}>
-            <TitleDetail item={item} />
-          </Box>
-        </Modal>
+      {(detailPreviewItem) && (
+        <BootstrapDialog   sx={{
+          "& .MuiDialog-container": {
+            "& .MuiPaper-root": {
+              width: "100%",
+              maxWidth: "850px",
+            },
+          },
+        }} scroll='body' onClose={closeDetailModalHandler} open={!!detailPreviewItem}>
+          <DialogContent>
+            <TitleDetail closeModal={closeDetailModalHandler} item={detailPreviewItem} />
+          </DialogContent>
+        </BootstrapDialog>
         )}
     </section>
   );
 };
+
 export default Browse;

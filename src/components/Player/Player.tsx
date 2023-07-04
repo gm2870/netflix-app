@@ -49,6 +49,7 @@ const Player = ({
   });
 
   useEffect(() => {
+    console.log(cropSize)
     if (cropSize !== undefined) {
       setOptions({
         autoplay: true,

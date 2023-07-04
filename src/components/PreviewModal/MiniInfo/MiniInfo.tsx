@@ -7,8 +7,9 @@ import LikePortal from '../../LikePortal/LikePortal';
 type MiniInfoProps = {
   mediaType: string;
   id: number;
+  showDetailsPreviewHandler: () => void
 };
-const MiniInfo = ({ mediaType, id }: MiniInfoProps) => {
+const MiniInfo = ({ mediaType, id, showDetailsPreviewHandler }: MiniInfoProps) => {
   const [showLikeModal, setShowLikeModal] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
   const { data: info } = useGetTitleInfoQuery({
@@ -21,7 +22,10 @@ const MiniInfo = ({ mediaType, id }: MiniInfoProps) => {
   const onLikeHover = () => {
     setShowLikeModal(true);
   };
-
+  const showDetailsHandler = () => {
+    showDetailsPreviewHandler()
+  }
+  
   return (
     <>
       <div ref={previewRef} className={classes.preview}>
@@ -46,7 +50,7 @@ const MiniInfo = ({ mediaType, id }: MiniInfoProps) => {
                 </CircleButton>
               </div>
               <div className={classes['preview__buttons--right']}>
-                <CircleButton>
+                <CircleButton onClick={showDetailsHandler}>
                   <img
                     className={classes.preview__img}
                     src="/images/arrow-down.png"

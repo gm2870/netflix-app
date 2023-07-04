@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import * as mediaController from '../controllers/media/mediaController.mjs';
 const router = Router();
-router.use(mediaController.protect);
+// router.use(mediaController.protect);
 router.get('/all', mediaController.getAllTitles);
 router.get('/billboard/general', mediaController.getGeneralBillboard);
 
