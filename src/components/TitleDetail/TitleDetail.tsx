@@ -48,9 +48,14 @@ const TitleDetail = ({
   const soundToggleHandler = () => setSoundOn((prev) => !prev);
 
   const moreLikeItems = allItems
-    ?.filter((genreItem) => item.genre_ids[0] === genreItem.id)
+    ?.map((g) => {
+      const noneDuplicateTitles = { ...g };
+      noneDuplicateTitles.titles = g.titles.filter((t) => t.id !== item.id);
+      return noneDuplicateTitles;
+    })
+    .filter((genreItem) => item.genre_ids[0] === genreItem.id)
     .map((x) => x.titles.slice(0, 4));
-  const moreLikeTitles = [];
+  const moreLikeTitles: Media[] = [];
   for (const items of moreLikeItems) {
     items.forEach((x) => moreLikeTitles.push(x));
   }
