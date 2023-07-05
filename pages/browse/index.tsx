@@ -53,6 +53,7 @@ const Browse = () => {
   }, [genresWithTitles]);
 
   useEffect(() => {
+    genresWithTitles;
     const loading = isLoading || isFetching;
     setLoading(loading);
   }, [isLoading, isFetching]);
@@ -93,6 +94,7 @@ const Browse = () => {
         >
           {detailPreviewItem && (
             <TitleDetail
+              allItems={genresWithTitles || []}
               genres={genres}
               closeModal={closeDetailModalHandler}
               item={detailPreviewItem}

@@ -1,4 +1,4 @@
-import { Media } from '@/src/store/redux/media/model';
+import { GenreWithMedia, Media } from '@/src/store/redux/media/model';
 import Player from '../Player/Player';
 import TitleCard from '../TitleCard/TitleCard';
 import { useState } from 'react';
@@ -12,15 +12,22 @@ import PlayButton from '../PlayButton/PlayButton';
 import CircleButton from '../CircleButton/CircleButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { Genre } from '@/src/models/genre.model';
-import NativeSelect from '@mui/material/NativeSelect';
 import SeasonSelect from './SeasonSelect/SeasonSelect';
+import GridList from '../GridList/GridList';
+import MoreLikeCard from '../MoreLikeCard/MoreLikeCard';
 
 type DetailInfoProps = {
   item: Media;
   closeModal: () => void;
   genres: Genre[];
+  allItems: GenreWithMedia[];
 };
-const TitleDetail = ({ item, closeModal, genres }: DetailInfoProps) => {
+const TitleDetail = ({
+  item,
+  closeModal,
+  genres,
+  allItems,
+}: DetailInfoProps) => {
   const [soundOn, setSoundOn] = useState(false);
   const [seasonNumber, setSeasonNumber] = useState(1);
 
@@ -37,10 +44,17 @@ const TitleDetail = ({ item, closeModal, genres }: DetailInfoProps) => {
       skip: !item.id,
     }
   );
-  console.log(titleDetails);
 
   const soundToggleHandler = () => setSoundOn((prev) => !prev);
 
+  const moreLikeItems = allItems
+    ?.filter((genreItem) => item.genre_ids[0] === genreItem.id)
+    .map((x) => x.titles.slice(0, 4));
+  const moreLikeTitles = [];
+  for (const items of moreLikeItems) {
+    items.forEach((x) => moreLikeTitles.push(x));
+  }
+  console.log(moreLikeTitles);
   const playStartHandler = () => {};
   const titleGenres = genres.filter((g) => item.genre_ids.includes(g.id));
   const handleSelectChange = (val: any) => console.log(val.target.value);
@@ -101,35 +115,49 @@ const TitleDetail = ({ item, closeModal, genres }: DetailInfoProps) => {
             </div>
           </div>
         </div>
-        <div
-          style={{
-            display: 'flex',
-            color: 'white',
-            justifyContent: 'space-between',
-          }}
-        >
-          <h2>Episodes</h2>
-          {titleDetails && (
-            <SeasonSelect
-              handleChange={handleSelectChange}
-              options={titleDetails.seasons}
-            />
-          )}
-        </div>
-        <div className={classes.cardContainer}>
-          {!isLoading &&
-            seasonDetails &&
-            seasonDetails.episodes.map((episode, i) => (
-              <TitleCard
-                key={episode.id}
-                episodeNumber={i + 1}
-                still_path={episode.still_path}
-                runtime={episode.runtime}
-                name={episode.name}
-                overview={episode.overview}
-              />
+
+        {item.media_type === 'tv' && (
+          <>
+            <div
+              style={{
+                display: 'flex',
+                color: 'white',
+                justifyContent: 'space-between',
+              }}
+            >
+              <h2>Episodes</h2>
+              {titleDetails && (
+                <SeasonSelect
+                  handleChange={handleSelectChange}
+                  options={titleDetails.seasons}
+                />
+              )}
+            </div>
+            <div className={classes.cardContainer}>
+              {!isLoading &&
+                seasonDetails &&
+                seasonDetails.episodes.map((episode, i) => (
+                  <TitleCard
+                    key={episode.id}
+                    episodeNumber={i + 1}
+                    still_path={episode.still_path}
+                    runtime={episode.runtime}
+                    name={episode.name}
+                    overview={episode.overview}
+                  />
+                ))}
+            </div>
+          </>
+        )}
+        <h2>More like this</h2>
+
+        {moreLikeTitles && (
+          <div className={classes.moreLikeWrapper}>
+            {moreLikeTitles.map((item: Media) => (
+              <MoreLikeCard key={item.id} data={item} />
             ))}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

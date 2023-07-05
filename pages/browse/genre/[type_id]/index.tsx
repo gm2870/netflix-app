@@ -104,6 +104,7 @@ const Titles = () => {
         >
           {detailPreviewItem && (
             <TitleDetail
+              allItems={genresWithTitles}
               genres={headerGenres}
               closeModal={closeDetailModalHandler}
               item={detailPreviewItem}

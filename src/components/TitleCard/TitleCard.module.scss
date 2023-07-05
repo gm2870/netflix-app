@@ -1,8 +1,8 @@
 .titleCardContainer {
   display: flex;
   padding: 1rem 1.5rem;
-  color:#fff;
-  
+  color: #fff;
+
   border-radius: 4px;
   margin-bottom: 1rem;
   border-bottom: 1px solid #404040;
@@ -18,6 +18,7 @@
 
 .cardInfo {
   padding: 1rem;
+  flex: 1;
 }
 
 .image {
@@ -31,8 +32,8 @@
 
 .episodeNumber {
   display: flex;
-    align-items: center;
-    padding: 0 2rem;
+  align-items: center;
+  padding: 0 2rem;
 }
 
 .episodeTitle {

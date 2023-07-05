@@ -3,6 +3,7 @@
 .container {
   position: relative;
   background-color: #181818;
+  min-height: 80vh;
 }
 
 .action {
@@ -38,7 +39,7 @@
   }
 }
 .info {
-  padding: 1rem;
+  padding: 3em;
   color: #fff;
   z-index: 12;
   position: relative;
@@ -86,4 +87,14 @@
 }
 
 .cardContainer {
+}
+.moreLikeWrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  list-style-type: none;
+  gap: 3rem 0.4rem;
+  padding: 0px;
+  @include respond(small-desktop) {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
