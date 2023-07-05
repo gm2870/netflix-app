@@ -1,0 +1,8 @@
+@use '../../../styles/abstracts' as *;
+.soundBtn {
+    opacity: 0.5;
+    z-index: 5;
+    &:hover {
+      opacity: 1;
+    }
+  }

@@ -27,3 +27,8 @@ export type GenreWithMedia = {
   name: string;
   titles: Media[];
 };
+
+export type Genre = {
+  id: number;
+  name: string;
+};

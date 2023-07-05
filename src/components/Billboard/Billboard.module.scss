@@ -92,28 +92,7 @@
     display: flex;
   }
 }
-.colorPrimary {
-  color: #000 !important;
-  background-color: #fff !important;
-  font-size: 1rem !important;
-  font-weight: 700 !important;
-  margin-right: 0.5rem !important;
-  padding: 0rem !important;
-  padding-left: 1.1rem !important;
-  padding-right: 1.5rem !important;
-  flex-shrink: 0 !important;
-  @include respond(small-desktop) {
-    margin-right: 1rem !important;
-    padding: 0.5rem !important;
-    font-size: 1.6rem !important;
-    padding-left: 1.5rem !important;
-    padding-right: 2.4rem !important;
-  }
 
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.75);
-  }
-}
 .gray {
   font-size: 1rem !important;
   font-weight: 500 !important;

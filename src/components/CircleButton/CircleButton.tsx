@@ -11,6 +11,7 @@ const CircleButton = ({
   white,
   onClick,
   onMouseEnter,
+  ...props
 }: CircleButtonProps) => {
   return (
     <button
@@ -20,6 +21,8 @@ const CircleButton = ({
       }`}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
+      {...props}
+      
     >
       <div className={classes['circle-button__inner']}>{children}</div>
     </button>

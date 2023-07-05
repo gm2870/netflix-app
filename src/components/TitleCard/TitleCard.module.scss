@@ -1,0 +1,45 @@
+.titleCardContainer {
+  display: flex;
+  padding: 1rem 1.5rem;
+  color:#fff;
+  
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #404040;
+}
+.grayBg {
+  background-color: #333;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cardInfo {
+  padding: 1rem;
+}
+
+.image {
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  img {
+    border-radius: 4px;
+  }
+}
+
+.episodeNumber {
+  display: flex;
+    align-items: center;
+    padding: 0 2rem;
+}
+
+.episodeTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.overview {
+  margin-bottom: 0;
+}

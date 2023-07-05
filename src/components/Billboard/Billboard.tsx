@@ -6,17 +6,19 @@ import videojs from 'video.js';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import classes from './Billboard.module.scss';
 import CustomButton from '../../../src/components/CustomButton/CustomButton';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import Image from 'next/image';
 import { useSpring, animated } from '@react-spring/web';
 import { useRouter } from 'next/router';
-import { Button, NoSsr } from '@mui/material';
+import { NoSsr } from '@mui/material';
 import SliderLoader from '../loader/SliderLoader';
 import {
   useGetBillboardMediaQuery,
   useGetCropSizeQuery,
 } from '../../services/query/media';
 import { useAppDispatch, useAppSelector } from '@/src/hooks';
+import PlayButton from '../PlayButton/PlayButton';
+import { mediaActions } from '@/src/store/redux/media/media';
+import { uiActions } from '@/src/store/redux/ui/ui';
 
 const initialPlayerState = {
   playing: false,
@@ -39,12 +41,11 @@ const initialPlayerState = {
   },
 };
 
-const Billboard = () => {
+const Billboard = ({ onMoreInfoClick }: any) => {
   const router = useRouter();
   const playerRef = useRef<videojs.Player | null>(null);
-  const billboardPlaying: boolean = useAppSelector(
-    (state) => state.ui.billboardPlaying
-  );
+  const billboardPlaying = useAppSelector((state) => state.ui.billboardPlaying);
+
   const reducer = (state: any, action: any) => {
     switch (action.type) {
       case 'play':
@@ -70,6 +71,12 @@ const Billboard = () => {
           ...state,
           playing: paused,
         };
+      case 'toggleShowImage':
+        const showImage = !state.showImage;
+        return {
+          ...state,
+          showImage,
+        };
 
       case 'toggleVolumn':
         const vol = !state.volumnOn;
@@ -80,7 +87,6 @@ const Billboard = () => {
         };
 
       case 'end':
-        console.log(state);
         return {
           ...state,
           playing: false,
@@ -142,19 +148,28 @@ const Billboard = () => {
     setPlayer({ type: 'toggleVolumn' });
   };
   useEffect(() => {
-    if (playerRef.current) {
-      if (billboardPlaying && playerRef.current.paused()) {
-        playerRef.current.play();
-      } else if (!billboardPlaying && !playerRef.current.paused()) {
-        playerRef.current.pause();
-      }
+    if (!playerRef.current) {
+      return;
+    }
+
+    if (billboardPlaying && playerRef.current.paused()) {
+      playerRef.current.play();
+      setPlayer({ type: 'play', payload: { src: item?.video_src.HD } });
+    } else if (!billboardPlaying && !playerRef.current.paused()) {
+      playerRef.current.pause();
     }
   }, [billboardPlaying]);
-
+  const dispatch = useAppDispatch();
   useEffect(() => {
     const loading = isLoading || isFetching;
     setLoading(loading);
   }, [isLoading, isFetching]);
+  const showDetailsHandler = () => {
+    setPlayer({ type: 'togglePause' });
+    setPlayer({ type: 'toggleShowImage' });
+    dispatch(uiActions.toggleShowDetailModal());
+    dispatch(mediaActions.setDetailPreviewItem(item));
+  };
 
   const opc = useSpring({
     from: { opacity: 1 },
@@ -196,17 +211,12 @@ const Billboard = () => {
             </animated.div>
 
             <div className={classes.info__actions}>
+              <PlayButton />
               <CustomButton
+                onClick={showDetailsHandler}
                 variant="contained"
-                white={true}
-                className={classes.colorPrimary}
+                className={classes.gray}
               >
-                <PlayArrowIcon
-                  className={`${classes.info__icon} ${classes['info__icon--black']}`}
-                />
-                <span className={classes.info__text}>Play</span>
-              </CustomButton>
-              <CustomButton variant="contained" className={classes.gray}>
                 <ErrorOutlineIcon
                   className={`${classes.info__icon} ${classes['info__icon--black']}`}
                 />
@@ -231,11 +241,8 @@ const Billboard = () => {
             </div>
           </div>
 
-          {player.options.sources[0].src && (
-            <div
-              className={classes.videoContainer}
-              style={{ opacity: player.playing ? 1 : 0 }}
-            >
+          {player.options.sources[0].src && player.playing && (
+            <div className={classes.videoContainer}>
               <VideoJS
                 controlBar={false}
                 options={player.options}

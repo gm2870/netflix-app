@@ -263,6 +263,62 @@ export const getTitle = catchAsync(async (req, res) => {
   });
 });
 
+export const getTitleDetails = catchAsync(async (req, res) => {
+  const result = await axios({
+    url: `https://api.themoviedb.org/3/${req.params.type}/${req.params.titleId}`,
+    method: 'GET',
+    params: {
+      api_key: process.env.MOVIEDB_API_KEY,
+    },
+  });
+  res.status(200).json({
+    status: 'success',
+    data: result.data,
+  });
+});
+
+export const getTVDetails = catchAsync(async (req, res) => {
+  const result = await axios({
+    url: `https://api.themoviedb.org/3/tv/${req.params.titleId}`,
+    method: 'GET',
+    params: {
+      api_key: process.env.MOVIEDB_API_KEY,
+    },
+  });
+  res.status(200).json({
+    status: 'success',
+    data: result.data,
+  });
+});
+
+export const getMovieDetails = catchAsync(async (req, res) => {
+  const result = await axios({
+    url: `https://api.themoviedb.org/3/movie/${req.params.titleId}`,
+    method: 'GET',
+    params: {
+      api_key: process.env.MOVIEDB_API_KEY,
+    },
+  });
+  res.status(200).json({
+    status: 'success',
+    data: result.data,
+  });
+});
+
+export const getSeasonInfo = catchAsync(async (req, res) => {
+  const result = await axios({
+    url: `https://api.themoviedb.org/3/tv/${req.params.titleId}/season/${req.params.seasonNumber}`,
+    method: 'GET',
+    params: {
+      api_key: process.env.MOVIEDB_API_KEY,
+    },
+  });
+  res.status(200).json({
+    status: 'success',
+    data: result.data,
+  });
+});
+
 export const getGeneralBillboard = async (req, res) => {
   const tv = await TV.findOne({ id: 67026 });
   res.status(200).json({

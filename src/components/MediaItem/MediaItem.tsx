@@ -57,7 +57,6 @@ const MediaItem = ({
     dispatch(uiActions.setBillnoardPlaying(true));
     setOpen(false);
   };
-
   return (
     <Fragment>
       <div onMouseOver={openModal} ref={boxRef} className={classes.mediaItem}>
@@ -73,6 +72,7 @@ const MediaItem = ({
           <p className={classes.boxArt__title}>{item.title || item.name}</p>
         </div>
       </div>
+
       {open && (
         <Portal container={document.getElementById('modalContainer')}>
           <Box sx={getSX}>

@@ -3,11 +3,13 @@ import { createSlice } from '@reduxjs/toolkit';
 type UiState = {
   loading: boolean;
   billboardPlaying: boolean;
+  showDetailModal: boolean;
 };
 
 const initialState: UiState = {
   loading: false,
   billboardPlaying: true,
+  showDetailModal: false,
 };
 
 const uiSlice = createSlice({
@@ -19,6 +21,9 @@ const uiSlice = createSlice({
     },
     setBillnoardPlaying: (state, action) => {
       state.billboardPlaying = action.payload;
+    },
+    toggleShowDetailModal: (state) => {
+      state.showDetailModal = !state.showDetailModal;
     },
   },
 });

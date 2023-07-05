@@ -1,6 +1,7 @@
 import { GenreWithMedia, Media } from '@/src/store/redux/media/model';
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQueryWithReauth } from '../api';
+import { SeasonDetails, TitleDetails } from '@/src/models/media.model';
 
 export const mediaApi = createApi({
   reducerPath: 'mediaApi',
@@ -22,10 +23,7 @@ export const mediaApi = createApi({
         }
         return { url };
       },
-      transformResponse: (
-        response: { data: Media; status: string },
-
-      ) => {
+      transformResponse: (response: { data: Media; status: string }) => {
         return response.data || [];
       },
     }),
@@ -48,10 +46,10 @@ export const mediaApi = createApi({
         }
         return { url };
       },
-      transformResponse: (
-        response: { data: GenreWithMedia[]; status: string },
-
-      ) => {
+      transformResponse: (response: {
+        data: GenreWithMedia[];
+        status: string;
+      }) => {
         return response.data;
       },
     }),
@@ -74,10 +72,53 @@ export const mediaApi = createApi({
         }
         return { url };
       },
-      transformResponse: (
-        response: { data: Media; status: string },
-
-      ) => {
+      transformResponse: (response: { data: Media; status: string }) => {
+        return response.data;
+      },
+    }),
+    getTitleDetails: build.query<
+      TitleDetails,
+      {
+        id: number;
+        type: string;
+      }
+    >({
+      query: ({ id, type }) => {
+        let url = '';
+        switch (type) {
+          case 'tv':
+            url = `/media/tv/${id}`;
+            break;
+          case 'movie':
+            url = `/media/movie/${id}`;
+            break;
+        }
+        return { url };
+      },
+      transformResponse: (response: { data: TitleDetails; status: string }) => {
+        const seasons = response.data.seasons.filter(
+          (s) => s.season_number !== 0
+        );
+        return {
+          ...response.data,
+          seasons,
+        };
+      },
+    }),
+    getSeasonDetails: build.query<
+      SeasonDetails,
+      {
+        id: number;
+        seasonNumber: number;
+      }
+    >({
+      query: ({ id, seasonNumber }) => {
+        return { url: `/media/tv-shows/${id}/season/${seasonNumber}` };
+      },
+      transformResponse: (response: {
+        data: SeasonDetails;
+        status: string;
+      }) => {
         return response.data;
       },
     }),
@@ -106,16 +147,16 @@ export const mediaApi = createApi({
         return response.data;
       },
     }),
-    searchTitle: build.query<Media[],string>({
-      query:(name: string) => {
+    searchTitle: build.query<Media[], string>({
+      query: (name: string) => {
         return {
-          url:`/stream/search/${name}`,
+          url: `/stream/search/${name}`,
         };
       },
       transformResponse: (response: { data: Media[]; status: string }) => {
         return response.data;
       },
-    })
+    }),
   }),
 });
 
@@ -123,6 +164,8 @@ export const {
   useGetBillboardMediaQuery,
   useGetTitlesWithGenreQuery,
   useGetTitleInfoQuery,
+  useGetTitleDetailsQuery,
   useGetCropSizeQuery,
   useSearchTitleQuery,
+  useGetSeasonDetailsQuery,
 } = mediaApi;
