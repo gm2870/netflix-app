@@ -4,7 +4,6 @@ import { useRef } from 'react';
 import { Fade } from '@mui/material';
 import { Media } from '../../store/redux/media/model';
 import MiniInfo from './MiniInfo/MiniInfo';
-import TitleDetail from '../TitleDetail/TitleDetail';
 import Player from '../Player/Player';
 import SoundButton from '../SoundButton/SoundButton';
 import { useAppDispatch } from '@/src/hooks';
@@ -15,7 +14,7 @@ type PreviewProps = {
   item: Media;
   hideModal: () => void;
   show: boolean;
-  isMini?:boolean
+  isMini?: boolean;
 };
 const PreviewModal = (props: PreviewProps) => {
   const [soundOn, setSoundOn] = useState(false);
@@ -30,8 +29,8 @@ const PreviewModal = (props: PreviewProps) => {
   const playStartHandler = (isPlaying: boolean) => setPlaying(isPlaying);
   const showDetailsPreviewHandler = () => {
     dispatch(mediaActions.setDetailPreviewItem(props.item));
-    dispatch(uiActions.setBillnoardPlaying(false))
-  }
+    dispatch(uiActions.setBillnoardPlaying(false));
+  };
   return (
     <Fade
       in={props.show}
@@ -48,11 +47,14 @@ const PreviewModal = (props: PreviewProps) => {
         />
         {playing && (
           <div className={classes.soundBtn}>
-
-            <SoundButton soundOn={soundOn} onToggle={toggleSoundHandler}  />
+            <SoundButton soundOn={soundOn} onToggle={toggleSoundHandler} />
           </div>
         )}
-        <MiniInfo showDetailsPreviewHandler={showDetailsPreviewHandler} mediaType={props.item.media_type} id={props.item.id} />
+        <MiniInfo
+          showDetailsPreviewHandler={showDetailsPreviewHandler}
+          mediaType={props.item.media_type}
+          id={props.item.id}
+        />
       </div>
     </Fade>
   );

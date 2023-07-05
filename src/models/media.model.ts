@@ -1,9 +1,9 @@
-import { Genre } from "./genre.model";
+import { Genre } from './genre.model';
 
 export type VideoSrc = {
-    HD: string;
-    SD: string;
-  }
+  HD: string;
+  SD: string;
+};
 
 export type TitleDetails = {
   episodeNumber: number;
@@ -11,9 +11,9 @@ export type TitleDetails = {
   overview: string;
   name: string;
   episode_run_time: number[];
-  genres: Genre[]
-}
-
+  genres: Genre[];
+  seasons: Season[];
+};
 
 export type SeasonDetails = {
   _id: string;
@@ -21,7 +21,17 @@ export type SeasonDetails = {
   overview: string;
   name: string;
   episodes: Episode[];
-}
+};
+
+export type Season = {
+  id: number;
+  air_date: string;
+  overview: string;
+  name: string;
+  poster_path: string;
+  episode_count: number;
+  season_number: number;
+};
 
 export type Episode = {
   air_date: string;
@@ -37,13 +47,13 @@ export type Episode = {
   vote_average: number;
   vote_count: number;
   crew: Crew[];
-  guest_stars: GuestStar[]
-}
+  guest_stars: GuestStar[];
+};
 
 export type GuestStar = {
   name: string;
   character: string;
-}
+};
 export type Crew = {
   department: string;
   job: string;
@@ -55,5 +65,5 @@ export type Crew = {
   name: string;
   original_name: string;
   popularity: number;
-  profile_path: number
-}
+  profile_path: number;
+};

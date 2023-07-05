@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Header from '../../../../src/components/Header/Header';
 import SliderLoader from '../../../../src/components/loader/SliderLoader';
-import { Box, Dialog, DialogContent, Modal, NoSsr, styled } from '@mui/material';
+import { NoSsr } from '@mui/material';
 import Billboard from '../../../../src/components/Billboard/Billboard';
 import { useGetTitlesWithGenreQuery } from '@/src/services/query/media';
 import classes from './index.module.scss';
@@ -16,13 +16,9 @@ import useSliderConfig from '@/src/hooks/use-slider-config';
 import { useAppDispatch, useAppSelector } from '@/src/hooks';
 import { mediaActions } from '@/src/store/redux/media/media';
 import TitleDetail from '@/src/components/TitleDetail/TitleDetail';
+import ModalContainer from '@/src/components/ModalContainer/ModalContainer';
+import { uiActions } from '@/src/store/redux/ui/ui';
 
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogContent-root': {
-    padding: 0,
-    backgroundColor:'transparent',
-  },
-}));
 const Titles = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -32,10 +28,12 @@ const Titles = () => {
     []
   );
 
-  const detailPreviewItem = useAppSelector(state => state.media.detailPreviewItem);
+  const detailPreviewItem = useAppSelector(
+    (state) => state.media.detailPreviewItem
+  );
 
   const [loading, setLoading] = useState(false);
-  const { data, isLoading, isFetching, isError } = useGetTitlesWithGenreQuery({
+  const { data, isLoading, isFetching } = useGetTitlesWithGenreQuery({
     type,
     genreId,
   });
@@ -53,12 +51,12 @@ const Titles = () => {
     setLoading(l);
   }, [isLoading, isFetching]);
 
-
   const { rowItems } = useSliderConfig();
 
   const closeDetailModalHandler = () => {
-    dispatch(mediaActions.setDetailPreviewItem(null))
-  }
+    dispatch(mediaActions.setDetailPreviewItem(null));
+    dispatch(uiActions.toggleShowDetailModal());
+  };
 
   return (
     <section>
@@ -75,7 +73,7 @@ const Titles = () => {
           <Genres genres={headerGenres} />
         </div>
       )}
-      <Billboard  />
+      <Billboard />
 
       {!genreId && genresWithTitles && (
         <SlidersContainer genresWithTitles={genresWithTitles} />
@@ -99,20 +97,20 @@ const Titles = () => {
           </div>
         ))}
       <NoSsr>{loading && <SliderLoader />}</NoSsr>
-      {(detailPreviewItem) && (
-        <BootstrapDialog  sx={{
-          "& .MuiDialog-container": {
-            "& .MuiPaper-root": {
-              width: "100%",
-              maxWidth: "850px",
-            },
-          },
-        }} onClose={closeDetailModalHandler} open={!!detailPreviewItem}>
-          <DialogContent>
-            <TitleDetail closeModal={closeDetailModalHandler} item={detailPreviewItem} />
-          </DialogContent>
-        </BootstrapDialog>
-        )}
+      {detailPreviewItem && (
+        <ModalContainer
+          onClose={closeDetailModalHandler}
+          open={!!detailPreviewItem}
+        >
+          {detailPreviewItem && (
+            <TitleDetail
+              genres={headerGenres}
+              closeModal={closeDetailModalHandler}
+              item={detailPreviewItem}
+            />
+          )}
+        </ModalContainer>
+      )}
     </section>
   );
 };

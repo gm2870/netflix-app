@@ -18,6 +18,7 @@ import {
 import { useAppDispatch, useAppSelector } from '@/src/hooks';
 import PlayButton from '../PlayButton/PlayButton';
 import { mediaActions } from '@/src/store/redux/media/media';
+import { uiActions } from '@/src/store/redux/ui/ui';
 
 const initialPlayerState = {
   playing: false,
@@ -43,9 +44,7 @@ const initialPlayerState = {
 const Billboard = ({ onMoreInfoClick }: any) => {
   const router = useRouter();
   const playerRef = useRef<videojs.Player | null>(null);
-  const billboardPlaying = useAppSelector(
-    (state) => state.ui.billboardPlaying
-  );
+  const billboardPlaying = useAppSelector((state) => state.ui.billboardPlaying);
 
   const reducer = (state: any, action: any) => {
     switch (action.type) {
@@ -72,13 +71,13 @@ const Billboard = ({ onMoreInfoClick }: any) => {
           ...state,
           playing: paused,
         };
-        case 'toggleShowImage':
-          const showImage = !state.showImage;
-          return {
-            ...state,
-            showImage,
-          };
-  
+      case 'toggleShowImage':
+        const showImage = !state.showImage;
+        return {
+          ...state,
+          showImage,
+        };
+
       case 'toggleVolumn':
         const vol = !state.volumnOn;
         playerRef.current?.muted(!vol);
@@ -149,7 +148,6 @@ const Billboard = ({ onMoreInfoClick }: any) => {
     setPlayer({ type: 'toggleVolumn' });
   };
   useEffect(() => {
-
     if (!playerRef.current) {
       return;
     }
@@ -157,8 +155,6 @@ const Billboard = ({ onMoreInfoClick }: any) => {
     if (billboardPlaying && playerRef.current.paused()) {
       playerRef.current.play();
       setPlayer({ type: 'play', payload: { src: item?.video_src.HD } });
-
-
     } else if (!billboardPlaying && !playerRef.current.paused()) {
       playerRef.current.pause();
     }
@@ -171,9 +167,9 @@ const Billboard = ({ onMoreInfoClick }: any) => {
   const showDetailsHandler = () => {
     setPlayer({ type: 'togglePause' });
     setPlayer({ type: 'toggleShowImage' });
-    console.log(item)
+    dispatch(uiActions.toggleShowDetailModal());
     dispatch(mediaActions.setDetailPreviewItem(item));
-  }
+  };
 
   const opc = useSpring({
     from: { opacity: 1 },
@@ -215,7 +211,6 @@ const Billboard = ({ onMoreInfoClick }: any) => {
             </animated.div>
 
             <div className={classes.info__actions}>
-              
               <PlayButton />
               <CustomButton
                 onClick={showDetailsHandler}
@@ -246,10 +241,8 @@ const Billboard = ({ onMoreInfoClick }: any) => {
             </div>
           </div>
 
-          {(player.options.sources[0].src && player.playing) && (
-            <div
-              className={classes.videoContainer}
-            >
+          {player.options.sources[0].src && player.playing && (
+            <div className={classes.videoContainer}>
               <VideoJS
                 controlBar={false}
                 options={player.options}
@@ -267,7 +260,6 @@ const Billboard = ({ onMoreInfoClick }: any) => {
           </div>
         </NoSsr>
       )}
-    
     </section>
   );
 };
