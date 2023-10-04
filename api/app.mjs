@@ -33,7 +33,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: 'http://myflix.alifarzanegan.ir',
+    origin: 'https://project.alifarzanegan.ir',
     credentials: true,
   })
 );

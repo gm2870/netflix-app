@@ -108,17 +108,17 @@ export default function Home() {
             width={2000}
             height={1000}
             className={classes.hero__image}
-            src="/images/hero-bg.jpg"
+            src="/images/hero2-bg.jpg"
             alt="hero background inage"
           />
           <div className={classes.hero__gradient}></div>
           <div className={classes.hero__text}>
             <div className={classes.description}>
               <h1 className={classes.description__title}>
-                Unlimited movies, TV shows, and more.
+              Laughter. Tears. Thrills. Find it all on Netflix.
               </h1>
               <h4 className={classes.description__subtitle}>
-                Watch anywhere. Cancel anytime.
+              Endless entertainment starts at just EUR5.99. Cancel anytime.
               </h4>
             </div>
             <form
@@ -126,8 +126,7 @@ export default function Home() {
               onSubmit={handleSubmit((e) => sendEmail(e))}
             >
               <h4 className={classes.description__email}>
-                Ready to watch? Enter your email to create or restart your
-                membership.
+              Ready to watch? Enter your email to create or restart your membership.
               </h4>
 
               <div className={classes.email}>
