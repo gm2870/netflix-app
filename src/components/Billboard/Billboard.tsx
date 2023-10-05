@@ -206,9 +206,9 @@ const Billboard = ({ onMoreInfoClick }: any) => {
               <img src={`/images/${name}.webp`} alt="title logo" />
             </animated.div>
 
-            <animated.div style={opc} className={classes.info__description}>
+            <div  className={classes.info__description}>
               {item?.overview}
-            </animated.div>
+            </div>
 
             <div className={classes.info__actions}>
               <PlayButton />
