@@ -8,19 +8,13 @@ import Billboard from '../../src/components/Billboard/Billboard';
 import { useGetTitlesWithGenreQuery } from '@/src/services/query/media';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import TitleDetail from '@/src/components/TitleDetail/TitleDetail';
-import { useAppDispatch, useAppSelector } from '@/src/hooks';
-import { mediaActions } from '@/src/store/redux/media/media';
-import ModalContainer from '../../src/components/ModalContainer/ModalContainer';
-import { uiActions } from '@/src/store/redux/ui/ui';
-import { GenreWithMedia } from '@/src/store/redux/media/model';
-import { Genre } from '@/src/models/genre.model';
+import { useAppSelector } from '@/src/hooks';
+
+import DetailModal from '@/src/components/DetailModal/DetailModal';
 
 const Browse = () => {
-  const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(true);
   const [titleId, setTitleId] = useState('');
-  const [genres, setGenres] = useState<Genre[]>([]);
 
   const router = useRouter();
   const detailPreviewItem = useAppSelector(
@@ -42,26 +36,12 @@ const Browse = () => {
     isFetching,
   } = useGetTitlesWithGenreQuery({ type: '', genreId: '' });
 
-  useEffect(() => {
-    if (genresWithTitles) {
-      const genres = genresWithTitles.map((g) => ({
-        title: g.name,
-        id: g.id,
-      }));
-      setGenres(genres);
-    }
-  }, [genresWithTitles]);
 
   useEffect(() => {
     genresWithTitles;
     const loading = isLoading || isFetching;
     setLoading(loading);
   }, [isLoading, isFetching]);
-
-  const closeDetailModalHandler = () => {
-    dispatch(mediaActions.setDetailPreviewItem(null));
-    dispatch(uiActions.toggleShowDetailModal());
-  };
 
   return (
     <section className={classes.browse}>
@@ -87,21 +67,7 @@ const Browse = () => {
         )}
       </div>
 
-      {detailPreviewItem && (
-        <ModalContainer
-          onClose={closeDetailModalHandler}
-          open={!!detailPreviewItem}
-        >
-          {detailPreviewItem && (
-            <TitleDetail
-              allItems={genresWithTitles || []}
-              genres={genres}
-              closeModal={closeDetailModalHandler}
-              item={detailPreviewItem}
-            />
-          )}
-        </ModalContainer>
-      )}
+      {detailPreviewItem && <DetailModal  genresWithTitles={genresWithTitles} />}
     </section>
   );
 };

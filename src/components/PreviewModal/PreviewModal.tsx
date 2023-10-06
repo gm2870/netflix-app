@@ -27,9 +27,10 @@ const PreviewModal = (props: PreviewProps) => {
   const toggleSoundHandler = () =>
     setSoundOn((soundIsOn: boolean) => !soundIsOn);
   const playStartHandler = (isPlaying: boolean) => setPlaying(isPlaying);
+  
   const showDetailsPreviewHandler = () => {
-    dispatch(mediaActions.setDetailPreviewItem(props.item));
     dispatch(uiActions.setBillnoardPlaying(false));
+    dispatch(mediaActions.setDetailPreviewItem(props.item));
   };
   return (
     <Fade

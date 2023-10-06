@@ -8,17 +8,26 @@ import Head from 'next/head';
 import GridList from '@/src/components/GridList/GridList';
 import { Media } from '@/src/store/redux/media/model';
 import useSliderConfig from '@/src/hooks/use-slider-config';
-import { useSearchTitleQuery } from '@/src/services/query/media';
+import { useGetTitlesWithGenreQuery, useSearchTitleQuery } from '@/src/services/query/media';
+import { useAppSelector } from '@/src/hooks';
+import DetailModal from '@/src/components/DetailModal/DetailModal';
 
 const Search = () => {
   const [name,setName] = useState('');
   const router = useRouter();
   const {data,isLoading,isFetching} = useSearchTitleQuery(name,{skip:!name});
+  const {
+    data: genresWithTitles,
+  } = useGetTitlesWithGenreQuery({ type: '', genreId: '' },{skip:!name});
+
   useEffect(() => {
     if (router.isReady && router.query.q) {
       setName(router.query.q.toString());
     }
   }, [router.isReady, router.query.q]);
+  const detailPreviewItem = useAppSelector(
+    (state) => state.media.detailPreviewItem
+  );
   const { rowItems } = useSliderConfig();
   return (
     <div className={classes.search}>
@@ -44,6 +53,7 @@ const Search = () => {
           </div>
         )}
       </div>
+      {detailPreviewItem && <DetailModal genresWithTitles={genresWithTitles} />}
     </div>
   );
 };

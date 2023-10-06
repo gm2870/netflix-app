@@ -28,7 +28,7 @@ const Header = () => {
     if (router.query.q) {
       setShowSearch(true);
     }
-  }, [router.isReady, router.query.q]);
+  }, [router.query.q]);
   useEffect(() => {
     if (typeof window !== undefined) {
       const user = JSON.parse(JSON.stringify(localStorage.getItem('user')));

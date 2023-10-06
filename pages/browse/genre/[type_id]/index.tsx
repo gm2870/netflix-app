@@ -13,18 +13,15 @@ import { useEffect, useState } from 'react';
 import SlidersContainer from '@/src/components/Slider/SlidersContainer';
 import Genres from '@/src/components/Header/Genres/Genres';
 import useSliderConfig from '@/src/hooks/use-slider-config';
-import { useAppDispatch, useAppSelector } from '@/src/hooks';
-import { mediaActions } from '@/src/store/redux/media/media';
-import TitleDetail from '@/src/components/TitleDetail/TitleDetail';
-import ModalContainer from '@/src/components/ModalContainer/ModalContainer';
-import { uiActions } from '@/src/store/redux/ui/ui';
+import { useAppSelector } from '@/src/hooks';
+
+import DetailModal from '@/src/components/DetailModal/DetailModal';
 
 const Titles = () => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
   const type = (router.query.type_id as string) || '1';
   const genreId = router.query.g as string;
-  const [genresWithTitles, setGenresWithTitles] = useState<GenreWithMedia[]>(
+  const [genresWithTitles, setGenresWithTitles] = useState<any[]>(
     []
   );
 
@@ -37,26 +34,25 @@ const Titles = () => {
     type,
     genreId,
   });
+console.log(genresWithTitles)
   const headerGenres = genresWithTitles.map((g) => ({
     title: g.name,
     id: g.id,
   }));
+
   useEffect(() => {
     if (data) {
+      console.log(data)
       setGenresWithTitles(data);
     }
   }, [data]);
+
   useEffect(() => {
     const l = isLoading || isFetching;
     setLoading(l);
   }, [isLoading, isFetching]);
 
   const { rowItems } = useSliderConfig();
-
-  const closeDetailModalHandler = () => {
-    dispatch(mediaActions.setDetailPreviewItem(null));
-    dispatch(uiActions.toggleShowDetailModal());
-  };
 
   return (
     <section>
@@ -97,21 +93,7 @@ const Titles = () => {
           </div>
         ))}
       <NoSsr>{loading && <SliderLoader />}</NoSsr>
-      {detailPreviewItem && (
-        <ModalContainer
-          onClose={closeDetailModalHandler}
-          open={!!detailPreviewItem}
-        >
-          {detailPreviewItem && (
-            <TitleDetail
-              allItems={genresWithTitles}
-              genres={headerGenres}
-              closeModal={closeDetailModalHandler}
-              item={detailPreviewItem}
-            />
-          )}
-        </ModalContainer>
-      )}
+      {detailPreviewItem && <DetailModal genresWithTitles={genresWithTitles} />}
     </section>
   );
 };

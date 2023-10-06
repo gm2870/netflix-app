@@ -19,13 +19,11 @@ import MoreLikeCard from '../MoreLikeCard/MoreLikeCard';
 type DetailInfoProps = {
   item: Media;
   closeModal: () => void;
-  genres: Genre[];
   allItems: GenreWithMedia[];
 };
 const TitleDetail = ({
   item,
   closeModal,
-  genres,
   allItems,
 }: DetailInfoProps) => {
   const [soundOn, setSoundOn] = useState(false);
@@ -59,9 +57,8 @@ const TitleDetail = ({
   for (const items of moreLikeItems) {
     items.forEach((x) => moreLikeTitles.push(x));
   }
-  console.log(moreLikeTitles);
   const playStartHandler = () => {};
-  const titleGenres = genres.filter((g) => item.genre_ids.includes(g.id));
+  const titleGenres = allItems.filter((g) => item.genre_ids.includes(g.id));
   const handleSelectChange = (val: any) => console.log(val.target.value);
   return (
     <div className={classes.container}>
@@ -115,7 +112,7 @@ const TitleDetail = ({
             <div className={classes.genres}>
               <span className={classes.info__text}>Genres: </span>
               {titleGenres.map((genre) => (
-                <span key={genre.id}>{genre.title}, </span>
+                <span key={genre.id}>{genre.name}, </span>
               ))}
             </div>
           </div>

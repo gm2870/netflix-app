@@ -23,21 +23,11 @@ const Search = (props: SearchProps) => {
 
   const handleChange = (event: any) => {
     setSearchParam(event.target.value);
+       router.push({
+      pathname: '/search',
+      query: { q: event.target.value },
+    });
   };
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (!searchParam) return;
-      router.push({
-        pathname: '/search',
-        query: { q: searchParam },
-      });
-    }, 500);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [router, searchParam]);
 
   useEffect(() => {
     if (router.isReady && router.query.q) {

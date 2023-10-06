@@ -30,7 +30,6 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 }));
 
 const SeasonSelect = ({ options, handleChange }: any) => {
-  console.log(options);
   return (
     <FormControl sx={{ m: 1 }} variant="standard">
       <Select
