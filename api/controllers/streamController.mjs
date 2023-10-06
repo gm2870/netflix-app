@@ -62,15 +62,17 @@ export const searchMedia = catchAsync(async (req, res) => {
   const result = data[`${type}_results`];
   const videoData = await getVideoSrc(data.title_id, 1080);
   result[0].video_src = {
-        SD: videoData.SD,
-        HD: videoData.HD,
-      };
-     
+    SD: videoData.SD,
+    HD: videoData.HD,
+  };
+
   res.status(200).json({
     status: 'success',
     data: result,
   });
- const d = await Model.findOneAndUpdate({id:result[0].id},result[0],{upsert: true});
+  const d = await Model.findOneAndUpdate({ id: result[0].id }, result[0], {
+    upsert: true,
+  });
 });
 
 export const searchMediaByName = async (name) => {
@@ -87,7 +89,7 @@ export const searchMediaByName = async (name) => {
 
     return {
       ...res.data,
-      title_id:id
+      title_id: id,
     };
   } catch (error) {
     return new AppError(error.message || 'Something went wrong.', 500);
@@ -177,7 +179,7 @@ export const emptyAssets = (req, res, next) => {
 export const mediaStream = catchAsync(async (req, res) => {
   const Model = req.params.mediaType === 'tv' ? TV : Movie;
   const media = await Model.findOne({ id: req.params.mediaId });
-  
+
   const src = media.video_src.HD;
   const name = media.title || media.name;
   const fileName = `${normalizeText(name)}.mp4`;
@@ -220,42 +222,46 @@ export const mediaStream = catchAsync(async (req, res) => {
 
 export const getVideoCropSize = catchAsync(async (req, res) => {
   const Model = req.params.type === 'tv' ? TV : Movie;
-  const media = await Model.findOne({ id: req.params.id });
-  const src = media.video_src.SD || media.video_src.HD;
-  const name = media.title || media.name;
-  const fileName = `${normalizeText(name)}-temp.mp4`;
-  const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);
-  const fileWriterStream = fs.createWriteStream(resolvedPath);
-  let blackBarHeight = 0;
+  res.status(200).json({
+    status: 'success',
+    data: 0,
+  });
+  // const media = await Model.findOne({ id: req.params.id });
+  // const src = media.video_src.SD || media.video_src.HD;
+  // const name = media.title || media.name;
+  // const fileName = `${normalizeText(name)}-temp.mp4`;
+  // const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);
+  // const fileWriterStream = fs.createWriteStream(resolvedPath);
+  // let blackBarHeight = 0;
 
-  const asyncExec = util.promisify(exec);
-  let downloaded = 0;
-  const downloadStream = got.stream(src);
+  // const asyncExec = util.promisify(exec);
+  // let downloaded = 0;
+  // const downloadStream = got.stream(src);
 
-  downloadStream
-    .on('downloadProgress', async (progress) => {
-      downloaded = progress.percent;
-      if (downloaded >= 0.1) {
-        downloadStream.destroy();
-        const { err, stdout } = await asyncExec(
-          `ffmpeg -i ${resolvedPath} -vf cropdetect -f null - 2>&1 | awk '/crop/ { print $NF }' | tail -1`
-        );
+  // downloadStream
+  //   .on('downloadProgress', async (progress) => {
+  //     downloaded = progress.percent;
+  //     if (downloaded >= 0.1) {
+  //       downloadStream.destroy();
+  //       const { err, stdout } = await asyncExec(
+  //         `ffmpeg -i ${resolvedPath} -vf cropdetect -f null - 2>&1 | awk '/crop/ { print $NF }' | tail -1`
+  //       );
 
-        if (err) {
-          return new AppError('crop value not found.', 500);
-        }
-        blackBarHeight = stdout.split(':').pop();
-        const match = blackBarHeight.match(/\d+/);
-        if (match) {
-          blackBarHeight = match[0];
-        }
-        res.status(200).json({
-          status: 'success',
-          data: +blackBarHeight,
-        });
-      }
-    })
-    .pipe(fileWriterStream);
+  //       if (err) {
+  //         return new AppError('crop value not found.', 500);
+  //       }
+  //       blackBarHeight = stdout.split(':').pop();
+  //       const match = blackBarHeight.match(/\d+/);
+  //       if (match) {
+  //         blackBarHeight = match[0];
+  //       }
+  //       res.status(200).json({
+  //         status: 'success',
+  //         data: +blackBarHeight,
+  //       });
+  //     }
+  //   })
+  //   .pipe(fileWriterStream);
 });
 
 export const imageStream = catchAsync(async (req, res, next) => {

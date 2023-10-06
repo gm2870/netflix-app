@@ -12,7 +12,6 @@ const __dirname = dirname(__filename);
 const genres = JSON.parse(fs.readFileSync(`${__dirname}/genres.json`, 'utf-8'));
 
 export const importGenres = async () => {
-  console.log(genres);
   try {
     await Genre.create(genres);
   } catch (error) {

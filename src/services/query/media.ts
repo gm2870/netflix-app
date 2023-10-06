@@ -35,15 +35,19 @@ export const mediaApi = createApi({
         let url = '';
         switch (type) {
           case '1':
-            url = genreId ? `/media/tv-shows/${genreId}` : '/media/tv-shows';
+            url = genreId
+              ? `/media/tv-shows/genres/${genreId}`
+              : '/media/tv-shows';
             break;
           case '2':
-            url = genreId ? `/media/movies/${genreId}` : '/media/movies';
+            url = genreId ? `/media/movies/genres/${genreId}` : '/media/movies';
             break;
           default:
             url = '/media/all';
             break;
         }
+        console.log(url);
+
         return { url };
       },
       transformResponse: (response: {
