@@ -126,6 +126,7 @@ export const updateItemSrc = async (model, media) => {
   if (media.title_video_id) {
     SDSrc = await getSrcWithVideoId(media.title_video_id, 480);
     HDSrc = await getSrcWithVideoId(media.title_video_id, 1080);
+
     videoData = {
       videoId: media.title_video_id,
       SD: SDSrc,
@@ -173,7 +174,7 @@ if (process.argv[2] === '--import-tv') {
 } else if (process.argv[2] === '--update-many') {
   forceSrcUpdate('movie');
 } else if (process.argv[2] === '--update') {
-  updateOne('tv', 60797);
+  updateOne('tv', 76479);
 } else if (process.argv[2] === '--import-genres') {
   importGenres();
 } else if (process.argv[2] === '--import-movie') {

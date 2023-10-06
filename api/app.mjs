@@ -6,6 +6,7 @@ import authRoutes from './routes/authRoutes.mjs';
 import viewRoutes from './routes/viewRoutes.mjs';
 import genreRoutes from './routes/genreRoutes.mjs';
 import mediaRoutes from './routes/mediaRoutes.mjs';
+import {emptyAssets} from './controllers/streamController.mjs';
 import globalErrorHandler from './controllers/errorController.mjs';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
@@ -38,7 +39,7 @@ app.use(
   })
 );
 
-// if (process.env.NODE_ENV === 'production') app.use('/', emptyAssets);
+ app.use('/', emptyAssets);
 
 app.use('/', viewRoutes);
 

@@ -221,8 +221,7 @@ export const mediaStream = catchAsync(async (req, res) => {
 export const getVideoCropSize = catchAsync(async (req, res) => {
   const Model = req.params.type === 'tv' ? TV : Movie;
   const media = await Model.findOne({ id: req.params.id });
-  const src = media.video_src.SD;
-
+  const src = media.video_src.SD || media.video_src.HD;
   const name = media.title || media.name;
   const fileName = `${normalizeText(name)}-temp.mp4`;
   const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);
@@ -241,6 +240,7 @@ export const getVideoCropSize = catchAsync(async (req, res) => {
         const { err, stdout } = await asyncExec(
           `ffmpeg -i ${resolvedPath} -vf cropdetect -f null - 2>&1 | awk '/crop/ { print $NF }' | tail -1`
         );
+
         if (err) {
           return new AppError('crop value not found.', 500);
         }
