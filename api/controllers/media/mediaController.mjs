@@ -205,7 +205,6 @@ export const getAllTVShows = catchAsync(async (req, res) => {
 
 export const getAllTVShowsByGenre = catchAsync(async (req, res) => {
   const genreId = +req.params.genreId;
-  console.log(genreId);
   const genres = await Genre.aggregate([
     {
       $match: {
@@ -318,6 +317,47 @@ export const getSeasonInfo = catchAsync(async (req, res) => {
     data: result.data,
   });
 });
+
+export const getFavoritesList = async (req, res, next) => {
+  const token = getToken(req);
+  if (!token) {
+    return next(
+      new AppError('Your not logged in, Please log in to get access', 401)
+    );
+  }
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) {
+    return next(
+      new AppError('Your not logged in, Please log in to get access', 401)
+    );
+  }
+  const tvShows = await TV.find({ id: { $in: currentUser.favorites } });
+  const movies = await Movie.find({ id: { $in: currentUser.favorites } });
+
+  res.status(200).json({
+    status: 'success',
+    data: [...tvShows, ...movies],
+  });
+};
+
+export const addTitleToFavorites = async (req, res, next) => {
+  const token = getToken(req);
+  if (!token) {
+    return next(
+      new AppError('Your not logged in, Please log in to get access', 401)
+    );
+  }
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  const user = await User.findByIdAndUpdate(decoded.id, {
+    $push: { favorites: +req.params.id },
+  });
+
+  res.status(200).json({
+    status: 'success',
+    data: [...user.favorites, +req.params.id],
+  });
+};
 
 export const getGeneralBillboard = async (req, res) => {
   const tv = await TV.findOne({ id: 67026 });

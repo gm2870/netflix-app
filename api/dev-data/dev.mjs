@@ -5,7 +5,6 @@ import fs from 'fs';
 import { getSrcWithVideoId, getVideoSrc } from '../utils/urlGrabber.mjs';
 import {
   getTitleId,
-  needsSrcUpdate,
   searchMediaByName,
 } from '../controllers/streamController.mjs';
 import catchAsync from '../utils/catchAsync.mjs';
@@ -41,17 +40,10 @@ const updateManyTitleId = async (model) => {
   const items = await Model.find();
   for (const show of items) {
     if (show.title_id) continue;
-    console.log(show.name);
     const name = show.name || show.title;
     const id = await getTitleId(name);
-    console.log(id);
     if (!id?.startsWith('tt')) continue;
-    const res = await Model.updateOne(
-      { id: show.id },
-      { title_id: id },
-      { upsert: true }
-    );
-    console.log(res);
+    await Model.updateOne({ id: show.id }, { title_id: id }, { upsert: true });
   }
   process.exit();
 };

@@ -56,6 +56,7 @@ export const searchMedia = catchAsync(async (req, res) => {
   // const items = await Movie.find({
   //   title: { $regex: `${name}`, $options: 'i' },
   // });
+
   const data = await searchMediaByName(name);
   let type = data.movie_results.length ? 'movie' : 'tv';
   const Model = type === 'movie' ? Movie : TV;
@@ -70,7 +71,8 @@ export const searchMedia = catchAsync(async (req, res) => {
     status: 'success',
     data: result,
   });
-  const d = await Model.findOneAndUpdate({ id: result[0].id }, result[0], {
+
+  await Model.findOneAndUpdate({ id: result[0].id }, result[0], {
     upsert: true,
   });
 });
@@ -222,22 +224,21 @@ export const mediaStream = catchAsync(async (req, res) => {
 
 export const getVideoCropSize = catchAsync(async (req, res) => {
   const Model = req.params.type === 'tv' ? TV : Movie;
+  const media = await Model.findOne({ id: req.params.id });
+  const src = media.video_src.SD || media.video_src.HD;
+  const name = media.title || media.name;
+  const fileName = `${normalizeText(name)}-temp.mp4`;
+  const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);
+  const fileWriterStream = fs.createWriteStream(resolvedPath);
+  let blackBarHeight = 0;
+
+  const asyncExec = util.promisify(exec);
+  let downloaded = 0;
+  const downloadStream = got.stream(src);
   res.status(200).json({
     status: 'success',
     data: 0,
   });
-  // const media = await Model.findOne({ id: req.params.id });
-  // const src = media.video_src.SD || media.video_src.HD;
-  // const name = media.title || media.name;
-  // const fileName = `${normalizeText(name)}-temp.mp4`;
-  // const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);
-  // const fileWriterStream = fs.createWriteStream(resolvedPath);
-  // let blackBarHeight = 0;
-
-  // const asyncExec = util.promisify(exec);
-  // let downloaded = 0;
-  // const downloadStream = got.stream(src);
-
   // downloadStream
   //   .on('downloadProgress', async (progress) => {
   //     downloaded = progress.percent;
