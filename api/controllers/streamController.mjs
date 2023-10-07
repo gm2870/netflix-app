@@ -235,34 +235,30 @@ export const getVideoCropSize = catchAsync(async (req, res) => {
   const asyncExec = util.promisify(exec);
   let downloaded = 0;
   const downloadStream = got.stream(src);
-  res.status(200).json({
-    status: 'success',
-    data: 0,
-  });
-  // downloadStream
-  //   .on('downloadProgress', async (progress) => {
-  //     downloaded = progress.percent;
-  //     if (downloaded >= 0.1) {
-  //       downloadStream.destroy();
-  //       const { err, stdout } = await asyncExec(
-  //         `ffmpeg -i ${resolvedPath} -vf cropdetect -f null - 2>&1 | awk '/crop/ { print $NF }' | tail -1`
-  //       );
+  downloadStream
+    .on('downloadProgress', async (progress) => {
+      downloaded = progress.percent;
+      if (downloaded >= 0.1) {
+        downloadStream.destroy();
+        const { err, stdout } = await asyncExec(
+          `ffmpeg -i ${resolvedPath} -vf cropdetect -f null - 2>&1 | awk '/crop/ { print $NF }' | tail -1`
+        );
 
-  //       if (err) {
-  //         return new AppError('crop value not found.', 500);
-  //       }
-  //       blackBarHeight = stdout.split(':').pop();
-  //       const match = blackBarHeight.match(/\d+/);
-  //       if (match) {
-  //         blackBarHeight = match[0];
-  //       }
-  //       res.status(200).json({
-  //         status: 'success',
-  //         data: +blackBarHeight,
-  //       });
-  //     }
-  //   })
-  //   .pipe(fileWriterStream);
+        if (err) {
+          return new AppError('crop value not found.', 500);
+        }
+        blackBarHeight = stdout.split(':').pop();
+        const match = blackBarHeight.match(/\d+/);
+        if (match) {
+          blackBarHeight = match[0];
+        }
+        res.status(200).json({
+          status: 'success',
+          data: +blackBarHeight,
+        });
+      }
+    })
+    .pipe(fileWriterStream);
 });
 
 export const imageStream = catchAsync(async (req, res, next) => {
