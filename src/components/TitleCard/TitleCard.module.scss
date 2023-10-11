@@ -1,11 +1,15 @@
+@use '../../../styles/abstracts' as *;
+
 .titleCardContainer {
   display: flex;
-  padding: 1rem 1.5rem;
+  padding: 0;
   color: #fff;
-
   border-radius: 4px;
   margin-bottom: 1rem;
   border-bottom: 1px solid #404040;
+  @include respond(small-desktop){
+    padding: 1rem 1.5rem;
+  }
 }
 .grayBg {
   background-color: #333;
