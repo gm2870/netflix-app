@@ -23,7 +23,7 @@ router.get('/tv-shows/genres/:genreId', mediaController.getAllTVShowsByGenre);
 router.get('/tv-shows', mediaController.getAllTVShows);
 
 router.get('/:type/:titleId', mediaController.getTitle);
-router.post('/favorites/:type/:id', mediaController.addTitleToFavorites);
+router.post('/favorites', mediaController.addTitleToFavorites);
 router.get('/favorites', mediaController.getFavoritesList);
 
 export default router;

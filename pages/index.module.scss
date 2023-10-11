@@ -322,8 +322,12 @@
   &__img {
     position: relative;
     overflow: hidden;
-
-    min-height: 100px;
+    img {
+      position: relative;
+      z-index: 2;
+      max-width: 100%;
+      height: auto;
+    }
     .downloader {
       position: absolute;
       align-items: center;

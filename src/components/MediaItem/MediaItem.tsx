@@ -53,10 +53,12 @@ const MediaItem = ({
     }
     setOpen(true);
   };
+
   const hideModal = () => {
     dispatch(uiActions.setBillnoardPlaying(true));
     setOpen(false);
   };
+
   return (
     <Fragment>
       <div onMouseOver={openModal} ref={boxRef} className={classes.mediaItem}>

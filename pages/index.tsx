@@ -115,10 +115,10 @@ export default function Home() {
           <div className={classes.hero__text}>
             <div className={classes.description}>
               <h1 className={classes.description__title}>
-              Laughter. Tears. Thrills. Find it all on Netflix.
+                Laughter. Tears. Thrills. Find it all on Netflix.
               </h1>
               <h4 className={classes.description__subtitle}>
-              Endless entertainment starts at just EUR5.99. Cancel anytime.
+                Endless entertainment starts at just EUR5.99. Cancel anytime.
               </h4>
             </div>
             <form
@@ -126,7 +126,8 @@ export default function Home() {
               onSubmit={handleSubmit((e) => sendEmail(e))}
             >
               <h4 className={classes.description__email}>
-              Ready to watch? Enter your email to create or restart your membership.
+                Ready to watch? Enter your email to create or restart your
+                membership.
               </h4>
 
               <div className={classes.email}>
@@ -208,7 +209,7 @@ export default function Home() {
               <Image
                 src="/images/download-watch.jpg"
                 alt="download and watch"
-                width={550}
+                width={500}
                 height={400}
               />
               <div className={classes.downloader}>

@@ -46,7 +46,6 @@ export const mediaApi = createApi({
             url = '/media/all';
             break;
         }
-        console.log(url);
 
         return { url };
       },
@@ -161,6 +160,25 @@ export const mediaApi = createApi({
         return response.data;
       },
     }),
+    addTitleToMyList: build.mutation<
+      any,
+      {
+        id: number;
+      }
+    >({
+      query({ id }) {
+        return {
+          method: 'POST',
+          url: '/media/favorites',
+          body: {
+            id,
+          },
+        };
+      },
+      transformResponse: (response: any) => {
+        return response.data;
+      },
+    }),
   }),
 });
 
@@ -172,4 +190,5 @@ export const {
   useGetCropSizeQuery,
   useSearchTitleQuery,
   useGetSeasonDetailsQuery,
+  useAddTitleToMyListMutation,
 } = mediaApi;

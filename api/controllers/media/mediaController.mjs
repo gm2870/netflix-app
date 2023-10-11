@@ -349,8 +349,9 @@ export const addTitleToFavorites = async (req, res, next) => {
     );
   }
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  const { id } = req.body;
   const user = await User.findByIdAndUpdate(decoded.id, {
-    $push: { favorites: +req.params.id },
+    $push: { favorites: +id },
   });
 
   res.status(200).json({
