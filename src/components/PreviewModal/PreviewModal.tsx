@@ -9,6 +9,7 @@ import SoundButton from '../SoundButton/SoundButton';
 import { useAppDispatch } from '@/src/hooks';
 import { mediaActions } from '@/src/store/redux/media/media';
 import { uiActions } from '@/src/store/redux/ui/ui';
+import { useAddTitleToMyListMutation } from '@/src/services/query/media';
 
 type PreviewProps = {
   item: Media;
@@ -16,22 +17,29 @@ type PreviewProps = {
   show: boolean;
   isMini?: boolean;
 };
+
 const PreviewModal = (props: PreviewProps) => {
   const [soundOn, setSoundOn] = useState(false);
   const dispatch = useAppDispatch();
   const cardRef = useRef<HTMLDivElement>(null);
 
   const onHideModal = props.hideModal;
-
+  const [addTitleToMyList, { data, isLoading, isSuccess, isError }] =
+    useAddTitleToMyListMutation();
   const [playing, setPlaying] = useState(false);
   const toggleSoundHandler = () =>
     setSoundOn((soundIsOn: boolean) => !soundIsOn);
   const playStartHandler = (isPlaying: boolean) => setPlaying(isPlaying);
-  
+
   const showDetailsPreviewHandler = () => {
     dispatch(uiActions.setBillnoardPlaying(false));
     dispatch(mediaActions.setDetailPreviewItem(props.item));
   };
+
+  const addToMyListHandler = () => {
+    addTitleToMyList({ id: props.item.id });
+  };
+
   return (
     <Fade
       in={props.show}
@@ -55,6 +63,7 @@ const PreviewModal = (props: PreviewProps) => {
           showDetailsPreviewHandler={showDetailsPreviewHandler}
           mediaType={props.item.media_type}
           id={props.item.id}
+          addToMyList={addToMyListHandler}
         />
       </div>
     </Fade>

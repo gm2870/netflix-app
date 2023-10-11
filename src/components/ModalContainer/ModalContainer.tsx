@@ -29,6 +29,8 @@ const ModalContainer = ({ children, open, onClose }: ModalProps) => {
             width: '100%',
             maxWidth: '950px',
             overflowY: 'auto',
+            margin:0,
+            marginTop:'32px'
           },
         },
       }}

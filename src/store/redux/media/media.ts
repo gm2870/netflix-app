@@ -4,6 +4,7 @@ type MediaState = {
   error: string;
   loading: boolean;
   mediaItems: GenreWithMedia[];
+  myListItems: GenreWithMedia[];
   billboardMedia: Media | null;
   playingBillboardTrailer: boolean;
   cropSize: number;
@@ -13,6 +14,7 @@ const initialState: MediaState = {
   error: '',
   loading: false,
   mediaItems: [],
+  myListItems:[],
   billboardMedia: null,
   playingBillboardTrailer: false,
   cropSize: 0,

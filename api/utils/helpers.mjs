@@ -6,8 +6,13 @@ export const emptyFolder = async (folderPath) => {
     // Find all files in the folder
     const files = await fsPromises.readdir(folderPath);
     for (const file of files) {
-      await fsPromises.unlink(path.resolve(folderPath, file));
-      console.log(`${folderPath}/${file} has been removed successfully`);
+      try {
+        await fsPromises.unlink(path.resolve(folderPath, file));
+        console.log(`${folderPath}/${file} has been removed successfully`);
+
+      } catch (error) {
+        
+      }
     }
   } catch (err) {
     console.log(err);
