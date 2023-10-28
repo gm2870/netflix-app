@@ -1,4 +1,6 @@
-A fake version of netflix
+A fake version of netflix.
+
+**You can login with username: test@test.io , password: test1234 , Or you can sign up.**
 
 **-Fontend Features**:
 
