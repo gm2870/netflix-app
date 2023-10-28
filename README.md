@@ -1,9 +1,5 @@
 A fake version of netflix
 
-Project is available at https://project.alifarzanegan.ir
-
-You can login with username: test@test.io , password: test1234 , Or you can sign up.
-
 **-Fontend Features**:
 
     High quality and responsive UI, identical to netflix
