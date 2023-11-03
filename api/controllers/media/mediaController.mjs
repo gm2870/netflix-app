@@ -249,7 +249,6 @@ export const getAllTVShowsByGenre = catchAsync(async (req, res) => {
 });
 
 export const getTitle = catchAsync(async (req, res) => {
-
   const result = await axios({
     url: `https://api.themoviedb.org/3/${req.params.type}/${req.params.titleId}`,
     method: 'GET',
@@ -257,7 +256,6 @@ export const getTitle = catchAsync(async (req, res) => {
       api_key: process.env.MOVIEDB_API_KEY,
     },
   });
-  
 
   res.status(200).json({
     status: 'success',
@@ -317,7 +315,7 @@ export const getSeasonInfo = catchAsync(async (req, res) => {
       api_key: process.env.MOVIEDB_API_KEY,
     },
   });
-  if(item) {
+  if (item) {
     result.data.title_id = item.title_id;
   }
 
@@ -341,9 +339,11 @@ export const getFavoritesList = async (req, res, next) => {
       new AppError('Your not logged in, Please log in to get access', 401)
     );
   }
+  console.log(currentUser.favorites);
   const tvShows = await TV.find({ id: { $in: currentUser.favorites } });
   const movies = await Movie.find({ id: { $in: currentUser.favorites } });
-
+  console.log('344', tvShows.length);
+  console.log('345', movies.length);
   res.status(200).json({
     status: 'success',
     data: [...tvShows, ...movies],

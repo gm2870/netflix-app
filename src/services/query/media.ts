@@ -6,8 +6,8 @@ import { SeasonDetails, TitleDetails } from '@/src/models/media.model';
 export const mediaApi = createApi({
   reducerPath: 'mediaApi',
   baseQuery: baseQueryWithReauth,
-  endpoints: (build) => ({
-    getBillboardMedia: build.query<Media, string>({
+  endpoints: (builder) => ({
+    getBillboardMedia: builder.query<Media, string>({
       query: (type: string) => {
         let url = '';
         switch (type) {
@@ -27,7 +27,7 @@ export const mediaApi = createApi({
         return response.data || [];
       },
     }),
-    getTitlesWithGenre: build.query<
+    getTitlesWithGenre: builder.query<
       GenreWithMedia[],
       { type: string; genreId: string }
     >({
@@ -56,7 +56,15 @@ export const mediaApi = createApi({
         return response.data;
       },
     }),
-    getTitleInfo: build.query<
+
+    getMyList: builder.query({
+      query: () => 'media/favorites',
+      transformResponse: (response: { data: Media[]; status: string }) => {
+        return response.data;
+      },
+    }),
+
+    getTitleInfo: builder.query<
       Media,
       {
         id: number;
@@ -79,7 +87,7 @@ export const mediaApi = createApi({
         return response.data;
       },
     }),
-    getTitleDetails: build.query<
+    getTitleDetails: builder.query<
       TitleDetails,
       {
         id: number;
@@ -108,7 +116,7 @@ export const mediaApi = createApi({
         };
       },
     }),
-    getSeasonDetails: build.query<
+    getSeasonDetails: builder.query<
       SeasonDetails,
       {
         id: number;
@@ -125,7 +133,7 @@ export const mediaApi = createApi({
         return response.data;
       },
     }),
-    getCropSize: build.query<
+    getCropSize: builder.query<
       number,
       {
         id: number;
@@ -150,7 +158,7 @@ export const mediaApi = createApi({
         return response.data;
       },
     }),
-    searchTitle: build.query<Media[], string>({
+    searchTitle: builder.query<Media[], string>({
       query: (name: string) => {
         return {
           url: `/stream/search/${name}`,
@@ -160,7 +168,7 @@ export const mediaApi = createApi({
         return response.data;
       },
     }),
-    addTitleToMyList: build.mutation<
+    addTitleToMyList: builder.mutation<
       any,
       {
         id: number;
@@ -191,4 +199,5 @@ export const {
   useSearchTitleQuery,
   useGetSeasonDetailsQuery,
   useAddTitleToMyListMutation,
+  useGetMyListQuery,
 } = mediaApi;

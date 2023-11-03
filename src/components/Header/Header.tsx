@@ -66,7 +66,7 @@ const Header = () => {
     },
     {
       name: 'My List',
-      link: '/',
+      link: '/browse/my-list',
     },
     {
       name: 'Browse by Languages',
