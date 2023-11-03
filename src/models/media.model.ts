@@ -21,6 +21,7 @@ export type SeasonDetails = {
   overview: string;
   name: string;
   episodes: Episode[];
+  title_id: string;
 };
 
 export type Season = {

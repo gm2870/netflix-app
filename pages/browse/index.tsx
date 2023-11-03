@@ -36,7 +36,6 @@ const Browse = () => {
     isFetching,
   } = useGetTitlesWithGenreQuery({ type: '', genreId: '' });
 
-
   useEffect(() => {
     genresWithTitles;
     const loading = isLoading || isFetching;
@@ -44,7 +43,7 @@ const Browse = () => {
   }, [isLoading, isFetching]);
 
   return (
-    <section className={classes.browse}>
+    <section>
       <Head>
         <title>Netflix - Home</title>
       </Head>
@@ -55,19 +54,21 @@ const Browse = () => {
           showDetailPreviewModal ? classes.detailModal : classes.miniModal
         }`}
       ></div>
-      <div className={classes.content}>
+      <div>
         <Billboard />
         {genresWithTitles && (
           <SlidersContainer genresWithTitles={genresWithTitles} />
         )}
         {loading && (
-          <NoSsr>
-            <SliderLoader />
-          </NoSsr>
+          <div className="mt-10">
+            <NoSsr>
+              <SliderLoader />
+            </NoSsr>
+          </div>
         )}
       </div>
 
-      {detailPreviewItem && <DetailModal  genresWithTitles={genresWithTitles} />}
+      {detailPreviewItem && <DetailModal genresWithTitles={genresWithTitles} />}
     </section>
   );
 };

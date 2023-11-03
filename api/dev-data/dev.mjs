@@ -166,7 +166,7 @@ if (process.argv[2] === '--import-tv') {
 } else if (process.argv[2] === '--update-many') {
   forceSrcUpdate('movie');
 } else if (process.argv[2] === '--update') {
-  updateOne('tv', 76479);
+  updateOne('tv', 67026);
 } else if (process.argv[2] === '--import-genres') {
   importGenres();
 } else if (process.argv[2] === '--import-movie') {

@@ -26,11 +26,17 @@
 }
 
 .image {
+  position: relative;
   border-radius: 4px;
   display: flex;
   align-items: center;
   img {
     border-radius: 4px;
+  }
+  &:hover {
+    .source {
+      opacity: 1;
+    }
   }
 }
 
@@ -47,4 +53,26 @@
 
 .overview {
   margin-bottom: 0;
+}
+
+.source {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  border: 1px solid;
+  border-radius: 50%;
+  background-color: rgba(0,0,0,0.4);
+  width: 42px;
+  height: 42px;
+  opacity: 0;
+  transition: opacity 0.2s
+}
+
+.playIcon {
+  font-size: 1.5rem;
+  @include respond(small-desktop) {
+    font-size: 3rem;
+  }
 }
