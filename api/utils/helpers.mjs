@@ -40,5 +40,5 @@ export const getFileSizeAndResolvedPath = (filePath) => {
 };
 
 export const normalizeText = (text) => {
-  return text.toLowerCase().split(' ').join('-').replace(':', '');
+  return text.split(' ').join('-').replace(':', '');
 };

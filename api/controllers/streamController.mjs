@@ -51,22 +51,36 @@ export const getMedia = catchAsync(async (req, res, next) => {
 });
 
 export const searchMedia = catchAsync(async (req, res) => {
+
+  const movieItems = await Movie.find({
+    title: { $regex: `${req.params.name}`, $options: 'i' },
+  });
+
+  const tvItems = await TV.find({
+    name: { $regex: `${req.params.name}`, $options: 'i' },
+  });
+
+  if(tvItems.length || movieItems.length) {
+   return res.status(200).json({
+      status: 'success',
+      data: [...tvItems,...movieItems],
+    });
+    
+  }
+
   const name = normalizeText(req.params.name);
-
-  // const items = await Movie.find({
-  //   title: { $regex: `${name}`, $options: 'i' },
-  // });
-
   const data = await searchMediaByName(name);
   let type = data.movie_results.length ? 'movie' : 'tv';
   const Model = type === 'movie' ? Movie : TV;
+  
   const result = data[`${type}_results`];
   const videoData = await getVideoSrc(data.title_id, 1080);
   result[0].video_src = {
     SD: videoData.SD,
     HD: videoData.HD,
   };
-
+  result[0].title_id = data.title_id;
+  
   res.status(200).json({
     status: 'success',
     data: result,

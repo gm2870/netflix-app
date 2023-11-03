@@ -249,6 +249,7 @@ export const getAllTVShowsByGenre = catchAsync(async (req, res) => {
 });
 
 export const getTitle = catchAsync(async (req, res) => {
+
   const result = await axios({
     url: `https://api.themoviedb.org/3/${req.params.type}/${req.params.titleId}`,
     method: 'GET',
@@ -256,6 +257,8 @@ export const getTitle = catchAsync(async (req, res) => {
       api_key: process.env.MOVIEDB_API_KEY,
     },
   });
+  
+
   res.status(200).json({
     status: 'success',
     data: result.data,
@@ -305,6 +308,8 @@ export const getMovieDetails = catchAsync(async (req, res) => {
 });
 
 export const getSeasonInfo = catchAsync(async (req, res) => {
+  const item = await TV.findOne({ id: req.params.titleId });
+
   const result = await axios({
     url: `https://api.themoviedb.org/3/tv/${req.params.titleId}/season/${req.params.seasonNumber}`,
     method: 'GET',
@@ -312,6 +317,10 @@ export const getSeasonInfo = catchAsync(async (req, res) => {
       api_key: process.env.MOVIEDB_API_KEY,
     },
   });
+  if(item) {
+    result.data.title_id = item.title_id;
+  }
+
   res.status(200).json({
     status: 'success',
     data: result.data,

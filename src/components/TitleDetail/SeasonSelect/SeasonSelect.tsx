@@ -42,11 +42,11 @@ const SeasonSelect = ({ options, handleChange }: any) => {
           },
         }}
         id="season-select"
-        defaultValue={options[0].id}
+        defaultValue={1}
         onChange={handleChange}
         input={<BootstrapInput />}
       >
-        {options.map((opt: any) => (
+        {options.map((opt: any,index: number) => (
           <MenuItem
             style={{
               padding: '1rem 1.5rem',
@@ -54,7 +54,7 @@ const SeasonSelect = ({ options, handleChange }: any) => {
               fontWeight: 700,
             }}
             key={opt.id}
-            value={opt.id}
+            value={index+1}
           >
             {opt.name}
           </MenuItem>

@@ -11,9 +11,7 @@ import SoundButton from '../SoundButton/SoundButton';
 import PlayButton from '../PlayButton/PlayButton';
 import CircleButton from '../CircleButton/CircleButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { Genre } from '@/src/models/genre.model';
 import SeasonSelect from './SeasonSelect/SeasonSelect';
-import GridList from '../GridList/GridList';
 import MoreLikeCard from '../MoreLikeCard/MoreLikeCard';
 
 type DetailInfoProps = {
@@ -58,8 +56,12 @@ const TitleDetail = ({
     items.forEach((x) => moreLikeTitles.push(x));
   }
   const playStartHandler = () => {};
+
   const titleGenres = allItems.filter((g) => item.genre_ids.includes(g.id));
-  const handleSelectChange = (val: any) => console.log(val.target.value);
+  const handleSelectChange = (val: any) => {
+    setSeasonNumber(val.target.value);
+  };
+
   return (
     <div className={classes.container}>
       <Player
@@ -146,6 +148,8 @@ const TitleDetail = ({
                     runtime={episode.runtime}
                     name={episode.name}
                     overview={episode.overview}
+                    titleId={seasonDetails.title_id}
+                    seasonNumber={seasonNumber}
                   />
                 ))}
             </div>
