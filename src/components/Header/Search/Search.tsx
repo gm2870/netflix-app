@@ -23,24 +23,36 @@ const Search = (props: SearchProps) => {
 
   const handleChange = (event: any) => {
     setSearchParam(event.target.value);
-       router.push({
-      pathname: '/search',
-      query: { q: event.target.value },
-    });
   };
 
   useEffect(() => {
-    if (router.isReady && router.query.q) {
-      const inputVal = router.query.q.toString();
-      setSearchParam(inputVal);
-    }
+   
+      if (router.isReady && router.query.q) {
+        const inputVal = router.query.q.toString();
+        setSearchParam(inputVal);
+      }
+   
   }, [router.query.q, router.isReady]);
 
+  useEffect(() => {
+   const timer = setTimeout(() => {
+      if(searchParam) {
+        router.push({
+          pathname: '/search',
+          query: { q: searchParam },
+        });
+      }
+    }, 1000);
+    return () => clearTimeout(timer);
+  },[searchParam])
+  
   useEffect(() => {
     window.addEventListener('click', handleOutsideClick);
     return () => window.removeEventListener('click', handleOutsideClick);
   }, [handleOutsideClick]);
+
   const clearSearch = () => router.push('/browse');
+
   return (
     <div ref={searchRef} className={classes.search}>
       <SearchIcon className={classes.search__icon} />
