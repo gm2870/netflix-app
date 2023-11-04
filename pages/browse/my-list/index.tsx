@@ -14,7 +14,7 @@ const MyList = () => {
   const myList: number[] = useAppSelector(state => state.media.myListItems);
   
   const { data = [], isLoading, isFetching } = useGetMyListQuery(undefined,{refetchOnMountOrArgChange:true});
-  const list = data.filter(x => myList.includes(x.id));
+  const list = data.filter(x => !myList.length || myList.includes(x.id));
 
   return (
     <>
