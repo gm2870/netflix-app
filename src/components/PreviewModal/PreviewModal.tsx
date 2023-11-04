@@ -6,7 +6,7 @@ import { Media } from '../../store/redux/media/model';
 import MiniInfo from './MiniInfo/MiniInfo';
 import Player from '../Player/Player';
 import SoundButton from '../SoundButton/SoundButton';
-import { useAppDispatch } from '@/src/hooks';
+import { useAppDispatch, useAppSelector } from '@/src/hooks';
 import { mediaActions } from '@/src/store/redux/media/media';
 import { uiActions } from '@/src/store/redux/ui/ui';
 import { useAddTitleToMyListMutation } from '@/src/services/query/media';
@@ -22,7 +22,7 @@ const PreviewModal = (props: PreviewProps) => {
   const [soundOn, setSoundOn] = useState(false);
   const dispatch = useAppDispatch();
   const cardRef = useRef<HTMLDivElement>(null);
-
+  const myList = useAppSelector((state) => state.media.myListItems);
   const onHideModal = props.hideModal;
   const [addTitleToMyList, { data, isLoading, isSuccess, isError }] =
     useAddTitleToMyListMutation();
@@ -64,6 +64,7 @@ const PreviewModal = (props: PreviewProps) => {
           mediaType={props.item.media_type}
           id={props.item.id}
           addToMyList={addToMyListHandler}
+          isInMyList={myList.includes(props.item.id)}
         />
       </div>
     </Fade>

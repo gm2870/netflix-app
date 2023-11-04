@@ -4,7 +4,7 @@ type MediaState = {
   error: string;
   loading: boolean;
   mediaItems: GenreWithMedia[];
-  myListItems: GenreWithMedia[];
+  myListItems: number[];
   billboardMedia: Media | null;
   playingBillboardTrailer: boolean;
   cropSize: number;
@@ -14,11 +14,11 @@ const initialState: MediaState = {
   error: '',
   loading: false,
   mediaItems: [],
-  myListItems:[],
+  myListItems: [],
   billboardMedia: null,
   playingBillboardTrailer: false,
   cropSize: 0,
-  detailPreviewItem: null
+  detailPreviewItem: null,
 };
 const mediaSlice = createSlice({
   name: 'media',
@@ -27,7 +27,9 @@ const mediaSlice = createSlice({
     getMediaItems: (state, action) => {
       state.mediaItems = action.payload;
     },
-
+    setMyListItems: (state, action) => {
+      state.myListItems = action.payload;
+    },
     getBillboardMedia: (state, action) => {
       state.billboardMedia = action.payload;
       state.playingBillboardTrailer = true;

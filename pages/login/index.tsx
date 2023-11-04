@@ -14,6 +14,8 @@ import { useRouter } from 'next/router';
 import Footer from '@/src/components/Footer/Footer';
 import Image from 'next/image';
 import Head from 'next/head';
+import { useAppDispatch } from '@/src/hooks';
+import { mediaActions } from '@/src/store/redux/media/media';
 
 const CustomInput = styled(TextField)({
   '& label': {
@@ -50,6 +52,7 @@ const validationSchema = Yup.object().shape({
 const Login = () => {
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [showLearnMore, setShowLearnMore] = useState({
     opacity: 0,
     visibility: '',
@@ -81,6 +84,7 @@ const Login = () => {
   useEffect(() => {
     if (isSuccess) {
       localStorage.setItem('user', JSON.stringify(data.user));
+      dispatch(mediaActions.setMyListItems(data.user.favorites));
       router.push('/browse');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -91,140 +95,141 @@ const Login = () => {
       <Head>
         <title>Projcet - Login</title>
       </Head>
-    <div className={classes.login}>
-      <header className={classes.header}>
-        <Link href="/" className={classes.header__link}>
+      <div className={classes.login}>
+        <header className={classes.header}>
+          <Link href="/" className={classes.header__link}>
+            <Image
+              src="/images/myflix.png"
+              alt="myflix logo"
+              className={classes.header__logo}
+              width={130}
+              height={30}
+            />
+          </Link>
+        </header>
+        <div className={classes.login__imageContainer}>
           <Image
-            src="/images/myflix.png"
-            alt="myflix logo"
-            className={classes.header__logo}
-            width={130}
-            height={30}
+            width={2000}
+            height={1000}
+            className={classes.login__image}
+            src="/images/hero-bg.jpg"
+            alt="hero background inage"
           />
-        </Link>
-      </header>
-      <div className={classes.login__imageContainer}>
-        <Image
-          width={2000}
-          height={1000}
-          className={classes.login__image}
-          src="/images/hero-bg.jpg"
-          alt="hero background inage"
-        />
-      </div>
+        </div>
 
-      <div className={classes.login__container}>
-        <div className={classes.form}>
-          <h1 className={classes.form__header}>Sign In</h1>
-          <form
-            className={classes.form__body}
-            onSubmit={handleSubmit((e) => loginHandler(e))}
-          >
-            <div className={classes['form__input-container']}>
-              <CustomInput
-                className={classes.form__input}
-                {...register('email')}
-                type="text"
-                label="Email or Phone Number"
-                variant="filled"
-                size="small"
-                id="email"
-                autoComplete="on"
-                InputProps={{
-                  disableUnderline: true,
-                }}
-              />
-            </div>
-            {errors.email && (
-              <p className={classes.form__error}>{`${errors.email.message}`}</p>
-            )}
-            <div className={classes['form__input-container']}>
-              <CustomInput
-                InputProps={{
-                  disableUnderline: true,
-                }}
-                {...register('password')}
-                className={classes.form__input}
-                type="password"
-                label="Password"
-                id="password"
-                variant="filled"
-                size="small"
-                color="warning"
-                autoComplete="on"
-              />
-            </div>
-            {errors.password && (
-              <p
-                className={classes.form__error}
-              >{`${errors.password.message}`}</p>
-            )}
-            {(error as any)?.data?.message && (
-              <p className={classes.form__error}>
-                {(error as any).data.message}
-              </p>
-            )}
-            <CustomButton
-              className={classes.form__btn}
-              color="error"
-              variant="contained"
-              type="submit"
-              dynamicSize={false}
+        <div className={classes.login__container}>
+          <div className={classes.form}>
+            <h1 className={classes.form__header}>Sign In</h1>
+            <form
+              className={classes.form__body}
+              onSubmit={handleSubmit((e) => loginHandler(e))}
             >
-              {isLoading ? (
-                <CircularProgress thickness={5} size={17} color="inherit" />
-              ) : (
-                'Sign In'
+              <div className={classes['form__input-container']}>
+                <CustomInput
+                  className={classes.form__input}
+                  {...register('email')}
+                  type="text"
+                  label="Email or Phone Number"
+                  variant="filled"
+                  size="small"
+                  id="email"
+                  autoComplete="on"
+                  InputProps={{
+                    disableUnderline: true,
+                  }}
+                />
+              </div>
+              {errors.email && (
+                <p
+                  className={classes.form__error}
+                >{`${errors.email.message}`}</p>
               )}
-            </CustomButton>
-            <div className={classes.rememberme}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    sx={{
-                      color: '#1976d2',
-                    }}
-                    defaultChecked
-                  />
-                }
-                label={
-                  <Typography className={classes.rememberme__text}>
-                    Remember Me
-                  </Typography>
-                }
-              />
-              <Link href="/">Need help?</Link>
-            </div>
-          </form>
-        </div>
-        <div className={classes['login__signup-now']}>
-          <span>New to Myflix? </span>
-          <Link href="/signup">Sign up Now.</Link>
-        </div>
-        <div className={classes.captcha}>
-          <p className={classes.captcha__text}>
-            This page is protected by Google reCAPTCHA to ensure you&#39;re not
-            a bot.
-            {!showLearnMore.visibility && (
-              <Button onClick={handleLearnMore}>learn more.</Button>
-            )}
-          </p>
-
-          <div ref={ref} className={classes.captcha__learnMore}>
-            <p>
-              The information collected by Google reCAPTCHA is subject to the
-              Google Privacy Policy and Terms of Service, and is used for
-              providing, maintaining and improving the reCAPTCHA service and for
-              general security purposes (it is not used for personalised
-              advertising by Google).
+              <div className={classes['form__input-container']}>
+                <CustomInput
+                  InputProps={{
+                    disableUnderline: true,
+                  }}
+                  {...register('password')}
+                  className={classes.form__input}
+                  type="password"
+                  label="Password"
+                  id="password"
+                  variant="filled"
+                  size="small"
+                  color="warning"
+                  autoComplete="on"
+                />
+              </div>
+              {errors.password && (
+                <p
+                  className={classes.form__error}
+                >{`${errors.password.message}`}</p>
+              )}
+              {(error as any)?.data?.message && (
+                <p className={classes.form__error}>
+                  {(error as any).data.message}
+                </p>
+              )}
+              <CustomButton
+                className={classes.form__btn}
+                color="error"
+                variant="contained"
+                type="submit"
+                dynamicSize={false}
+              >
+                {isLoading ? (
+                  <CircularProgress thickness={5} size={17} color="inherit" />
+                ) : (
+                  'Sign In'
+                )}
+              </CustomButton>
+              <div className={classes.rememberme}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      sx={{
+                        color: '#1976d2',
+                      }}
+                      defaultChecked
+                    />
+                  }
+                  label={
+                    <Typography className={classes.rememberme__text}>
+                      Remember Me
+                    </Typography>
+                  }
+                />
+                <Link href="/">Need help?</Link>
+              </div>
+            </form>
+          </div>
+          <div className={classes['login__signup-now']}>
+            <span>New to Myflix? </span>
+            <Link href="/signup">Sign up Now.</Link>
+          </div>
+          <div className={classes.captcha}>
+            <p className={classes.captcha__text}>
+              This page is protected by Google reCAPTCHA to ensure you&#39;re
+              not a bot.
+              {!showLearnMore.visibility && (
+                <Button onClick={handleLearnMore}>learn more.</Button>
+              )}
             </p>
+
+            <div ref={ref} className={classes.captcha__learnMore}>
+              <p>
+                The information collected by Google reCAPTCHA is subject to the
+                Google Privacy Policy and Terms of Service, and is used for
+                providing, maintaining and improving the reCAPTCHA service and
+                for general security purposes (it is not used for personalised
+                advertising by Google).
+              </p>
+            </div>
           </div>
         </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
     </Fragment>
-
   );
 };
 

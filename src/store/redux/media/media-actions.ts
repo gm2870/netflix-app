@@ -93,11 +93,12 @@ export const getCropSize = (id: number) => (dispatch: AppDispatch) => {
 export const resetCropSize = () => (dispatch: AppDispatch) =>
   dispatch(mediaActions.setCropSize(null));
 
-export const getBillboardMedeia = (id: number) => (dispatch: AppDispatch) => {
+export const getBillboardMedia = (id: number) => (dispatch: AppDispatch) => {
   const config = {
     url: `/media/${id}`,
   };
   const handleError = (err: string) => console.log(err);
+
   const getBillboardMedia = (media: Media) => {
     dispatch(mediaActions.getBillboardMedia(media));
   };

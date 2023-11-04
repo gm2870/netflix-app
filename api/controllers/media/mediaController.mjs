@@ -339,11 +339,9 @@ export const getFavoritesList = async (req, res, next) => {
       new AppError('Your not logged in, Please log in to get access', 401)
     );
   }
-  console.log(currentUser.favorites);
   const tvShows = await TV.find({ id: { $in: currentUser.favorites } });
   const movies = await Movie.find({ id: { $in: currentUser.favorites } });
-  console.log('344', tvShows.length);
-  console.log('345', movies.length);
+
   res.status(200).json({
     status: 'success',
     data: [...tvShows, ...movies],

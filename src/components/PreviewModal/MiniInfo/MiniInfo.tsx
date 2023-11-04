@@ -9,14 +9,17 @@ type MiniInfoProps = {
   id: number;
   showDetailsPreviewHandler: () => void;
   addToMyList: () => void;
+  isInMyList: boolean;
 };
 const MiniInfo = ({
   mediaType,
   id,
   showDetailsPreviewHandler,
   addToMyList,
+  isInMyList = false,
 }: MiniInfoProps) => {
   const [showLikeModal, setShowLikeModal] = useState(false);
+
   const previewRef = useRef<HTMLDivElement>(null);
   const { data: info } = useGetTitleInfoQuery({
     type: mediaType,
@@ -57,7 +60,15 @@ const MiniInfo = ({
                 />
               </CircleButton>
               <CircleButton onClick={addToMyListHandler}>
-                <img className={classes.preview__img} src="/images/add.png" />
+                {!isInMyList && (
+                  <img className={classes.preview__img} src="/images/add.png" />
+                )}
+                {isInMyList && (
+                  <img
+                    className={classes.preview__img}
+                    src="/images/check.png"
+                  />
+                )}
               </CircleButton>
 
               <CircleButton onMouseEnter={onLikeHover}>
