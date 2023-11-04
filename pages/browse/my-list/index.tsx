@@ -7,9 +7,15 @@ import { useGetMyListQuery } from '@/src/services/query/media';
 import { Media } from '@/src/store/redux/media/model';
 import Head from 'next/head';
 import classes from './index.module.scss';
+import { useAppSelector } from '@/src/hooks';
+
 const MyList = () => {
   const { rowItems } = useSliderConfig();
-  const { data = [], isLoading, isFetching } = useGetMyListQuery(undefined);
+  const myList: number[] = useAppSelector(state => state.media.myListItems);
+  
+  const { data = [], isLoading, isFetching } = useGetMyListQuery(undefined,{refetchOnMountOrArgChange:true});
+  const list = data.filter(x => myList.includes(x.id));
+
   return (
     <>
       <Head>
@@ -19,7 +25,7 @@ const MyList = () => {
       <div className={classes.title}>My List</div>
       <div className="mt-10">
         <GridList>
-          {data.map((t: Media, i: number) => (
+          {list.map((t: Media, i: number) => (
             <MediaItem
               isFirst={i % rowItems === 0}
               isLast={(i + 1) % rowItems === 0}
@@ -29,7 +35,7 @@ const MyList = () => {
           ))}
         </GridList>
 
-        {isLoading && <SliderLoader />}
+        {(isLoading || isFetching) && <SliderLoader />}
       </div>
     </>
   );

@@ -8,14 +8,14 @@ type MiniInfoProps = {
   mediaType: string;
   id: number;
   showDetailsPreviewHandler: () => void;
-  addToMyList: () => void;
+  toggleAddToMyList: () => void;
   isInMyList: boolean;
 };
 const MiniInfo = ({
   mediaType,
   id,
   showDetailsPreviewHandler,
-  addToMyList,
+  toggleAddToMyList,
   isInMyList = false,
 }: MiniInfoProps) => {
   const [showLikeModal, setShowLikeModal] = useState(false);
@@ -39,7 +39,7 @@ const MiniInfo = ({
   };
 
   const addToMyListHandler = () => {
-    addToMyList();
+    toggleAddToMyList();
   };
 
   return (

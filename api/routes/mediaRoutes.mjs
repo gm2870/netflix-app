@@ -24,6 +24,8 @@ router.get('/tv-shows', mediaController.getAllTVShows);
 
 router.get('/:type/:titleId', mediaController.getTitle);
 router.post('/favorites', mediaController.addTitleToFavorites);
+router.delete('/favorites', mediaController.RemoveFromFavorites);
+
 router.get('/favorites', mediaController.getFavoritesList);
 
 export default router;

@@ -62,7 +62,7 @@ const Header = () => {
     },
     {
       name: 'New & Popular',
-      link: '/',
+      link: '/browse',
     },
     {
       name: 'My List',
@@ -70,7 +70,7 @@ const Header = () => {
     },
     {
       name: 'Browse by Languages',
-      link: '/',
+      link: '/browse',
     },
   ];
 

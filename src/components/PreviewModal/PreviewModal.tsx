@@ -1,5 +1,5 @@
 import classes from './PreviewModal.module.scss';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRef } from 'react';
 import { Fade } from '@mui/material';
 import { Media } from '../../store/redux/media/model';
@@ -9,7 +9,8 @@ import SoundButton from '../SoundButton/SoundButton';
 import { useAppDispatch, useAppSelector } from '@/src/hooks';
 import { mediaActions } from '@/src/store/redux/media/media';
 import { uiActions } from '@/src/store/redux/ui/ui';
-import { useAddTitleToMyListMutation } from '@/src/services/query/media';
+import { useAddTitleToMyListMutation, useRemoveTitleFromMyListMutation } from '@/src/services/query/media';
+import { getMyListFromStorage, setMyListToStorage } from '@/src/services/storage/storage';
 
 type PreviewProps = {
   item: Media;
@@ -22,10 +23,19 @@ const PreviewModal = (props: PreviewProps) => {
   const [soundOn, setSoundOn] = useState(false);
   const dispatch = useAppDispatch();
   const cardRef = useRef<HTMLDivElement>(null);
-  const myList = useAppSelector((state) => state.media.myListItems);
+
+  const myList: number[] = useAppSelector(state => state.media.myListItems);
+  if(!myList.length) {
+    const list = getMyListFromStorage();
+
+    list.length && dispatch(mediaActions.setMyListItems(getMyListFromStorage()))
+  }
   const onHideModal = props.hideModal;
-  const [addTitleToMyList, { data, isLoading, isSuccess, isError }] =
+  const [addTitleToMyList, { data: myListIds, isLoading, isSuccess:addedToMyList }] =
     useAddTitleToMyListMutation();
+  
+    const [removeTitleFromMyList, { data: updatedListIds, isSuccess:successDeleteFromMyList }] =
+    useRemoveTitleFromMyListMutation();
   const [playing, setPlaying] = useState(false);
   const toggleSoundHandler = () =>
     setSoundOn((soundIsOn: boolean) => !soundIsOn);
@@ -36,10 +46,30 @@ const PreviewModal = (props: PreviewProps) => {
     dispatch(mediaActions.setDetailPreviewItem(props.item));
   };
 
-  const addToMyListHandler = () => {
-    addTitleToMyList({ id: props.item.id });
+  const toggleAddToMyListHandler = () => {
+    const isInList = myList.includes(props.item.id);
+    if(isInList) {
+      removeTitleFromMyList({ id: props.item.id })
+    }else {
+
+      addTitleToMyList({ id: props.item.id });
+    }
   };
 
+
+useEffect(() => {
+  if(myListIds) {
+    dispatch(mediaActions.setMyListItems(myListIds))
+    setMyListToStorage(myListIds);
+  }
+},[addedToMyList]);
+
+useEffect(() => {
+  if(updatedListIds) {
+    dispatch(mediaActions.setMyListItems(updatedListIds))
+    setMyListToStorage(updatedListIds);
+  }
+},[successDeleteFromMyList])
   return (
     <Fade
       in={props.show}
@@ -63,7 +93,7 @@ const PreviewModal = (props: PreviewProps) => {
           showDetailsPreviewHandler={showDetailsPreviewHandler}
           mediaType={props.item.media_type}
           id={props.item.id}
-          addToMyList={addToMyListHandler}
+          toggleAddToMyList={toggleAddToMyListHandler}
           isInMyList={myList.includes(props.item.id)}
         />
       </div>

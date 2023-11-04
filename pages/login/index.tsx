@@ -87,7 +87,6 @@ const Login = () => {
       dispatch(mediaActions.setMyListItems(data.user.favorites));
       router.push('/browse');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
   return (

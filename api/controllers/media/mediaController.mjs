@@ -348,6 +348,27 @@ export const getFavoritesList = async (req, res, next) => {
   });
 };
 
+
+export const RemoveFromFavorites = async (req, res, next) => {
+  const token = getToken(req);
+  if (!token) {
+    return next(
+      new AppError('Your not logged in, Please log in to get access', 401)
+    );
+  }
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  const { id } = req.body;
+  const user = await User.findByIdAndUpdate(decoded.id, {
+    $pull: { favorites: +id },
+  });
+  const list = user.favorites.filter(x => x !== +id);
+
+  res.status(200).json({
+    status: 'success',
+    data: list,
+  });
+};
+
 export const addTitleToFavorites = async (req, res, next) => {
   const token = getToken(req);
   if (!token) {
@@ -363,7 +384,7 @@ export const addTitleToFavorites = async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
-    data: [...user.favorites, +req.params.id],
+    data: [...user.favorites, +id],
   });
 };
 

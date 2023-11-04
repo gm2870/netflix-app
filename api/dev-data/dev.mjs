@@ -78,7 +78,7 @@ const deleteMany = async (model) => {
   const Model = model === 'tv' ? TV : Movie;
 
   try {
-    await Model.deleteMany();
+    await Model.deleteMany({title:null});
   } catch (error) {
     return new AppError(error.message || 'Something went wrong.', 500);
   }
@@ -162,7 +162,7 @@ export const updateOne = async (model, id) => {
 if (process.argv[2] === '--import-tv') {
   importTVMedia();
 } else if (process.argv[2] === '--delete') {
-  deleteMany();
+  deleteMany('movie');
 } else if (process.argv[2] === '--update-many') {
   forceSrcUpdate('movie');
 } else if (process.argv[2] === '--update') {

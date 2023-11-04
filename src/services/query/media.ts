@@ -57,7 +57,7 @@ export const mediaApi = createApi({
       },
     }),
 
-    getMyList: builder.query({
+    getMyList: builder.query<Media[],undefined>({
       query: () => 'media/favorites',
       transformResponse: (response: { data: Media[]; status: string }) => {
         return response.data;
@@ -183,10 +183,29 @@ export const mediaApi = createApi({
           },
         };
       },
-      transformResponse: (response: any) => {
+      transformResponse: (response: { data: number[]; status: string }) => {
         return response.data;
       },
     }),
+    removeTitleFromMyList: builder.mutation<
+    any,
+    {
+      id: number;
+    }
+  >({
+    query({ id }) {
+      return {
+        method: 'DELETE',
+        url: '/media/favorites',
+        body: {
+          id,
+        },
+      };
+    },
+    transformResponse: (response: { data: number[]; status: string }) => {
+      return response.data;
+    },
+  }),
   }),
 });
 
@@ -200,4 +219,5 @@ export const {
   useGetSeasonDetailsQuery,
   useAddTitleToMyListMutation,
   useGetMyListQuery,
+  useRemoveTitleFromMyListMutation
 } = mediaApi;
