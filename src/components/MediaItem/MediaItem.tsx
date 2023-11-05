@@ -1,5 +1,5 @@
 import { Box, Portal } from '@mui/material';
-import React, { Fragment, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import classes from './MediaItem.module.scss';
 import PreviewModal from '../PreviewModal/PreviewModal';
 import { Media } from '../../store/redux/media/model';
@@ -48,24 +48,20 @@ const MediaItem = ({
 
   const [open, setOpen] = useState(false);
   const boxRef = useRef<HTMLDivElement>(null);
-  const openModal = () => {
-    if (underIndicator) {
-      return;
-    }
-    setOpen(true);
-  };
 
   const hideModal = () => {
     dispatch(uiActions.setBillnoardPlaying(true));
     setOpen(false);
   };
 
-  const detailPreviewItem = useAppSelector(
-    (state) => state.media.detailPreviewItem
-  );
-
+  const openModal = () => {
+    if (underIndicator) {
+      return;
+    }
+    setOpen(true);
+  };
   return (
-    <Fragment>
+    <>
       <div onMouseOver={openModal} ref={boxRef} className={classes.mediaItem}>
         <div className={classes.boxArt}>
           {item.backdrop_path && (
@@ -74,12 +70,12 @@ const MediaItem = ({
               className={classes.boxArt__image}
               src={`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`}
               fill={true}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           )}
           <p className={classes.boxArt__title}>{item.title || item.name}</p>
         </div>
       </div>
-
       {open && (
         <Portal container={document.getElementById('modalContainer')}>
           <Box sx={getSX}>
@@ -91,10 +87,7 @@ const MediaItem = ({
           </Box>
         </Portal>
       )}
-      {detailPreviewItem && (
-        <DetailModal detailPreviewItem={detailPreviewItem} />
-      )}
-    </Fragment>
+    </>
   );
 };
 
