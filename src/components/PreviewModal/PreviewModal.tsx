@@ -9,8 +9,11 @@ import SoundButton from '../SoundButton/SoundButton';
 import { useAppDispatch, useAppSelector } from '@/src/hooks';
 import { mediaActions } from '@/src/store/redux/media/media';
 import { uiActions } from '@/src/store/redux/ui/ui';
-import { useAddTitleToMyListMutation, useRemoveTitleFromMyListMutation } from '@/src/services/query/media';
-import { getMyListFromStorage, setMyListToStorage } from '@/src/services/storage/storage';
+import {
+  useAddTitleToMyListMutation,
+  useRemoveTitleFromMyListMutation,
+} from '@/src/services/query/media';
+import { setMyListToStorage } from '@/src/services/storage/storage';
 
 type PreviewProps = {
   item: Media;
@@ -21,22 +24,23 @@ type PreviewProps = {
 
 const PreviewModal = (props: PreviewProps) => {
   const [soundOn, setSoundOn] = useState(false);
+  const [isInMyList, setIsInMyList] = useState(false);
+  const [playing, setPlaying] = useState(false);
+
   const dispatch = useAppDispatch();
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const myList: number[] = useAppSelector(state => state.media.myListItems);
-  if(!myList.length) {
-    const list = getMyListFromStorage();
-
-    list.length && dispatch(mediaActions.setMyListItems(getMyListFromStorage()))
-  }
+  const myListItems: number[] = useAppSelector(
+    (state) => state.media.myListItems
+  );
   const onHideModal = props.hideModal;
-  const [addTitleToMyList, { data: myListIds, isLoading, isSuccess:addedToMyList }] =
+  const [addTitleToMyList, { data: myListIds, isSuccess: addedToMyList }] =
     useAddTitleToMyListMutation();
-  
-    const [removeTitleFromMyList, { data: updatedListIds, isSuccess:successDeleteFromMyList }] =
-    useRemoveTitleFromMyListMutation();
-  const [playing, setPlaying] = useState(false);
+
+  const [
+    removeTitleFromMyList,
+    { data: updatedListIds, isSuccess: successDeleteFromMyList },
+  ] = useRemoveTitleFromMyListMutation();
   const toggleSoundHandler = () =>
     setSoundOn((soundIsOn: boolean) => !soundIsOn);
   const playStartHandler = (isPlaying: boolean) => setPlaying(isPlaying);
@@ -47,29 +51,36 @@ const PreviewModal = (props: PreviewProps) => {
   };
 
   const toggleAddToMyListHandler = () => {
-    const isInList = myList.includes(props.item.id);
-    if(isInList) {
-      removeTitleFromMyList({ id: props.item.id })
-    }else {
-
+    const isInList = myListItems.includes(props.item.id);
+    if (isInList) {
+      removeTitleFromMyList({ id: props.item.id });
+    } else {
       addTitleToMyList({ id: props.item.id });
     }
   };
+  useEffect(() => {
+    setIsInMyList(myListItems.includes(props.item.id));
+  }, [myListItems, setIsInMyList, props.item.id]);
+  useEffect(() => {
+    if (myListIds) {
+      dispatch(mediaActions.setMyListItems(myListIds));
+      setMyListToStorage(myListIds);
+    }
+  }, [dispatch, myListIds, addedToMyList]);
 
+  useEffect(() => {
+    if (updatedListIds) {
+      dispatch(mediaActions.setMyListItems(updatedListIds));
+      setMyListToStorage(updatedListIds);
+    }
+  }, [
+    dispatch,
+    myListItems,
+    props.item.id,
+    successDeleteFromMyList,
+    updatedListIds,
+  ]);
 
-useEffect(() => {
-  if(myListIds) {
-    dispatch(mediaActions.setMyListItems(myListIds))
-    setMyListToStorage(myListIds);
-  }
-},[addedToMyList]);
-
-useEffect(() => {
-  if(updatedListIds) {
-    dispatch(mediaActions.setMyListItems(updatedListIds))
-    setMyListToStorage(updatedListIds);
-  }
-},[successDeleteFromMyList])
   return (
     <Fade
       in={props.show}
@@ -94,7 +105,7 @@ useEffect(() => {
           mediaType={props.item.media_type}
           id={props.item.id}
           toggleAddToMyList={toggleAddToMyListHandler}
-          isInMyList={myList.includes(props.item.id)}
+          isInMyList={isInMyList}
         />
       </div>
     </Fade>
