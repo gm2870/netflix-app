@@ -10,16 +10,12 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAppSelector } from '@/src/hooks';
 
-import DetailModal from '@/src/components/DetailModal/DetailModal';
-
 const Browse = () => {
   const [loading, setLoading] = useState(true);
   const [titleId, setTitleId] = useState('');
 
   const router = useRouter();
-  const detailPreviewItem = useAppSelector(
-    (state) => state.media.detailPreviewItem
-  );
+
   const showDetailPreviewModal = useAppSelector(
     (state) => state.ui.showDetailModal
   );
@@ -31,7 +27,7 @@ const Browse = () => {
   }, [router.isReady, router.query.titleId]);
 
   const {
-    data: genresWithTitles,
+    data: genresWithTitles = [],
     isLoading,
     isFetching,
   } = useGetTitlesWithGenreQuery({ type: '', genreId: '' });
@@ -40,7 +36,7 @@ const Browse = () => {
     genresWithTitles;
     const loading = isLoading || isFetching;
     setLoading(loading);
-  }, [isLoading, isFetching]);
+  }, [isLoading, isFetching, genresWithTitles]);
 
   return (
     <section>
@@ -67,8 +63,6 @@ const Browse = () => {
           </div>
         )}
       </div>
-
-      {detailPreviewItem && <DetailModal genresWithTitles={genresWithTitles} />}
     </section>
   );
 };

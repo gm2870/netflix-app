@@ -5,7 +5,8 @@ import PreviewModal from '../PreviewModal/PreviewModal';
 import { Media } from '../../store/redux/media/model';
 import Image from 'next/image';
 import { uiActions } from '@/src/store/redux/ui/ui';
-import { useAppDispatch } from '@/src/hooks';
+import { useAppDispatch, useAppSelector } from '@/src/hooks';
+import DetailModal from '../DetailModal/DetailModal';
 
 const MediaItem = ({
   item,
@@ -59,6 +60,10 @@ const MediaItem = ({
     setOpen(false);
   };
 
+  const detailPreviewItem = useAppSelector(
+    (state) => state.media.detailPreviewItem
+  );
+
   return (
     <Fragment>
       <div onMouseOver={openModal} ref={boxRef} className={classes.mediaItem}>
@@ -85,6 +90,9 @@ const MediaItem = ({
             ></PreviewModal>
           </Box>
         </Portal>
+      )}
+      {detailPreviewItem && (
+        <DetailModal detailPreviewItem={detailPreviewItem} />
       )}
     </Fragment>
   );

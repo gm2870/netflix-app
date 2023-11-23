@@ -1,4 +1,4 @@
-import { Button, styled, TextField, Checkbox, Typography } from '@mui/material';
+import { Button, Checkbox, Typography } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -16,30 +16,7 @@ import Image from 'next/image';
 import Head from 'next/head';
 import { useAppDispatch } from '@/src/hooks';
 import { mediaActions } from '@/src/store/redux/media/media';
-
-const CustomInput = styled(TextField)({
-  '& label': {
-    color: '#8c8c8c',
-  },
-  '& label.Mui-focused': {
-    color: '#8c8c8c',
-  },
-
-  '& .MuiInputBase-input': {
-    color: 'white',
-    borderRadius: '4px',
-  },
-
-  '& .MuiFilledInput-root': {
-    backgroundColor: 'unset',
-  },
-  '.css-ahj2mt-MuiTypography-root': {
-    color: 'white',
-  },
-  '& .MuiInput-underline:after': {
-    display: 'none',
-  },
-});
+import { Input } from '@/src/components/Input/Input';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required('Please enter a valid email or phone number.'),
@@ -87,7 +64,7 @@ const Login = () => {
       dispatch(mediaActions.setMyListItems(data.user.favorites));
       router.push('/browse');
     }
-  }, [isLoading]);
+  }, [data?.user, dispatch, isLoading, isSuccess, router]);
 
   return (
     <Fragment>
@@ -124,7 +101,7 @@ const Login = () => {
               onSubmit={handleSubmit((e) => loginHandler(e))}
             >
               <div className={classes['form__input-container']}>
-                <CustomInput
+                <Input
                   className={classes.form__input}
                   {...register('email')}
                   type="text"
@@ -144,7 +121,7 @@ const Login = () => {
                 >{`${errors.email.message}`}</p>
               )}
               <div className={classes['form__input-container']}>
-                <CustomInput
+                <Input
                   InputProps={{
                     disableUnderline: true,
                   }}

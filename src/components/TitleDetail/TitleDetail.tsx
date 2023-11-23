@@ -5,6 +5,7 @@ import { useState } from 'react';
 import {
   useGetSeasonDetailsQuery,
   useGetTitleDetailsQuery,
+  useGetTitlesWithGenreQuery,
 } from '@/src/services/query/media';
 import classes from './TitleDetail.module.scss';
 import SoundButton from '../SoundButton/SoundButton';
@@ -13,19 +14,20 @@ import CircleButton from '../CircleButton/CircleButton';
 import CloseIcon from '@mui/icons-material/Close';
 import SeasonSelect from './SeasonSelect/SeasonSelect';
 import MoreLikeCard from '../MoreLikeCard/MoreLikeCard';
+import { SelectChangeEvent } from '@mui/material';
 
 type DetailInfoProps = {
   item: Media;
   closeModal: () => void;
-  allItems: GenreWithMedia[];
 };
-const TitleDetail = ({
-  item,
-  closeModal,
-  allItems,
-}: DetailInfoProps) => {
+const TitleDetail = ({ item, closeModal }: DetailInfoProps) => {
   const [soundOn, setSoundOn] = useState(false);
   const [seasonNumber, setSeasonNumber] = useState(1);
+
+  const { data: allItems = [] } = useGetTitlesWithGenreQuery({
+    type: '',
+    genreId: '',
+  });
 
   const { data: titleDetails, isLoading } = useGetTitleDetailsQuery({
     id: item.id,
@@ -44,22 +46,24 @@ const TitleDetail = ({
   const soundToggleHandler = () => setSoundOn((prev) => !prev);
 
   const moreLikeItems = allItems
-    ?.map((g) => {
+    .map((g) => {
       const noneDuplicateTitles = { ...g };
       noneDuplicateTitles.titles = g.titles.filter((t) => t.id !== item.id);
       return noneDuplicateTitles;
     })
     .filter((genreItem) => item.genre_ids[0] === genreItem.id)
     .map((x) => x.titles.slice(0, 4));
+
   const moreLikeTitles: Media[] = [];
   for (const items of moreLikeItems) {
     items.forEach((x) => moreLikeTitles.push(x));
   }
+
   const playStartHandler = () => {};
 
   const titleGenres = allItems.filter((g) => item.genre_ids.includes(g.id));
-  const handleSelectChange = (val: any) => {
-    setSeasonNumber(val.target.value);
+  const handleSelectChange = (val: SelectChangeEvent) => {
+    setSeasonNumber(+val.target.value);
   };
 
   return (

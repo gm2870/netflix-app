@@ -14,14 +14,14 @@ const Player = ({
   backdrop_path,
   soundOn,
   media_type,
-  playing
+  playing,
 }: {
-  id:number,
+  id: number;
   video_src: VideoSrc;
   backdrop_path: string;
   soundOn: boolean;
-  media_type: string,
-  playing: (playing: boolean) => void
+  media_type: string;
+  playing: (playing: boolean) => void;
 }) => {
   const [imageOpacity, setImageOpacity] = useState(1);
   const dispatch = useAppDispatch();
@@ -56,7 +56,7 @@ const Player = ({
         children: ['MediaLoader'],
         controls: false,
         componentName: 'card',
-        loop: true,
+        loop: false,
         sources: [
           {
             src: `${video_src.SD}`,
@@ -78,10 +78,10 @@ const Player = ({
   const handlePlayerReady = (player: videojs.Player) => {
     playerRef.current = player;
     player.on('playing', () => {
-      playing(true)
+      playing(true);
     });
     player.on('ended', () => {
-      playing(false)
+      playing(false);
       dispatch(uiActions.setBillnoardPlaying(true));
     });
   };

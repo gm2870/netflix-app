@@ -11,10 +11,12 @@ import { useAppSelector } from '@/src/hooks';
 
 const MyList = () => {
   const { rowItems } = useSliderConfig();
-  const myList: number[] = useAppSelector(state => state.media.myListItems);
-  
-  const { data = [], isLoading, isFetching } = useGetMyListQuery(undefined,{refetchOnMountOrArgChange:true});
-  const list = data.filter(x => !myList.length || myList.includes(x.id));
+  const myList: number[] = useAppSelector((state) => state.media.myListItems);
+
+  const { data = [], isLoading } = useGetMyListQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+  const list = data.filter((x) => !myList.length || myList.includes(x.id));
 
   return (
     <>
@@ -25,17 +27,18 @@ const MyList = () => {
       <div className={classes.title}>My List</div>
       <div className="mt-10">
         <GridList>
-          {list.map((t: Media, i: number) => (
-            <MediaItem
-              isFirst={i % rowItems === 0}
-              isLast={(i + 1) % rowItems === 0}
-              key={i}
-              item={t}
-            />
-          ))}
+          {!isLoading &&
+            list.map((t: Media, i: number) => (
+              <MediaItem
+                isFirst={i % rowItems === 0}
+                isLast={(i + 1) % rowItems === 0}
+                key={i}
+                item={t}
+              />
+            ))}
         </GridList>
 
-        {(isLoading || isFetching) && <SliderLoader />}
+        {isLoading && <SliderLoader />}
       </div>
     </>
   );

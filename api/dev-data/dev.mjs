@@ -78,7 +78,7 @@ const deleteMany = async (model) => {
   const Model = model === 'tv' ? TV : Movie;
 
   try {
-    await Model.deleteMany({title:null});
+    await Model.deleteMany({ title: null });
   } catch (error) {
     return new AppError(error.message || 'Something went wrong.', 500);
   }
