@@ -8,33 +8,23 @@ import { useGetTitlesWithGenreQuery } from '@/src/services/query/media';
 import classes from './index.module.scss';
 import MediaItem from '@/src/components/MediaItem/MediaItem';
 import GridList from '@/src/components/GridList/GridList';
-import { GenreWithMedia, Media } from '@/src/store/redux/media/model';
+import { Media } from '@/src/store/redux/media/model';
 import { useEffect, useState } from 'react';
 import SlidersContainer from '@/src/components/Slider/SlidersContainer';
 import Genres from '@/src/components/Header/Genres/Genres';
 import useSliderConfig from '@/src/hooks/use-slider-config';
-import { useAppSelector } from '@/src/hooks';
-
-import DetailModal from '@/src/components/DetailModal/DetailModal';
 
 const Titles = () => {
   const router = useRouter();
   const type = (router.query.type_id as string) || '1';
   const genreId = router.query.g as string;
-  const [genresWithTitles, setGenresWithTitles] = useState<any[]>(
-    []
-  );
-
-  const detailPreviewItem = useAppSelector(
-    (state) => state.media.detailPreviewItem
-  );
+  const [genresWithTitles, setGenresWithTitles] = useState<any[]>([]);
 
   const [loading, setLoading] = useState(false);
   const { data, isLoading, isFetching } = useGetTitlesWithGenreQuery({
     type,
     genreId,
   });
-console.log(genresWithTitles)
   const headerGenres = genresWithTitles.map((g) => ({
     title: g.name,
     id: g.id,
@@ -42,7 +32,7 @@ console.log(genresWithTitles)
 
   useEffect(() => {
     if (data) {
-      console.log(data)
+      console.log(data);
       setGenresWithTitles(data);
     }
   }, [data]);
@@ -93,7 +83,6 @@ console.log(genresWithTitles)
           </div>
         ))}
       <NoSsr>{loading && <SliderLoader />}</NoSsr>
-      {detailPreviewItem && <DetailModal genresWithTitles={genresWithTitles} />}
     </section>
   );
 };

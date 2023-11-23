@@ -13,11 +13,9 @@ const MyList = () => {
   const { rowItems } = useSliderConfig();
   const myList: number[] = useAppSelector((state) => state.media.myListItems);
 
-  const {
-    data = [],
-    isLoading,
-    isFetching,
-  } = useGetMyListQuery(undefined, { refetchOnMountOrArgChange: true });
+  const { data = [], isLoading } = useGetMyListQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
   const list = data.filter((x) => !myList.length || myList.includes(x.id));
 
   return (

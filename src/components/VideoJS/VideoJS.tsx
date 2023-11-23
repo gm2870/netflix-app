@@ -77,7 +77,7 @@ export const VideoJS = (props: any) => {
       player?.autoplay(options.autoplay);
       player?.src(options.sources);
     }
-  }, [onReady, options, videoRef]);
+  }, [options, videoRef]);
 
   useEffect(() => {
     const player = playerRef.current;

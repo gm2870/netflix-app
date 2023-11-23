@@ -158,14 +158,12 @@ const Billboard = ({ onMoreInfoClick }: any) => {
     } else if (!billboardPlaying && !playerRef.current.paused()) {
       playerRef.current.pause();
     }
-  }, [billboardPlaying, item?.video_src.HD]);
-
+  }, [billboardPlaying]);
   const dispatch = useAppDispatch();
   useEffect(() => {
     const loading = isLoading || isFetching;
     setLoading(loading);
   }, [isLoading, isFetching]);
-
   const showDetailsHandler = () => {
     setPlayer({ type: 'togglePause' });
     setPlayer({ type: 'toggleShowImage' });
@@ -173,6 +171,11 @@ const Billboard = ({ onMoreInfoClick }: any) => {
     dispatch(mediaActions.setDetailPreviewItem(item));
   };
 
+  const opc = useSpring({
+    from: { opacity: 1 },
+    to: { opacity: 0 },
+    delay: 5000,
+  });
   return (
     <section className={classes.billboardRow}>
       {!loading && (
