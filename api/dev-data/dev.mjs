@@ -13,6 +13,7 @@ import TV from '../models/media/tvModel.mjs';
 import { importGenres } from '../dev-data/genre.mjs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { failedItems } from '../utils/helpers.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -111,12 +112,14 @@ export const forceSrcUpdate = catchAsync(async (model) => {
 });
 
 export const updateItemSrc = async (model, media) => {
+  let retryed = false;
   const Model = model === 'tv' ? TV : Movie;
   let HDSrc, SDSrc, videoData;
   const name = media.name || media.title;
 
   if (media.title_video_id) {
     SDSrc = await getSrcWithVideoId(media.title_video_id, 480);
+
     HDSrc = await getSrcWithVideoId(media.title_video_id, 1080);
 
     videoData = {
@@ -129,13 +132,17 @@ export const updateItemSrc = async (model, media) => {
   }
 
   if (!videoData || !videoData.SD) {
-    console.log(`${name} failed`);
+    console.log('retrying...');
+    retryed = true;
+    !retryed && await updateItemSrc(model,media);
     fs.appendFile('failed.txt', `\n${name} failed`, 'utf-8', (err) =>
       console.log(err)
     );
     return;
   }
-  console.log(videoData);
+  console.log(name)
+
+  console.log(videoData)
   return await Model.findOneAndUpdate(
     { id: media.id },
     {
@@ -163,10 +170,12 @@ if (process.argv[2] === '--import-tv') {
   importTVMedia();
 } else if (process.argv[2] === '--delete') {
   deleteMany('movie');
-} else if (process.argv[2] === '--update-many') {
+} else if (process.argv[2] === '--update-movies') {
   forceSrcUpdate('movie');
-} else if (process.argv[2] === '--update') {
-  updateOne('tv', 67026);
+}else if (process.argv[2] === '--update-tvShows') {
+  forceSrcUpdate('tv');
+}  else if (process.argv[2] === '--update') {
+  updateOne('tv', 60574);
 } else if (process.argv[2] === '--import-genres') {
   importGenres();
 } else if (process.argv[2] === '--import-movie') {
@@ -177,4 +186,18 @@ if (process.argv[2] === '--import-tv') {
   updateManyTitleId('movie');
 } else if (process.argv[2] === '--add-id') {
   updateOneTitleId('tv', 93405);
+}else if(process.argv[2] === '--failed') {
+  const list = await failedItems(`${__dirname}/../../failed.txt`);
+  for (const name of list.filter(l => l)) {
+    const item = await TV.findOne({ name });
+    await updateItemSrc('tv', item);
+  }
+  process.exit();
+}
+else if(process.argv[2] === '--delete-failed') {
+  const list = await failedItems(`${__dirname}/../../failed.txt`);
+  for (const name of list.filter(l => l)) {
+    await Movie.findOneAndDelete({ name });
+  }
+  process.exit();
 }

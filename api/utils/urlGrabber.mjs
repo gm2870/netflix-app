@@ -107,16 +107,14 @@ const getSrc = async (link) => {
     );
 
     await page.goto(link);
-    await page.waitForSelector('video[class="jw-video jw-reset"]', {
-      visible: true,
-      timeout: 30000,
-    });
+
     const src = await page.evaluate(() => {
       // eslint-disable-next-line no-undef
       return document
         .querySelector('video[class="jw-video jw-reset"]')
         .getAttribute('src');
     });
+
     return src;
   } catch (err) {
     console.log(err);
@@ -132,5 +130,11 @@ export const getSrcWithVideoId = async (videoId, quality = 480) => {
   } else {
     link = `https://www.imdb.com/video/imdb/${videoId}/imdb/embed?autoplay=true&format=1080p&ref_=vi_res_1080p`;
   }
+  
   return await getSrc(link);
 };
+function delay(time) {
+  return new Promise(function(resolve) { 
+      setTimeout(resolve, time)
+  });
+}

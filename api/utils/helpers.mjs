@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import fsPromises from 'fs/promises';
+import { createInterface } from 'readline';
 export const emptyFolder = async (folderPath) => {
   try {
     // Find all files in the folder
@@ -42,3 +43,17 @@ export const getFileSizeAndResolvedPath = (filePath) => {
 export const normalizeText = (text) => {
   return text.split(' ').join('-').replace(':', '');
 };
+
+
+
+export const failedItems = async (filePath) => {
+  var fileLineArray = [];
+  var lineReader = createInterface({
+  input: fs.createReadStream(filePath)
+  });
+  
+  for await (const line of lineReader) {
+    fileLineArray.push(`${line.split('failed')[0].trim()}`);
+  }
+  return fileLineArray;
+}
