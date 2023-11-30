@@ -1,9 +1,9 @@
-export const API_URL = 'http://localhost:8001/api/v1';
 
 import axios from 'axios';
 import { AppDispatch } from '../store/redux/index';
 import { uiActions } from '../store/redux/ui/ui';
 import { RequestConfig } from './models';
+import { API_URL } from './api';
 
 const instance = axios.create({
   baseURL: API_URL,
