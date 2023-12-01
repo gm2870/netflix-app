@@ -4,6 +4,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { useState, useRef } from 'react';
 import { useGetTitleInfoQuery } from '@/src/services/query/media';
 import LikePortal from '../../LikePortal/LikePortal';
+import { LightTooltip } from '../../Tooltip/Tooltip';
 type MiniInfoProps = {
   mediaType: string;
   id: number;
@@ -53,36 +54,50 @@ const MiniInfo = ({
                 onMiniModalMouseLeave={onMiniModalMouseLeave}
               />
             )}
+
             <div className={classes['preview__buttons--left']}>
               <CircleButton white>
                 <PlayArrowIcon
                   className={`${classes.preview__icon} ${classes['preview__icon--black']}`}
                 />
               </CircleButton>
-              <CircleButton onClick={addToMyListHandler}>
-                {!isInMyList && (
-                  <img className={classes.preview__img} src="/images/add.png" />
-                )}
-                {isInMyList && (
-                  <img
-                    className={classes.preview__img}
-                    src="/images/check.png"
-                  />
-                )}
-              </CircleButton>
-
+              <LightTooltip
+                placement="top"
+                title={isInMyList ? 'Remove from list' : 'Add to my list'}
+                arrow
+              >
+                <div>
+                  <CircleButton onClick={addToMyListHandler}>
+                    {!isInMyList && (
+                      <img
+                        className={classes.preview__img}
+                        src="/images/add.png"
+                      />
+                    )}
+                    {isInMyList && (
+                      <img
+                        className={classes.preview__img}
+                        src="/images/check.png"
+                      />
+                    )}
+                  </CircleButton>
+                </div>
+              </LightTooltip>
               <CircleButton onMouseEnter={onLikeHover}>
                 <img className={classes.preview__img} src="/images/like.png" />
               </CircleButton>
             </div>
-            <div className={classes['preview__buttons--right']}>
-              <CircleButton onClick={showDetailsHandler}>
-                <img
-                  className={classes.preview__img}
-                  src="/images/arrow-down.png"
-                />
-              </CircleButton>
-            </div>
+
+            <LightTooltip placement="top" title="More info" arrow>
+              <div className={classes['preview__buttons--right']}>
+                <CircleButton onClick={showDetailsHandler}>
+                  <img
+                    className={classes.preview__img}
+                    src="/images/arrow-down.png"
+                  />
+                </CircleButton>
+              </div>
+            </LightTooltip>
           </div>
           {info && (
             <div className={classes['preview__video-metadata']}>
