@@ -32,7 +32,6 @@ const Titles = () => {
 
   useEffect(() => {
     if (data) {
-      console.log(data);
       setGenresWithTitles(data);
     }
   }, [data]);

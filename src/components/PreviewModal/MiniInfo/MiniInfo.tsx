@@ -56,7 +56,7 @@ const MiniInfo = ({
             )}
 
             <div className={classes['preview__buttons--left']}>
-              <CircleButton white>
+              <CircleButton white onClick={showDetailsHandler}>
                 <PlayArrowIcon
                   className={`${classes.preview__icon} ${classes['preview__icon--black']}`}
                 />

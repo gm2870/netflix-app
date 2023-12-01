@@ -25,6 +25,7 @@ const Header = () => {
   const router = useRouter();
   const navigationToggleHandler = () => setNavigationLinks(true);
   useEffect(() => {
+    setLink(location.pathname);
     if (router.query.q) {
       setShowSearch(true);
     }
@@ -46,7 +47,7 @@ const Header = () => {
       } else setStickyHeader(false);
     });
   }, []);
-
+  const [link, setLink] = useState('');
   const navigations = [
     {
       name: 'Home',
@@ -80,7 +81,7 @@ const Header = () => {
       setNavigationLinks(false);
     }
   };
-
+  const linkClickHandler = (link: string) => setLink(link);
   useEffect(() => {
     const dropdownRef = userDropdown.current;
     if (dropdownRef) {
@@ -88,6 +89,7 @@ const Header = () => {
       dropdownRef.style.opacity = showUserDropdown ? '1' : '0';
     }
   }, [showUserDropdown]);
+
   const handleOutsideClick = (event: any) => {
     if (
       navDropdown.current &&
@@ -163,8 +165,17 @@ const Header = () => {
             </div>
           )}
           {navigations.map((nav) => (
-            <ListItem key={nav.name} className={classes.navigation__tab}>
-              <Link href={nav.link}>{nav.name}</Link>
+            <ListItem
+              onClick={() => linkClickHandler(nav.link)}
+              key={nav.name}
+              className={classes.navigation__tab}
+            >
+              <Link
+                className={link === nav.link ? classes.active : ''}
+                href={nav.link}
+              >
+                {nav.name}
+              </Link>
             </ListItem>
           ))}
         </List>
