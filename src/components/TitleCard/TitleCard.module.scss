@@ -7,7 +7,12 @@
   border-radius: 4px;
   margin-bottom: 1rem;
   border-bottom: 1px solid #404040;
-  @include respond(small-desktop){
+  &:hover {
+    .playIcon {
+      opacity: 1;
+    }
+  }
+  @include respond(small-desktop) {
     padding: 1rem 1.5rem;
   }
 }
@@ -33,11 +38,6 @@
   img {
     border-radius: 4px;
   }
-  &:hover {
-    .source {
-      opacity: 1;
-    }
-  }
 }
 
 .episodeNumber {
@@ -55,23 +55,20 @@
   margin-bottom: 0;
 }
 
-.source {
+.playIcon {
   position: absolute;
   left: 50%;
   top: 50%;
-  opacity: 0;
   transform: translate(-50%, -50%);
   border: 1px solid;
   border-radius: 50%;
-  background-color: rgba(0,0,0,0.4);
+  background-color: rgba(0, 0, 0, 0.4);
   width: 42px;
   height: 42px;
   opacity: 0;
-  transition: opacity 0.2s
-}
-
-.playIcon {
+  transition: opacity 0.2s;
   font-size: 1.5rem !important;
+  opacity: 0;
   @include respond(small-desktop) {
     font-size: 3rem !important;
   }

@@ -31,13 +31,14 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 
 const SeasonSelect = ({ options, handleChange }: any) => {
   return (
-    <FormControl sx={{ m: 1 }} variant="standard">
+    <FormControl sx={{ m: 1, mr: 0 }} variant="standard">
       <Select
         MenuProps={{
           sx: {
             '& .MuiPaper-root': {
               backgroundColor: 'rgb(36, 36, 36)',
               color: 'white',
+              margin: 0,
             },
           },
         }}
@@ -46,7 +47,7 @@ const SeasonSelect = ({ options, handleChange }: any) => {
         onChange={handleChange}
         input={<BootstrapInput />}
       >
-        {options.map((opt: any,index: number) => (
+        {options.map((opt: any, index: number) => (
           <MenuItem
             style={{
               padding: '1rem 1.5rem',
@@ -54,7 +55,7 @@ const SeasonSelect = ({ options, handleChange }: any) => {
               fontWeight: 700,
             }}
             key={opt.id}
-            value={index+1}
+            value={index + 1}
           >
             {opt.name}
           </MenuItem>
