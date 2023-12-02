@@ -61,17 +61,10 @@ const Header = () => {
       name: 'Movies',
       link: '/browse/genre/2',
     },
-    {
-      name: 'New & Popular',
-      link: '/browse',
-    },
+
     {
       name: 'My List',
       link: '/browse/my-list',
-    },
-    {
-      name: 'Browse by Languages',
-      link: '/browse',
     },
   ];
 
