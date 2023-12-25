@@ -107,7 +107,10 @@ const getSrc = async (link) => {
     );
 
     await page.goto(link);
-
+    await page.waitForSelector('video[class="jw-video jw-reset"]', {
+      visible: true,
+      timeout: 30000,
+    });
     const src = await page.evaluate(() => {
       // eslint-disable-next-line no-undef
       return document

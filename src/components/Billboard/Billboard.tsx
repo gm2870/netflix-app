@@ -125,7 +125,7 @@ const Billboard = ({ onMoreInfoClick }: any) => {
       if (cropSize !== undefined) {
         setPlayer({
           type: 'play',
-          payload: { src: item.video_src.HD, cropSize },
+          payload: { src: item.video_src.HD || item?.video_src.SD, cropSize },
         });
       }
     }
@@ -142,7 +142,7 @@ const Billboard = ({ onMoreInfoClick }: any) => {
   const name = item?.name || item?.title;
 
   const reloadVideoHandler = () => {
-    setPlayer({ type: 'play', payload: { src: item?.video_src.HD } });
+    setPlayer({ type: 'play', payload: { src: item?.video_src.HD || item?.video_src.SD } });
   };
   const toggleSoundHandler = () => {
     setPlayer({ type: 'toggleVolumn' });
@@ -154,7 +154,7 @@ const Billboard = ({ onMoreInfoClick }: any) => {
 
     if (billboardPlaying && playerRef.current.paused()) {
       playerRef.current.play();
-      setPlayer({ type: 'play', payload: { src: item?.video_src.HD } });
+      setPlayer({ type: 'play', payload: { src: item?.video_src.HD || item?.video_src.SD } });
     } else if (!billboardPlaying && !playerRef.current.paused()) {
       playerRef.current.pause();
     }

@@ -34,7 +34,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: 'https://www.project.alifarzanegan.ir',
+    origin: 'https://project.alifarzanegan.ir',
     credentials: true,
   })
 );
