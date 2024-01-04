@@ -1,9 +1,11 @@
 import { Router } from 'express';
 import * as mediaController from '../controllers/media/mediaController.mjs';
+import { getVideoFromServer, mediaStream } from '../controllers/streamController.mjs';
 const router = Router();
 // router.use(mediaController.protect);
 router.get('/all', mediaController.getAllTitles);
-router.get('/billboard/general', mediaController.getGeneralBillboard);
+router.get('/billboard/general',mediaController.getGeneralBillboard);
+router.get('/billboard/general/:mediaType/:mediaId',mediaStream);
 
 router.get('/billboard/tv', mediaController.getTVBillboard);
 router.get('/billboard/movie', mediaController.getMovieBillboard);

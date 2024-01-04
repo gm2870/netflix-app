@@ -7,6 +7,7 @@ export const emptyFolder = async (folderPath) => {
     // Find all files in the folder
     const files = await fsPromises.readdir(folderPath);
     for (const file of files) {
+      if(!file.includes('temp')) continue;
       try {
         await fsPromises.unlink(path.resolve(folderPath, file));
         console.log(`${folderPath}/${file} has been removed successfully`);

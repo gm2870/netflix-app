@@ -123,9 +123,12 @@ const Billboard = ({ onMoreInfoClick }: any) => {
     if (item) {
       setItemId(item.id);
       if (cropSize !== undefined) {
+        const type = (router.query.type_id as string) || '0';
+
+        const mediaType = type === '2' ? 'movie' : 'tv';
         setPlayer({
           type: 'play',
-          payload: { src: item.video_src.HD || item?.video_src.SD, cropSize },
+          payload: { src: `http://localhost:8001/api/v1/media/billboard/general/${mediaType}/${item.id}`},
         });
       }
     }

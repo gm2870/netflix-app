@@ -236,6 +236,21 @@ export const mediaStream = catchAsync(async (req, res) => {
   }
 });
 
+export const getVideoFromServer = catchAsync(async (req,res) => {
+  const Model = req.params.mediaType === 'tv' ? TV : Movie;
+  const media = await Model.findOne({ id: req.params.mediaId });
+
+  const name = media.title || media.name;
+  const fileName = `${normalizeText(name)}.mp4`;
+  const resolvedPath = path.join(__dirname, '..', 'media-files', fileName);
+  const videoSize = fs.statSync(resolvedPath).size;
+  const { start, end } = getChunkProps(requestRangeHeader, videoSize);
+
+  const videoStream = fs.createReadStream(resolvedPath, { start, end });
+
+  videoStream.pipe(res);
+});
+
 export const getVideoCropSize = catchAsync(async (req, res) => {
   const Model = req.params.type === 'tv' ? TV : Movie;
   const media = await Model.findOne({ id: req.params.id });
