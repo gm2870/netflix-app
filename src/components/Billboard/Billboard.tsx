@@ -41,7 +41,7 @@ const initialPlayerState = {
   },
 };
 
-const Billboard = ({ onMoreInfoClick }: any) => {
+const Billboard = () => {
   const router = useRouter();
   const playerRef = useRef<videojs.Player | null>(null);
   const billboardPlaying = useAppSelector((state) => state.ui.billboardPlaying);
@@ -128,7 +128,7 @@ const Billboard = ({ onMoreInfoClick }: any) => {
         const mediaType = type === '2' ? 'movie' : 'tv';
         setPlayer({
           type: 'play',
-          payload: { src: `http://localhost:8001/api/v1/media/billboard/general/${mediaType}/${item.id}`},
+          payload: { src: `https://project.alifarzanegan.ir/api/v1/media/billboard/general/${mediaType}/${item.id}`},
         });
       }
     }
@@ -174,11 +174,12 @@ const Billboard = ({ onMoreInfoClick }: any) => {
     dispatch(mediaActions.setDetailPreviewItem(item));
   };
 
-  const opc = useSpring({
-    from: { opacity: 1 },
-    to: { opacity: 0 },
-    delay: 5000,
-  });
+  const playMovieHandler = () => {
+    if(item.media_type === 'tv') return;
+    const url =`https://vidsrc.to/embed/movie/${item.title_id}?autoplay=1`;
+    window.open(url, "_blank");
+  }
+
   return (
     <section className={classes.billboardRow}>
       {!loading && (
@@ -212,7 +213,7 @@ const Billboard = ({ onMoreInfoClick }: any) => {
             <div className={classes.info__description}>{item?.overview}</div>
 
             <div className={classes.info__actions}>
-              <PlayButton />
+              <PlayButton onClick={playMovieHandler} />
               <CustomButton
                 onClick={showDetailsHandler}
                 variant="contained"

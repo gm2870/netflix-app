@@ -2,11 +2,12 @@ import CustomButton from "../CustomButton/CustomButton"
 import classes from './PlayButton.module.scss';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
-const PlayButton = () => {
+const PlayButton = (props: any) => {
     return (<CustomButton
     variant="contained"
     white={true}
     className={classes.colorPrimary}
+      onClick={props.onClick}
   >
     <PlayArrowIcon
       className={classes.icon}

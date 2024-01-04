@@ -39,7 +39,7 @@ const TitleDetail = ({ item, closeModal }: DetailInfoProps) => {
       seasonNumber,
     },
     {
-      skip: !item.id,
+      skip: !item.id || item.media_type !== 'tv',
     }
   );
 
@@ -66,6 +66,12 @@ const TitleDetail = ({ item, closeModal }: DetailInfoProps) => {
     setSeasonNumber(+val.target.value);
   };
 
+  const playMovieHandler = () => {
+    if(item.media_type === 'tv') return;
+    const url =`https://vidsrc.to/embed/movie/${item.title_id}?autoplay=1`;
+    window.open(url, "_blank");
+  }
+  
   return (
     <div className={classes.container}>
       <Player
@@ -81,7 +87,7 @@ const TitleDetail = ({ item, closeModal }: DetailInfoProps) => {
       </button>
       <div className={classes.action}>
         <div className={classes.action__buttons}>
-          <PlayButton />
+          <PlayButton onClick={playMovieHandler} />
           <CircleButton>
             <img className={classes.preview__img} src="/images/add.png" />
           </CircleButton>
